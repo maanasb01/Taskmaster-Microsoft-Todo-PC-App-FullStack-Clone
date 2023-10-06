@@ -1,0 +1,429 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "To Do App",
+    "dateExported": "2023-09-30T06:13:58.437Z",
+    "version": "1.1",
+    "folders": [
+        {
+            "_id": "c5e8c862-024d-4eac-82ff-44b5a10c176a",
+            "name": "Authentication",
+            "containerId": "",
+            "created": "2023-09-07T07:42:56.430Z",
+            "sortNum": 10000
+        },
+        {
+            "_id": "6e6820c6-b588-4524-a88d-bb4535bf8bde",
+            "name": "User",
+            "containerId": "",
+            "created": "2023-09-08T10:40:23.688Z",
+            "sortNum": 20000
+        },
+        {
+            "_id": "57da1bc5-2ada-4595-808e-97c3f5c18faa",
+            "name": "ToDo ",
+            "containerId": "",
+            "created": "2023-09-09T09:44:02.033Z",
+            "sortNum": 25000
+        },
+        {
+            "_id": "7597af70-c311-4c49-947e-6ecacfa893df",
+            "name": "ToDo List",
+            "containerId": "",
+            "created": "2023-09-09T09:43:18.830Z",
+            "sortNum": 30000
+        },
+        {
+            "_id": "2bf7ac01-ff5f-46e4-9072-ae38fb541a67",
+            "name": "steps",
+            "containerId": "57da1bc5-2ada-4595-808e-97c3f5c18faa",
+            "created": "2023-09-13T07:36:14.931Z",
+            "sortNum": 40000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "1671facb-3506-4416-ba16-fca4032ec776",
+            "colId": "30b47a08-e20c-4f6b-b50e-d4c43b903c41",
+            "containerId": "c5e8c862-024d-4eac-82ff-44b5a10c176a",
+            "name": "Create a New User",
+            "url": "http://localhost:3000/api/auth/createuser",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2023-09-07T07:43:07.973Z",
+            "modified": "2023-09-08T11:08:04.309Z",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\":\"test user 2\",\n  \"email\":\"testUser2@gmail.com\",\n  \"password\":\"abc@12345\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "17a7a05f-ed41-4587-ad84-a9e811b40879",
+            "colId": "30b47a08-e20c-4f6b-b50e-d4c43b903c41",
+            "containerId": "7597af70-c311-4c49-947e-6ecacfa893df",
+            "name": "Get All Lists of a User",
+            "url": "http://localhost:3000/todolist/lists",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2023-09-09T09:43:35.333Z",
+            "modified": "2023-09-26T18:17:46.996Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NTczOTMwOCwiZXhwIjoxNjk1NzkzMzA4fQ.Vu9KUvr1GzR2yHtHbsEqWoErJiB9_wX828HT6iBdhSE"
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "08915259-5061-45a1-8d6a-2f0361472314",
+            "colId": "30b47a08-e20c-4f6b-b50e-d4c43b903c41",
+            "containerId": "2bf7ac01-ff5f-46e4-9072-ae38fb541a67",
+            "name": "Add a Step",
+            "url": "http://localhost:3000/todo/6514488e9b0f38c170807828/step",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2023-09-13T07:11:44.712Z",
+            "modified": "2023-09-27T15:22:55.679Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NTgxMTUxNywiZXhwIjoxNjk1ODY1NTE3fQ.bk_nliekX0XmZtEv54pc1Zz-BtF3G7LLVRgfg1oIYKU"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"stepTitle\":\"Step 1\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "16a3e2a6-7815-4b7d-9569-c11284f5ff19",
+            "colId": "30b47a08-e20c-4f6b-b50e-d4c43b903c41",
+            "containerId": "c5e8c862-024d-4eac-82ff-44b5a10c176a",
+            "name": "log in",
+            "url": "http://localhost:3000/auth/login",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2023-09-08T10:38:34.937Z",
+            "modified": "2023-09-09T08:21:15.385Z",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"email\":\"testUser2@gmail.com\",\n  \"password\":\"abc@12345\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "25ead7fc-5fee-4752-8908-5e0dee6c5b50",
+            "colId": "30b47a08-e20c-4f6b-b50e-d4c43b903c41",
+            "containerId": "7597af70-c311-4c49-947e-6ecacfa893df",
+            "name": "New List",
+            "url": "http://localhost:3000/todolist/new",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2023-09-09T09:43:40.423Z",
+            "modified": "2023-09-13T06:49:16.638Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NDU4NzcwMiwiZXhwIjoxNjk0NjQxNzAyfQ.zFWQ7WXDjNcpdOEZuyfAA-z_eS_VGbdT567gWLKpwig"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"title\": \"New List with timestamps\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "f467e3ef-b060-48db-b492-caf71a8fc59b",
+            "colId": "30b47a08-e20c-4f6b-b50e-d4c43b903c41",
+            "containerId": "6e6820c6-b588-4524-a88d-bb4535bf8bde",
+            "name": "Get User Data",
+            "url": "http://localhost:3000/api/user",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2023-09-08T10:40:52.432Z",
+            "modified": "2023-09-08T11:42:30.060Z",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                },
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NDE3MzMzNywiZXhwIjoxNjk0MjI3MzM3fQ.m0wemLPdfJ8FYNn3TomKY1CAESFuhdSeS1dPwlBacJE"
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "f3306350-5bfa-4abb-965f-54671afdf765",
+            "colId": "30b47a08-e20c-4f6b-b50e-d4c43b903c41",
+            "containerId": "57da1bc5-2ada-4595-808e-97c3f5c18faa",
+            "name": "Create a ToDo",
+            "url": "http://localhost:3000/todo",
+            "method": "POST",
+            "sortNum": 40000,
+            "created": "2023-09-09T09:44:17.559Z",
+            "modified": "2023-09-25T09:04:15.254Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NTYzMTYyNSwiZXhwIjoxNjk1Njg1NjI1fQ.XYBO26sgdaXexgTjKBogAa0Q0NJw7xNTzYBA0nCQs98"
+                },
+                {
+                    "name": "todoList",
+                    "value": "65114c763b24f41c637963a4"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"title\":\"Todo new2 \"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "0eef25e3-eacb-4600-9097-c295fc5a1c00",
+            "colId": "30b47a08-e20c-4f6b-b50e-d4c43b903c41",
+            "containerId": "7597af70-c311-4c49-947e-6ecacfa893df",
+            "name": "Delete a Todo LIst",
+            "url": "http://localhost:3000/todolist/delete/64fc2b08f1a25d7b0b00bf10",
+            "method": "DELETE",
+            "sortNum": 50000,
+            "created": "2023-09-11T08:15:14.486Z",
+            "modified": "2023-09-11T18:12:30.162Z",
+            "headers": [
+                {
+                    "name": "todolist",
+                    "value": "64fed3f61700198e1098963c",
+                    "isDisabled": true
+                },
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NDQ1NTc4MCwiZXhwIjoxNjk0NTA5NzgwfQ.vfWHkalyuLyJHsOwNFgcTB4YH_UrZo7RbMWTL80WO_I"
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "7a7c56fe-53a5-463d-8518-b66727905302",
+            "colId": "30b47a08-e20c-4f6b-b50e-d4c43b903c41",
+            "containerId": "7597af70-c311-4c49-947e-6ecacfa893df",
+            "name": "Update the List's Title",
+            "url": "http://localhost:3000/todolist/updatetitle/650d6178a06541ef4fb232bc",
+            "method": "PATCH",
+            "sortNum": 60000,
+            "created": "2023-09-11T18:08:44.456Z",
+            "modified": "2023-09-22T15:23:49.606Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NTM5NjE4MiwiZXhwIjoxNjk1NDUwMTgyfQ.-AaVzWUHdKUAcTpGEnw6k2P_zUc-oCJR5CbALACm2G8"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"title\": \"Updated Title of list with timestamps \"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "4c957751-33ad-439e-b5a4-e05bc2bc7058",
+            "colId": "30b47a08-e20c-4f6b-b50e-d4c43b903c41",
+            "containerId": "57da1bc5-2ada-4595-808e-97c3f5c18faa",
+            "name": "Delete a ToDo",
+            "url": "http://localhost:3000/todo/65000d5885c884b3184d5428",
+            "method": "DELETE",
+            "sortNum": 70000,
+            "created": "2023-09-11T18:43:16.691Z",
+            "modified": "2023-09-12T07:07:02.865Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NDUwMjExMCwiZXhwIjoxNjk0NTU2MTEwfQ.knSPZy8sZx0AOJIZZDm1qaVYHUjWRbrotjyt0RR8d2g"
+                },
+                {
+                    "name": "todolist",
+                    "value": "64ff603f072f18c6e651db3a"
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "7a08c1ba-c156-49bb-ae6d-01f97ec65be4",
+            "colId": "30b47a08-e20c-4f6b-b50e-d4c43b903c41",
+            "containerId": "7597af70-c311-4c49-947e-6ecacfa893df",
+            "name": "Get a Todo List given id",
+            "url": "http://localhost:3000/todolist/65000d1585c884b3184d541f",
+            "method": "GET",
+            "sortNum": 80000,
+            "created": "2023-09-12T07:22:13.398Z",
+            "modified": "2023-09-12T07:52:11.861Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NDUwMjExMCwiZXhwIjoxNjk0NTU2MTEwfQ.knSPZy8sZx0AOJIZZDm1qaVYHUjWRbrotjyt0RR8d2g"
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "97de7669-5284-4c29-aab9-ed25b1089a8d",
+            "colId": "30b47a08-e20c-4f6b-b50e-d4c43b903c41",
+            "containerId": "57da1bc5-2ada-4595-808e-97c3f5c18faa",
+            "name": "Get all Todos given the list id",
+            "url": "http://localhost:3000/todo/65000d1585c884b3184d541f",
+            "method": "GET",
+            "sortNum": 90000,
+            "created": "2023-09-12T07:50:09.505Z",
+            "modified": "2023-09-18T09:45:00.978Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NTAyNTEwNywiZXhwIjoxNjk1MDc5MTA3fQ.l_rpYDfjAUJZROKMp5cJzDZSNlDqqDCJvmkVd_vkyFs"
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "ce1b2c2f-f5eb-4873-ae8e-d44a017589fa",
+            "colId": "30b47a08-e20c-4f6b-b50e-d4c43b903c41",
+            "containerId": "57da1bc5-2ada-4595-808e-97c3f5c18faa",
+            "name": "Update a Todo",
+            "url": "http://localhost:3000/todo/6516eb9571b7faa88ce7f3cc",
+            "method": "PUT",
+            "sortNum": 100000,
+            "created": "2023-09-12T09:02:39.950Z",
+            "modified": "2023-09-29T15:48:58.851Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NTk2ODIzOCwiZXhwIjoxNjk2MDIyMjM4fQ.f_ZDhX8tTQ4tjYAUk9HM54Ynnu-480FqdX44O1Ur_is"
+                },
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"isCompleted\":\"false\",\n  \"note\": \"test Note 1\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "4f858fdc-e8de-48b8-86fd-f11b0ac1dee3",
+            "colId": "30b47a08-e20c-4f6b-b50e-d4c43b903c41",
+            "containerId": "57da1bc5-2ada-4595-808e-97c3f5c18faa",
+            "name": "Get a Todo Information",
+            "url": "http://localhost:3000/todo/info/65114cd53b24f41c637963a9",
+            "method": "GET",
+            "sortNum": 120000,
+            "created": "2023-09-13T07:27:16.523Z",
+            "modified": "2023-09-26T18:17:57.340Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NTczOTMwOCwiZXhwIjoxNjk1NzkzMzA4fQ.Vu9KUvr1GzR2yHtHbsEqWoErJiB9_wX828HT6iBdhSE"
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "860eac2d-129d-4cb2-8831-1c2063a181c1",
+            "colId": "30b47a08-e20c-4f6b-b50e-d4c43b903c41",
+            "containerId": "2bf7ac01-ff5f-46e4-9072-ae38fb541a67",
+            "name": "Delete a step",
+            "url": "http://localhost:3000/todo/65000d5485c884b3184d5425/step/650162ab3cc08dd9647ff5ba",
+            "method": "DELETE",
+            "sortNum": 130000,
+            "created": "2023-09-13T07:36:27.244Z",
+            "modified": "2023-09-13T07:42:22.286Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NDU4NzcwMiwiZXhwIjoxNjk0NjQxNzAyfQ.zFWQ7WXDjNcpdOEZuyfAA-z_eS_VGbdT567gWLKpwig"
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "bce6957c-eed1-4d21-9520-e09cce392a0e",
+            "colId": "30b47a08-e20c-4f6b-b50e-d4c43b903c41",
+            "containerId": "2bf7ac01-ff5f-46e4-9072-ae38fb541a67",
+            "name": "Get all steps of a Todo",
+            "url": "http://localhost:3000/todo/65000d5485c884b3184d5425/step",
+            "method": "GET",
+            "sortNum": 140000,
+            "created": "2023-09-13T07:48:37.955Z",
+            "modified": "2023-09-13T07:49:21.064Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NDU4NzcwMiwiZXhwIjoxNjk0NjQxNzAyfQ.zFWQ7WXDjNcpdOEZuyfAA-z_eS_VGbdT567gWLKpwig"
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "03cb29a3-0c39-4a6d-837d-2131b8ca4eca",
+            "colId": "30b47a08-e20c-4f6b-b50e-d4c43b903c41",
+            "containerId": "2bf7ac01-ff5f-46e4-9072-ae38fb541a67",
+            "name": "Update a Step",
+            "url": "http://localhost:3000/todo/65000d5485c884b3184d5425/step/650167893fa584162f8341ca",
+            "method": "PUT",
+            "sortNum": 150000,
+            "created": "2023-09-13T08:05:33.266Z",
+            "modified": "2023-09-13T08:11:04.326Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NDU4NzcwMiwiZXhwIjoxNjk0NjQxNzAyfQ.zFWQ7WXDjNcpdOEZuyfAA-z_eS_VGbdT567gWLKpwig"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"stepTitle\":\"Step 1\",\n  \"isCompleted\":true\n}",
+                "form": []
+            },
+            "tests": []
+        }
+    ]
+}

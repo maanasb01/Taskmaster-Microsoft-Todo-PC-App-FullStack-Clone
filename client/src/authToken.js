@@ -1,0 +1,1 @@
+export const AUTH_TKN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NjUxMDY2NywiZXhwIjoxNjk2NTY0NjY3fQ.l_9cFLJZOSBEXPwKw-r4aaTvFew1JtURZhAJFd47C6A";
