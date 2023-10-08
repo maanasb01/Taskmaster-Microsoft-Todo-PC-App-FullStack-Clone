@@ -32,7 +32,7 @@ export const TodoProvider = ({ children }) => {
        return;
       }
       setSelectedTodo(data);
-      console.log(data)
+     
 
 
     } catch (error) {
@@ -139,8 +139,34 @@ export const TodoProvider = ({ children }) => {
     }
   }
 
+
+  const editTodoStep = async (updatedBody,todoId,stepId) => {
+    try {
+      const res = await fetch(`${host}/todo/${todoId}/step/${stepId}`, {
+        method: "PUT",
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': AUTH_TKN,
+        },
+        body: JSON.stringify(updatedBody)
+      });
+  
+      if (!res.ok) {
+        throw new Error(`Failed to update the selected Step properties (status ${res.status})`);
+      }
+  
+      const data = await res.json();
+      const updatedTodoStep = data.updatedTodoStep;
+  
+      return updatedTodoStep; 
+    } catch (error) {
+      // Handle fetch or parsing errors here
+      console.error("Error editing the Todo Step:", error);
+    }
+  }
+
   return (
-    <TodoContext.Provider value={{ todos, setTodos, addTodo, deleteTodo, editTodo ,selectTodo,handleOnCheck, selectedTodo, completedTodoStyle }}>
+    <TodoContext.Provider value={{ todos, setTodos, addTodo, deleteTodo, editTodo ,selectTodo,handleOnCheck,editTodoStep, selectedTodo, completedTodoStyle }}>
       {children}
     </TodoContext.Provider>
   );

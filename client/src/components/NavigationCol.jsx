@@ -9,17 +9,6 @@ import folderIcon from "../assets/folder_icon.svg";
 import deleteIcon from "../assets/delete_icon.svg";
 import { useListContext } from "../contexts/ListContext";
 
-// let todoLists = [
-//   { title: "List 1", icon: sunIcon },
-//   { title: "List 2", icon: starIcon },
-//   { title: "List 3", icon: calendarIcon },
-//   { title: "List 4" },
-//   { title: "List 5" },
-//   { title: "List 7" },
-//   { title: "List 6" },
-//   { title: "List 6" },
-//   { title: "List 6" },
-// ];
 
 //Component for new list
 function NewList() {
@@ -127,11 +116,13 @@ function ListOption(props) {
     const editedTitle = inputref.current.value;
   
     try {
-      const editedList = await editList(editedTitle, listId);
+      const editedListTitle = await editList(editedTitle, listId);
   
       // Check if the edit was successful
-      if (editedList) {
+      if (editedListTitle) {
         setIsEditing(false);
+        // setTitle(editedListTitle);
+        // selectList(listId)
       } else {
         setTitle(oldTitle);
         setIsEditing(false);

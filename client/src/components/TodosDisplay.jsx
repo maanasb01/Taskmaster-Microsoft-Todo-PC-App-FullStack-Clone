@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useListContext } from "../contexts/ListContext";
 import plusIcon from "../assets/plus_icon.svg";
 import addStepIcon from "../assets/addStep_icon.svg";
@@ -48,7 +48,7 @@ function AddTask(props) {
       ) : (
         <img src={cirlceIcon} alt="" className="h-9 py-2 mr-3" />
       )}
-      <form onSubmit={(e) => handleOnSubmit(e)}>
+      <form className="w-full" onSubmit={(e) => handleOnSubmit(e)}>
         <input
           type="text"
           placeholder="Add a Task"
@@ -68,10 +68,6 @@ function TodoComponent(props) {
   const { todoTitle, onSelect, thisTodo } = props;
   const [isHovered, setIsHovered] = useState(false);
   const {todos,setTodos, editTodo, completedTodoStyle,selectTodo, handleOnCheck} = useTodoContext();
-  
-  const imgRef = useRef(null);
-
-
   
   return (
     <div
@@ -99,17 +95,17 @@ function TodoComponent(props) {
 
       </div>
 
-      <span className={`${thisTodo.isCompleted ? completedTodoStyle:""}`}>{todoTitle}</span>
+      <span className={`overflow-hidden whitespace-nowrap overflow-ellipsis ${thisTodo.isCompleted ? completedTodoStyle:""}`}>{todoTitle}</span>
     </div>
   );
 }
 
 
 export default function TodosDisplay() {
-  const { selectedList } = useListContext();
+  const { selectedList,lists } = useListContext();
   const { todos, setTodos, addTodo, selectTodo, selectedTodo } =
     useTodoContext();
-  // const [listTitle, setListTitle] = useState("")
+  const [listTitle, setListTitle] = useState("")
 
   const getTodosData = async (url) => {
     const res = await fetch(url, {
@@ -122,8 +118,26 @@ export default function TodosDisplay() {
     return data;
   };
 
+  useEffect(()=>{
+
+    setTimeout(() => {
+      
+      if(selectedList){
+        setListTitle(selectedList.title);
+        console.log("list Title updated: "+listTitle)
+      }else{
+        setListTitle("Select a List to Get its Tasks")
+      }
+    }, 0);
+
+
+  },[selectedList,lists])
+
   useEffect(() => {
 
+    // setTimeout(() => {
+      
+    // }, 0);
     if (selectedList) {
       const getTodos = async () => {
         const fetchedTodos = await getTodosData(
@@ -134,6 +148,7 @@ export default function TodosDisplay() {
 
       getTodos();
     }
+
   }, [selectedList]);
 
   return (
@@ -142,9 +157,10 @@ export default function TodosDisplay() {
         <div className="w-7/12 mx-auto relative">
           <div className="  h-1/6 bg-[#5c70be] flex items-center">
             <span className="text-white text-3xl overflow-hidden whitespace-nowrap overflow-ellipsis">
-              {selectedList && selectedList.title
+              {/* {(selectedList && selectedList.title)
                 ? selectedList.title
-                : "Select a List to Display its Tasks"}
+                : "Select a List to Display its Tasks"} */}
+                {listTitle}
             </span>
           </div>
           <div className="  h-4/6 bg-[#5c70be] overflow-y-auto space-y-1">

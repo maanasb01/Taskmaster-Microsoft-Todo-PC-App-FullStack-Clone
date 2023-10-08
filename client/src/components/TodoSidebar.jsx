@@ -12,6 +12,8 @@ import dueDateIcon from "../assets/dueDate_icon.svg";
 import dueDateSetIcon from "../assets/dueDateSet_icon.svg";
 import crossIcon from "../assets/cross_icon.svg";
 import dueDateSetRedIcon from "../assets/dueDateSetRed_icon.svg";
+import todoStarIcon from "../assets/todoStar_icon.svg";
+import todoStarMarkedIcon from "../assets/todoStarMarked_icon.svg";
 import { AUTH_TKN } from "../authToken";
 import { useTodoContext } from "../contexts/TodoContext";
 import Calender from "./Calender";
@@ -24,7 +26,7 @@ function AddStep(props) {
 
   const [isAddingStep, setIsAddingStep] = useState(false);
   const stepInputRef = useRef(null);
-  const { selectedTodo } = useTodoContext();
+  const { selectedTodo, selectTodo } = useTodoContext();
 
   const handleEscKeyPress = (event) => {
     if (event.key === "Escape" && stepInputRef.current) {
@@ -72,8 +74,11 @@ function AddStep(props) {
         return;
       }
 
-      setSteps([...steps, data]);
+      // setSteps([...steps, data]);
+      setSteps((prevSteps) => [...prevSteps, data]);
+
       setIsAddingStep(false);
+      selectTodo(selectedTodo._id);
     } catch (error) {
       console.error(error);
     }
@@ -91,7 +96,7 @@ function AddStep(props) {
                   type="text"
                   onBlur={() => setIsAddingStep(false)}
                   ref={stepInputRef}
-                  className="outline-none h-full"
+                  className="outline-none h-full bg-inherit"
                   placeholder="Add next step"
                 />
               </form>
@@ -117,7 +122,7 @@ function AddStep(props) {
 function StepsMenu(props) {
   const { thisStep, steps, setSteps, setIsMenuOpen, menuButtonRef } = props;
   const menuRef = useRef(null);
-  const { selectedTodo } = useTodoContext();
+  const { selectedTodo, selectTodo } = useTodoContext();
 
   useEffect(() => {
     const handler = (e) => {
@@ -164,6 +169,7 @@ function StepsMenu(props) {
 
       setSteps(steps.filter((step) => step._id !== thisStep._id));
       setIsMenuOpen(false);
+      selectTodo(selectedTodo._id);
     } catch (error) {
       console.error(error);
     }
@@ -204,6 +210,8 @@ function TodoStep(props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const editInputref = useRef(null);
   const menuButtonRef = useRef(null);
+  const { editTodoStep, selectedTodo, selectTodo, completedTodoStyle } =
+    useTodoContext();
 
   useEffect(() => {
     const handleEscKeyPress = (event) => {
@@ -231,16 +239,45 @@ function TodoStep(props) {
     }, 0);
   }
 
+  async function handleOnStepCheck() {
+    try {
+      const updatedTodoStep = await editTodoStep(
+        { isCompleted: `${!thisStep.isCompleted}` },
+        selectedTodo._id,
+        thisStep._id
+      );
+
+      // Only update the todos state if the updatedTodo is available
+      setSteps((prevTodoSteps) => {
+        return prevTodoSteps.map((todoStep) => {
+          if (todoStep._id === thisStep._id) {
+            return updatedTodoStep;
+          }
+          return todoStep;
+        });
+      });
+      selectTodo(selectedTodo._id);
+    } catch (error) {
+      console.error("Error updating todo Step:", error);
+    }
+  }
+
   return (
     <>
       <div className="flex items-center  hover:bg-gray-100 px-3 py-2">
-        <img
-          src={isStepHovered ? hoverCheckIcon : cirlceIcon}
-          alt=""
-          className="h-5  mr-3"
-          onMouseEnter={() => setIsStepHovered(true)}
-          onMouseLeave={() => setIsStepHovered(false)}
-        />
+        <div onClick={handleOnStepCheck}>
+          {thisStep.isCompleted ? (
+            <img src={checkedCircleIcon} alt="" className="h-5 mr-3" />
+          ) : (
+            <img
+              src={isStepHovered ? hoverCheckIcon : cirlceIcon}
+              alt=""
+              className="h-5  mr-3"
+              onMouseEnter={() => setIsStepHovered(true)}
+              onMouseLeave={() => setIsStepHovered(false)}
+            />
+          )}
+        </div>
 
         <div className="w-full">
           {isEditing ? (
@@ -256,7 +293,12 @@ function TodoStep(props) {
             </form>
           ) : (
             <div className="flex items-center ">
-              <label className="text-sm cursor-text" onClick={handleEditing}>
+              <label
+                className={`text-sm cursor-text ${
+                  thisStep.isCompleted ? completedTodoStyle : ""
+                }`}
+                onClick={handleEditing}
+              >
                 {stepTitle}
               </label>
               <div
@@ -366,44 +408,74 @@ export default function TodoSidebar() {
   const [dateValue, setDatevalue] = useState(dayjs());
   const [dueDateStyle, setDueDateStyle] = useState({});
   const [noteValue, setNoteValue] = useState("");
+  const [initialNoteValue, setInitialNoteValue] = useState("");
+  const [initialTitleValue, setInitialTitleValue] = useState("");
+  const [todoTitle, setTodoTitle] = useState("");
 
-  const textAreaRef = useRef(null)
+  const textAreaRef = useRef(null);
+  const todoTitleRef = useRef(null);
 
   useEffect(()=>{
 
-if(selectedTodo.dueAt){
-  if (selectedTodo.dueAt && (dayjs(selectedTodo.dueAt)>=dayjs())){
+    if(selectedTodo){
+      setTodoTitle(selectedTodo.title);
+    }
+  },[selectedTodo])
 
-    setDueDateStyle({spanCSS:"text-[#005fb8]",icon:dueDateSetIcon})
-    //cssObj.spanCss = "text-[#005fb8]"
-  }
-  else if (selectedTodo.dueAt && (dayjs(selectedTodo.dueAt)<=dayjs())){
-    //cssObj.spanCss = "text-red-700"
-    setDueDateStyle({spanCSS:"text-red-700",icon:dueDateSetRedIcon})
-  }
-}
-else {
-  //cssObj.spanCss = "font-light"
-  setDueDateStyle({spanCSS:"font-light",icon:dueDateIcon})
-}
-
-  },[selectedTodo.dueAt])
-
-
-  
-
+  //Setting up the Styles of the Due Date div based on the due Date the todo has
   useEffect(() => {
-    if (selectedTodo) {
-      setSteps(selectedTodo.steps);
+    if (selectedTodo ) {
+      console.log("inside setting calender styles")
+      if (selectedTodo.dueAt && dayjs(selectedTodo.dueAt) >= dayjs()) {
+        setDueDateStyle({ spanCSS: "text-[#005fb8]", icon: dueDateSetIcon });
+        //cssObj.spanCss = "text-[#005fb8]"
+      } else if (selectedTodo.dueAt && dayjs(selectedTodo.dueAt) <= dayjs()) {
+        //cssObj.spanCss = "text-red-700"
+        setDueDateStyle({ spanCSS: "text-red-700", icon: dueDateSetRedIcon });
+      } else {
+        //cssObj.spanCss = "font-light"
+        setDueDateStyle({ spanCSS: "font-light", icon: dueDateIcon });
+      }
     }
   }, [selectedTodo]);
 
-  async function handleAddDueDate(){
+  //Setting Todo note's value
+  useEffect(() => {
+    if(selectedTodo){
+      setInitialTitleValue(selectedTodo.title);
+      if (selectedTodo.note) {
+      setInitialNoteValue(selectedTodo.note);
+      setNoteValue(selectedTodo.note);
+    } else {
+      setNoteValue("");
+    }
   
+  }
+  }, [selectedTodo]);
+
+  //Setting Todos Steps
+  useEffect(() => {
+    if (selectedTodo) {
+      console.log("Updating steps from sidebar component");
+      if(selectedTodo.steps){
+
+        setSteps(selectedTodo.steps);
+      }
+      console.log(steps);
+    }
+    // setTimeout(() => {
+
+    // }, 0);
+  }, [selectedTodo]);
+
+  //Adding Due Date to the Todo
+  async function handleAddDueDate() {
     try {
-      
-      const updatedTodo = await editTodo({ dueAt: dateValue.toISOString() }, selectedTodo._id);
-      
+      const updatedTodo = await editTodo(
+        { dueAt: dateValue.toISOString() },
+        selectedTodo._id
+      );
+
       // Only update the todos state if the updatedTodo is available
       setTodos((prevTodos) => {
         return prevTodos.map((todo) => {
@@ -413,23 +485,25 @@ else {
           return todo;
         });
       });
-      selectTodo(selectedTodo._id)
+      selectTodo(selectedTodo._id);
       setIsCalenderActive(false);
     } catch (error) {
       console.error("Error updating todo's Due Date:", error);
     }
   }
 
+  //Handeling Removing Due Date of Todo
 
-  async function handleRemoveDate(e){
-
+  async function handleRemoveDate(e) {
     e.stopPropagation();
-    console.log("Hi from remove date!")
+    console.log("Hi from remove date!");
 
     try {
-      
-      const updatedTodo = await editTodo({ dueAt: "REMOVEDATE" }, selectedTodo._id);
-      
+      const updatedTodo = await editTodo(
+        { dueAt: "REMOVEDATE" },
+        selectedTodo._id
+      );
+
       // Only update the todos state if the updatedTodo is available
       setTodos((prevTodos) => {
         return prevTodos.map((todo) => {
@@ -439,18 +513,97 @@ else {
           return todo;
         });
       });
-      selectTodo(selectedTodo._id)
+      selectTodo(selectedTodo._id);
       setIsCalenderActive(false);
     } catch (error) {
       console.error("Error updating todo's Due Date:", error);
     }
-
   }
+
+  //Handles TextArea's Size when the input changes
 
   function textAreaAdjust() {
     textAreaRef.current.style.height = "auto";
-    textAreaRef.current.style.height = (textAreaRef.current.scrollHeight)+"px";
+    textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px";
     setNoteValue(textAreaRef.current.value);
+  }
+
+  //Handeling Saving of the Todo Note
+  async function handleSaveNoteChanges() {
+    try {
+      if (textAreaRef.current.value === initialNoteValue) {
+        return;
+      }
+
+      let updatedTodo;
+
+      if (textAreaRef.current.value.trim() === "") {
+        updatedTodo = await editTodo({ note: "REMOVENOTE" }, selectedTodo._id);
+      } else {
+        updatedTodo = await editTodo(
+          { note: textAreaRef.current.value },
+          selectedTodo._id
+        );
+      }
+
+      // Only update the todos state if the updatedTodo is available
+      setTodos((prevTodos) => {
+        return prevTodos.map((todo) => {
+          if (todo._id === selectedTodo._id) {
+            return updatedTodo;
+          }
+          return todo;
+        });
+      });
+      selectTodo(selectedTodo._id);
+
+    } catch (error) {
+      console.error("Error updating todo's note:", error);
+    }
+  }
+
+  //Handle exit from Title Changing, the moment enter or esc pressed.
+
+  function handleTitleChangeExitEvent(e){
+
+    if (e.key === "Escape" || e.key === "Enter") {
+      todoTitleRef.current.blur(); // Blur the input when "Esc" is pressed
+      
+    }
+
+  }
+
+  //Title Change of Todo when the input gets blur
+
+  async function handleTodoTitleChange(){
+
+    try {
+      if (todoTitleRef.current.value === initialTitleValue || todoTitleRef.current.value.trim() === "") {
+        setTodoTitle(initialTitleValue);
+        return;
+      }
+
+      const updatedTodo = await editTodo(
+          { title: todoTitleRef.current.value },
+          selectedTodo._id
+        );
+  
+
+      // Only update the todos state if the updatedTodo is available
+      setTodos((prevTodos) => {
+        return prevTodos.map((todo) => {
+          if (todo._id === selectedTodo._id) {
+            return updatedTodo;
+          }
+          return todo;
+        });
+      });
+      selectTodo(selectedTodo._id);
+    
+    } catch (error) {
+      console.error("Error updating todo's title:", error);
+    }
+
   }
 
   return (
@@ -464,7 +617,7 @@ else {
           className="flex flex-col px-5 py-5 w-full h-full overflow-y-auto space-y-2"
         >
           <div id="title-steps" className="border p-3">
-            <div className="flex mb-2">
+            <div className="flex  ">
               <div onClick={() => handleOnCheck(selectedTodo)}>
                 {!selectedTodo.isCompleted ? (
                   <img
@@ -479,19 +632,38 @@ else {
                     src={checkedCircleIcon}
                     alt=""
                     className="h-8 pb-1 mr-3"
-                    onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
                   />
                 )}
               </div>
 
-              <span
-                className={`text-xl ${
-                  selectedTodo.isCompleted ? completedTodoStyle : ""
-                }`}
-              >
-                {selectedTodo.title}
-              </span>
+              {/* {!isTitleEditing ? (
+                <span
+                  className={`text-xl ${
+                    selectedTodo.isCompleted ? completedTodoStyle : ""
+                  }`}
+                >
+                  {selectedTodo.title}
+                </span>
+              ) : (
+                <form>
+                  <input type="text" />
+                </form>
+              )} */}
+
+              <div className="">
+                <input
+                typeof="text"
+                ref={todoTitleRef}
+                onKeyDown={(e)=>handleTitleChangeExitEvent(e)}
+                onChange={()=>setTodoTitle(todoTitleRef.current.value)}
+                onBlur={handleTodoTitleChange}
+                  value={todoTitle??''}
+                  className={`text-xl w-full h-10 pb-4 bg-inherit outline-none resize-none overflow-hidden whitespace-nowrap overflow-ellipsis  ${selectedTodo.isCompleted ? completedTodoStyle : "font-semibold"}`}
+                >
+                </input>
+  
+              </div>
+
             </div>
             {selectedTodo &&
               steps &&
@@ -513,25 +685,49 @@ else {
           {/* Due Date */}
           <div
             id="due-date"
-            className= {`p-3 flex items-center cursor-pointer border`}
+            className={`p-3 flex items-center cursor-pointer border`}
             onClick={() => setIsCalenderActive(true)}
           >
             <img src={dueDateStyle.icon} alt="" className="h-5 mr-5" />
-            <span className= {`text-sm ${dueDateStyle.spanCSS}`}>
-              {selectedTodo.dueAt ? `Due ${dayjs(selectedTodo.dueAt).format('ddd, DD MMM, YYYY')}`:"Add a Due Date"}
-              </span>
-              {selectedTodo.dueAt&&<div className="h-6 w-6 ml-auto hover:bg-gray-100 flex items-center" onClick={(e)=>handleRemoveDate(e)}>
-                <img src={crossIcon} alt="remove due-date" className="h-4 mx-auto"  />
-                </div>}
-
+            <span className={`text-sm ${dueDateStyle.spanCSS}`}>
+              {selectedTodo.dueAt
+                ? `Due ${dayjs(selectedTodo.dueAt).format("ddd, DD MMM, YYYY")}`
+                : "Add a Due Date"}
+            </span>
+            {selectedTodo.dueAt && (
+              <div
+                className="h-6 w-6 ml-auto hover:bg-gray-100 flex items-center"
+                onClick={(e) => handleRemoveDate(e)}
+              >
+                <img
+                  src={crossIcon}
+                  alt="remove due-date"
+                  className="h-4 mx-auto"
+                />
+              </div>
+            )}
           </div>
-{/* Note */}
+
+          {/* Note */}
           <div className=" border p-3 h-fit w-full  ">
-            <textarea ref={textAreaRef} value={noteValue}  onChange={(e)=>textAreaAdjust(e)} type="text" className="w-full outline-none p-2 resize-none overflow-hidden " placeholder="Add a Note" />
+            <textarea
+              ref={textAreaRef}
+              value={noteValue}
+              onBlur={handleSaveNoteChanges}
+              onChange={(e) => textAreaAdjust(e)}
+              type="text"
+              className="bg-inherit w-full outline-none p-2 resize-none overflow-hidden"
+              placeholder="Add a Note"
+            />
           </div>
 
           {isCalenderActive && (
-            <Calender value={dateValue} onCancel={() => setIsCalenderActive(false)} onChange={(newDate)=>setDatevalue(newDate)} onSave={handleAddDueDate}/>
+            <Calender
+              value={dateValue}
+              onCancel={() => setIsCalenderActive(false)}
+              onChange={(newDate) => setDatevalue(newDate)}
+              onSave={handleAddDueDate}
+            />
           )}
         </div>
 
@@ -540,4 +736,3 @@ else {
     )
   );
 }
-

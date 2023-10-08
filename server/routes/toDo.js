@@ -267,6 +267,21 @@ router.put(
       
 
       }
+      if(note==="REMOVENOTE"){
+
+        const updatedTodo = await ToDo.findByIdAndUpdate(
+          todoId,
+          { $unset: { note: true } },
+          { new: true}
+        )
+        if (!updatedTodo) {
+          return res.status(404).json({ error: "Todo not found" });
+        }
+        
+        return res.status(200).json({ message: "Note Cleared Successfully.", updatedTodo });
+      
+
+      }
 
       const updatedTodo = await ToDo.findByIdAndUpdate(
         todoId,
@@ -399,7 +414,7 @@ router.put(
 
       await todo.save();
 
-      res.status(200).json({ message: "Updated the Step Successfully." });
+      res.status(200).json({ message: "Updated the Step Successfully.",updatedTodoStep:newTodoStep });
     } catch (error) {
       res
         .status(500)

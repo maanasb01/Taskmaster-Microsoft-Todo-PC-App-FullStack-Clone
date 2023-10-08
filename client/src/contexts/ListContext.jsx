@@ -29,11 +29,13 @@ export const ListProvider = ({children}) => {
         fetchData();
     },[]);
 
+
 //Setting up the selected List Value
     const selectList = (listId)=>{
       console.log("selectList Running..")
       const listToSelect = lists.find(list=>list._id===listId);
       setSelectedList(listToSelect)
+      console.log("List selected")
     }
 
 //Add New List
@@ -54,6 +56,7 @@ export const ListProvider = ({children}) => {
     //setLists(lists.concat(newList));
     setLists([...lists,newList])
     setLatestListId(newList._id);
+    setSelectedList(newList._id)
     } catch (error) {
       console.error(error.message)
       
@@ -87,10 +90,12 @@ const editList = async (editedTitle, listId) => {
           return list;
         });
       });
+      // setTimeout(() => {
+        
+      // }, 1000);
       selectList(listId)
-
   
-      return true; // Indicate success
+      return newTitle; // Indicate success
     } catch (error) {
       // Handle fetch or parsing errors here
       console.error("Error editing list:", error);
