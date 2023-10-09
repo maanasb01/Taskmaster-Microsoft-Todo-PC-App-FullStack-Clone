@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useListContext } from "../contexts/ListContext";
 import addStepIcon from "../assets/addStep_icon.svg";
 import checkedCircleIcon from "../assets/checked_circle.svg";
@@ -443,7 +443,17 @@ export default function TodoSidebar() {
   useEffect(() => {
     if(selectedTodo){
       setInitialTitleValue(selectedTodo.title);
+      setTimeout(() => {
+        const scrollHeight = todoTitleRef.current.scrollHeight;
+      todoTitleRef.current.style.height = `${scrollHeight}px`;
+        
+      }, 0);
       if (selectedTodo.note) {
+        setTimeout(() => {
+          const scrollHeight = textAreaRef.current.scrollHeight;
+        textAreaRef.current.style.height = `${scrollHeight}px`;
+          
+        }, 0);
       setInitialNoteValue(selectedTodo.note);
       setNoteValue(selectedTodo.note);
     } else {
@@ -452,6 +462,15 @@ export default function TodoSidebar() {
   
   }
   }, [selectedTodo]);
+
+  // useLayoutEffect(()=>{
+  //   if(selectedTodo){
+  //     if(selectedTodo.note){
+  //       textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px";
+  //     }
+  //   }
+
+  // },[selectedTodo])
 
   //Setting Todos Steps
   useEffect(() => {
@@ -606,6 +625,12 @@ export default function TodoSidebar() {
 
   }
 
+  function todoTitleChange() {
+    todoTitleRef.current.style.height = "auto";
+    todoTitleRef.current.style.height = todoTitleRef.current.scrollHeight + "px";
+    setTodoTitle(todoTitleRef.current.value);
+  }
+
   return (
     selectedTodo && (
       <div
@@ -617,7 +642,7 @@ export default function TodoSidebar() {
           className="flex flex-col px-5 py-5 w-full h-full overflow-y-auto space-y-2"
         >
           <div id="title-steps" className="border p-3">
-            <div className="flex  ">
+            <div className="flex  w-full">
               <div onClick={() => handleOnCheck(selectedTodo)}>
                 {!selectedTodo.isCompleted ? (
                   <img
@@ -635,33 +660,25 @@ export default function TodoSidebar() {
                   />
                 )}
               </div>
-
-              {/* {!isTitleEditing ? (
-                <span
-                  className={`text-xl ${
-                    selectedTodo.isCompleted ? completedTodoStyle : ""
-                  }`}
-                >
-                  {selectedTodo.title}
-                </span>
-              ) : (
-                <form>
-                  <input type="text" />
-                </form>
-              )} */}
-
-              <div className="">
-                <input
+{/* Todo Title  */}
+              <div className="pb-3 w-full">
+                <textarea
                 typeof="text"
                 ref={todoTitleRef}
                 onKeyDown={(e)=>handleTitleChangeExitEvent(e)}
-                onChange={()=>setTodoTitle(todoTitleRef.current.value)}
+                onChange={todoTitleChange}
                 onBlur={handleTodoTitleChange}
-                  value={todoTitle??''}
-                  className={`text-xl w-full h-10 pb-4 bg-inherit outline-none resize-none overflow-hidden whitespace-nowrap overflow-ellipsis  ${selectedTodo.isCompleted ? completedTodoStyle : "font-semibold"}`}
+                value={todoTitle??''}
+                className={`text-xl  w-full pb-1 bg-inherit outline-none resize-none  ${selectedTodo.isCompleted ? completedTodoStyle : "font-semibold"}`}
+                // style={{height: scrollHeight+"px"}}
                 >
-                </input>
+                </textarea>
   
+              </div>
+              {/* Star Icon */}
+
+              <div className="cursor-pointer ml-auto pl-3 pt-1">
+                {(selectedTodo && selectedTodo.markedImp)?<img src={todoStarMarkedIcon} alt="" className="h-5 ml-1" />:<img src={todoStarIcon} alt="star todo"  className="h-5 ml-1" />}
               </div>
 
             </div>
@@ -716,7 +733,7 @@ export default function TodoSidebar() {
               onBlur={handleSaveNoteChanges}
               onChange={(e) => textAreaAdjust(e)}
               type="text"
-              className="bg-inherit w-full outline-none p-2 resize-none overflow-hidden"
+              className="bg-inherit w-full h-fit outline-none p-2 resize-none overflow-hidden"
               placeholder="Add a Note"
             />
           </div>
