@@ -1,5 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useListContext } from "../contexts/ListContext";
+import TodoStep, {AddStep} from "./TodoStep";
+
 import addStepIcon from "../assets/addStep_icon.svg";
 import checkedCircleIcon from "../assets/checked_circle.svg";
 import dotsOption from "../assets/dotsOption_icon.svg";
@@ -21,316 +23,7 @@ import dayjs from "dayjs";
 
 const host = "http://localhost:3000";
 
-function AddStep(props) {
-  const { setSteps, steps } = props;
 
-  const [isAddingStep, setIsAddingStep] = useState(false);
-  const stepInputRef = useRef(null);
-  const { selectedTodo, selectTodo } = useTodoContext();
-
-  const handleEscKeyPress = (event) => {
-    if (event.key === "Escape" && stepInputRef.current) {
-      stepInputRef.current.blur(); // Blur the input when "Esc" is pressed
-    }
-  };
-
-  useEffect(() => {
-    // Add event listener when the component mounts
-    window.addEventListener("keydown", handleEscKeyPress);
-
-    // Remove event listener when the component unmounts
-    return () => {
-      window.removeEventListener("keydown", handleEscKeyPress);
-    };
-  }, []);
-
-  function addStepOnClick() {
-    setIsAddingStep(true);
-
-    setTimeout(() => {
-      if (stepInputRef.current) {
-        stepInputRef.current.focus();
-      }
-    }, 0);
-  }
-
-  async function handleAddStep(e) {
-    e.preventDefault();
-
-    try {
-      const res = await fetch(`${host}/todo/${selectedTodo._id}/step`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: AUTH_TKN,
-        },
-        body: JSON.stringify({ stepTitle: stepInputRef.current.value }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        console.error(data.message);
-        return;
-      }
-
-      // setSteps([...steps, data]);
-      setSteps((prevSteps) => [...prevSteps, data]);
-
-      setIsAddingStep(false);
-      selectTodo(selectedTodo._id);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-  return (
-    <>
-      {isAddingStep ? (
-        <div className="flex items-center px-3 py-2">
-          <img src={cirlceIcon} alt="" className="h-5  mr-3" />
-
-          <div className="w-full">
-            <span className="text-sm ">
-              <form onSubmit={(e) => handleAddStep(e)}>
-                <input
-                  type="text"
-                  onBlur={() => setIsAddingStep(false)}
-                  ref={stepInputRef}
-                  className="outline-none h-full bg-inherit"
-                  placeholder="Add next step"
-                />
-              </form>
-            </span>
-          </div>
-        </div>
-      ) : (
-        <div
-          className="flex items-center px-3 py-2 cursor-text"
-          onClick={addStepOnClick}
-        >
-          <img src={addStepIcon} alt="" className="h-5  mr-3" />
-
-          <div className="w-full">
-            <span className="text-sm text-[#005fb8]">Add Step</span>
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
-
-function StepsMenu(props) {
-  const { thisStep, steps, setSteps, setIsMenuOpen, menuButtonRef } = props;
-  const menuRef = useRef(null);
-  const { selectedTodo, selectTodo } = useTodoContext();
-
-  useEffect(() => {
-    const handler = (e) => {
-      if (
-        !menuRef.current.contains(e.target) &&
-        !menuButtonRef.current.contains(e.target)
-      ) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    const escHandler = (e) => {
-      if (e.key === "Escape") {
-        setIsMenuOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handler);
-    document.addEventListener("keydown", escHandler);
-
-    // Remove event listener when the component unmounts
-    return () => {
-      document.removeEventListener("mousedown", handler);
-      document.removeEventListener("keydown", escHandler);
-    };
-  });
-
-  async function handleDeleteStep() {
-    try {
-      const res = await fetch(
-        `${host}/todo/${selectedTodo._id}/step/${thisStep._id}`,
-        {
-          method: "DELETE",
-          headers: {
-            authorization: AUTH_TKN,
-          },
-        }
-      );
-
-      if (!res.ok) {
-        console.error(data.message);
-        return;
-      }
-
-      setSteps(steps.filter((step) => step._id !== thisStep._id));
-      setIsMenuOpen(false);
-      selectTodo(selectedTodo._id);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  return (
-    <div
-      ref={menuRef}
-      className="border-2 absolute right-5 bg-white p-1 shadow-2xl"
-    >
-      <ul className="space-y-1">
-        <li>
-          <div className="flex items-center py-3 px-5 hover:bg-gray-100 cursor-pointer">
-            <img src={plusIcon} alt="" srcset="" className="h-4 mr-5 " />
-            <span>Promote to Tasks</span>
-          </div>
-        </li>
-        <div className="w-full h-[1px] bg-gray-300"></div>
-        <li>
-          <div
-            className="flex items-center py-3 px-5 hover:bg-gray-100 cursor-pointer"
-            onClick={handleDeleteStep}
-          >
-            <img src={deleteRedIcon} alt="" srcset="" className="h-5 mr-5 " />
-            <span className="text-red-600">Delete</span>
-          </div>
-        </li>
-      </ul>
-    </div>
-  );
-}
-
-function TodoStep(props) {
-  const { stepTitle, thisStep, steps, setSteps } = props;
-  const [isStepHovered, setIsStepHovered] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [title, setTitle] = useState(stepTitle);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const editInputref = useRef(null);
-  const menuButtonRef = useRef(null);
-  const { editTodoStep, selectedTodo, selectTodo, completedTodoStyle } =
-    useTodoContext();
-
-  useEffect(() => {
-    const handleEscKeyPress = (event) => {
-      if (event.key === "Escape") {
-        editInputref.current.blur(); // Blur the input when "Esc" is pressed
-      }
-    };
-    // Add event listener when the component mounts
-    window.addEventListener("keydown", handleEscKeyPress);
-
-    // Remove event listener when the component unmounts
-    return () => {
-      window.removeEventListener("keydown", handleEscKeyPress);
-    };
-  }, []);
-
-  function handleEditing() {
-    setIsEditing(true);
-
-    setTimeout(() => {
-      if (editInputref.current) {
-        editInputref.current.focus();
-        editInputref.current.select();
-      }
-    }, 0);
-  }
-
-  async function handleOnStepCheck() {
-    try {
-      const updatedTodoStep = await editTodoStep(
-        { isCompleted: `${!thisStep.isCompleted}` },
-        selectedTodo._id,
-        thisStep._id
-      );
-
-      // Only update the todos state if the updatedTodo is available
-      setSteps((prevTodoSteps) => {
-        return prevTodoSteps.map((todoStep) => {
-          if (todoStep._id === thisStep._id) {
-            return updatedTodoStep;
-          }
-          return todoStep;
-        });
-      });
-      selectTodo(selectedTodo._id);
-    } catch (error) {
-      console.error("Error updating todo Step:", error);
-    }
-  }
-
-  return (
-    <>
-      <div className="flex items-center  hover:bg-gray-100 px-3 py-2">
-        <div onClick={handleOnStepCheck}>
-          {thisStep.isCompleted ? (
-            <img src={checkedCircleIcon} alt="" className="h-5 mr-3" />
-          ) : (
-            <img
-              src={isStepHovered ? hoverCheckIcon : cirlceIcon}
-              alt=""
-              className="h-5  mr-3"
-              onMouseEnter={() => setIsStepHovered(true)}
-              onMouseLeave={() => setIsStepHovered(false)}
-            />
-          )}
-        </div>
-
-        <div className="w-full">
-          {isEditing ? (
-            <form>
-              <input
-                type="text"
-                ref={editInputref}
-                className="bg-inherit outline-none"
-                value={title}
-                onChange={() => setTitle(editInputref.current.value)}
-                onBlur={() => setIsEditing(false)}
-              />
-            </form>
-          ) : (
-            <div className="flex items-center ">
-              <label
-                className={`text-sm cursor-text ${
-                  thisStep.isCompleted ? completedTodoStyle : ""
-                }`}
-                onClick={handleEditing}
-              >
-                {stepTitle}
-              </label>
-              <div
-                className="h-8 w-8 mb-1 ml-auto hover:bg-gray-200 flex items-center"
-                ref={menuButtonRef}
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                <img
-                  src={dotsOption}
-                  alt=""
-                  srcset=""
-                  className="h-5 mx-auto cursor-pointer"
-                />
-              </div>
-            </div>
-          )}
-          <div className="w-full bg-slate-200 h-[1px] "></div>
-        </div>
-      </div>
-
-      {isMenuOpen && (
-        <StepsMenu
-          thisStep={thisStep}
-          steps={steps}
-          setSteps={setSteps}
-          setIsMenuOpen={setIsMenuOpen}
-          menuButtonRef={menuButtonRef}
-        />
-      )}
-    </>
-  );
-}
 
 function SidebarFooter() {
   const { selectedTodo, deleteTodo } = useTodoContext();
@@ -401,6 +94,7 @@ export default function TodoSidebar() {
     selectedTodo,
     completedTodoStyle,
     handleOnCheck,
+    handleToggleMarkedImp
   } = useTodoContext();
   const [isHovered, setIsHovered] = useState(false);
   const [steps, setSteps] = useState([]);
@@ -426,10 +120,10 @@ export default function TodoSidebar() {
   useEffect(() => {
     if (selectedTodo ) {
       console.log("inside setting calender styles")
-      if (selectedTodo.dueAt && dayjs(selectedTodo.dueAt) >= dayjs()) {
+      if (selectedTodo.dueAt && dayjs(selectedTodo.dueAt) >= dayjs().startOf('day')) {
         setDueDateStyle({ spanCSS: "text-[#005fb8]", icon: dueDateSetIcon });
         //cssObj.spanCss = "text-[#005fb8]"
-      } else if (selectedTodo.dueAt && dayjs(selectedTodo.dueAt) <= dayjs()) {
+      } else if (selectedTodo.dueAt && dayjs(selectedTodo.dueAt) < dayjs().startOf('day')) {
         //cssObj.spanCss = "text-red-700"
         setDueDateStyle({ spanCSS: "text-red-700", icon: dueDateSetRedIcon });
       } else {
@@ -444,33 +138,27 @@ export default function TodoSidebar() {
     if(selectedTodo){
       setInitialTitleValue(selectedTodo.title);
       setTimeout(() => {
-        const scrollHeight = todoTitleRef.current.scrollHeight;
-      todoTitleRef.current.style.height = `${scrollHeight}px`;
-        
+        todoTitleRef.current.style.height = "auto"
+          const scrollHeight = todoTitleRef.current.scrollHeight;
+          todoTitleRef.current.style.height = `${scrollHeight}px`;
       }, 0);
       if (selectedTodo.note) {
         setTimeout(() => {
-          const scrollHeight = textAreaRef.current.scrollHeight;
-        textAreaRef.current.style.height = `${scrollHeight}px`;
           
-        }, 0);
+          const scrollHeight = textAreaRef.current.scrollHeight;
+          textAreaRef.current.style.height = `${scrollHeight}px`;
+    
+  }, 0);
+  setNoteValue(selectedTodo.note);
       setInitialNoteValue(selectedTodo.note);
-      setNoteValue(selectedTodo.note);
+      
     } else {
       setNoteValue("");
+      textAreaRef.current.style.height = "auto";
     }
   
   }
   }, [selectedTodo]);
-
-  // useLayoutEffect(()=>{
-  //   if(selectedTodo){
-  //     if(selectedTodo.note){
-  //       textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px";
-  //     }
-  //   }
-
-  // },[selectedTodo])
 
   //Setting Todos Steps
   useEffect(() => {
@@ -661,7 +349,7 @@ export default function TodoSidebar() {
                 )}
               </div>
 {/* Todo Title  */}
-              <div className="pb-3 w-full">
+              <div className="pb-1 w-full">
                 <textarea
                 typeof="text"
                 ref={todoTitleRef}
@@ -670,14 +358,13 @@ export default function TodoSidebar() {
                 onBlur={handleTodoTitleChange}
                 value={todoTitle??''}
                 className={`text-xl  w-full pb-1 bg-inherit outline-none resize-none  ${selectedTodo.isCompleted ? completedTodoStyle : "font-semibold"}`}
-                // style={{height: scrollHeight+"px"}}
                 >
                 </textarea>
   
               </div>
               {/* Star Icon */}
 
-              <div className="cursor-pointer ml-auto pl-3 pt-1">
+              <div className="cursor-pointer ml-auto pl-3 pt-1" onClick={()=>handleToggleMarkedImp(selectedTodo)}>
                 {(selectedTodo && selectedTodo.markedImp)?<img src={todoStarMarkedIcon} alt="" className="h-5 ml-1" />:<img src={todoStarIcon} alt="star todo"  className="h-5 ml-1" />}
               </div>
 

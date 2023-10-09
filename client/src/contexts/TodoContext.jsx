@@ -139,6 +139,29 @@ export const TodoProvider = ({ children }) => {
     }
   }
 
+  //Toggle the Starred Todo
+  async function handleToggleMarkedImp(checkedTodo) {
+  
+    try {
+      
+      const updatedTodo = await editTodo({ markedImp: `${!checkedTodo.markedImp}` }, checkedTodo._id);
+      
+  
+      // Only update the todos state if the updatedTodo is available
+      setTodos((prevTodos) => {
+        return prevTodos.map((todo) => {
+          if (todo._id === checkedTodo._id) {
+            return updatedTodo;
+          }
+          return todo;
+        });
+      });
+      selectTodo(checkedTodo._id)
+    } catch (error) {
+      console.error("Error updating todo:", error);
+    }
+  }
+
 
   const editTodoStep = async (updatedBody,todoId,stepId) => {
     try {
@@ -166,7 +189,7 @@ export const TodoProvider = ({ children }) => {
   }
 
   return (
-    <TodoContext.Provider value={{ todos, setTodos, addTodo, deleteTodo, editTodo ,selectTodo,handleOnCheck,editTodoStep, selectedTodo, completedTodoStyle }}>
+    <TodoContext.Provider value={{ todos, setTodos, addTodo, deleteTodo, editTodo ,selectTodo,handleOnCheck,editTodoStep,handleToggleMarkedImp, selectedTodo, completedTodoStyle }}>
       {children}
     </TodoContext.Provider>
   );
