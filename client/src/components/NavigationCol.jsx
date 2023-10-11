@@ -35,12 +35,12 @@ function NewList() {
 }
 
 function SpecialListOption(props) {
-  const { icon, title } = props;
+  const { icon, title, onCLick } = props;
 
   return (
     <div
-      typeof="button"
       className="flex items-center h-10 p-3 rounded-sm hover:bg-slate-300 cursor-pointer"
+      onClick={onCLick}
     >
 
       <img src={icon} alt="" srcset="" className="h-6 pt-1" />
@@ -58,27 +58,10 @@ function ListOption(props) {
   const [listTitle, setTitle] = useState(title);
 
   const { editList,deleteList, latestListId,setLatestListId } = useListContext();
-  //const listRef = useRef(lists);
 
-  //const [listLength, setListLength] = useState(lists.length);
   const oldTitle = title;
 
   const inputref = useRef(null);
-
-  // let thisListIndex;
-  // let isLastList;
-
-  // thisListIndex = lists.findIndex((list) => list._id === listId);
-  // console.log("This is thisListIndex:  " + thisListIndex + "  " + title);
-
-  // isLastList =
-  //   thisListIndex === lists.length - 1 &&
-  //   listId === lists[lists.length - 1]?._id;
-  // console.log("This is isLastList:  " + isLastList + "  " + title);
-
-  // console.log(
-  //   "This is previous list length: " + listRef.current.length + "  " + title
-  // );
 
   // Function to handle "Esc" key press
   const handleEscKeyPress = (event) => {

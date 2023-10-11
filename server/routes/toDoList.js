@@ -1,8 +1,8 @@
 const express = require("express");
 const { body, param, validationResult } = require("express-validator");
 const tokenAuth = require("../middlewares/tokenAuth");
-const ToDoList = require("../models/ToDoList");
-const ToDo = require("../models/ToDo");
+const {ToDoList} = require("../models/ToDoList");
+const {ToDo} = require("../models/ToDo");
 const mongoose = require("mongoose");
 const { isValidObjectId } = mongoose;
 

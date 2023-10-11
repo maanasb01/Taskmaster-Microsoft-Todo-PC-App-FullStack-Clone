@@ -41,8 +41,15 @@ const toDoSchema = new Schema({
   markedImp: {
     type: Boolean,
     default: false
+  },
+  inMyDay: {
+    type: Boolean,
+    default: false
   }
 },
 {timestamps:true});
 
-module.exports = mongoose.model("toDos", toDoSchema);
+const ToDo = mongoose.model("toDos", toDoSchema);
+const Tasks = mongoose.model("tasksDefaultList", toDoSchema);
+
+module.exports = { ToDo, Tasks};
