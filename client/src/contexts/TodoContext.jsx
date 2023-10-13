@@ -11,7 +11,7 @@ export const useTodoContext = () => {
 };
 
 export const TodoProvider = ({ children }) => {
-  const { selectedList } = useListContext();
+  const { selectedList, defaultList, setDefaultList, getDefaultTasksList } = useListContext();
   const [todos, setTodos] = useState([]);
   const [selectedTodo, setSelectedTodo] = useState({});
   const completedTodoStyle = "line-through font-light";
@@ -40,8 +40,59 @@ export const TodoProvider = ({ children }) => {
     }
   };
 
-  const addTodo = async (title) => {
+  //Get all Todos of a Given list id
+
+  const getTodosData = async (listId) => {
     try {
+      const res = await fetch(`http://localhost:3000/todo/${listId}`, {
+        headers: {
+          authorization: AUTH_TKN,
+        },
+      });
+  
+      if (!res.ok) {
+        throw new Error(`Failed to fetch data. Status: ${res.status}`);
+      }
+  
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      console.error("Error in getTodosData:", error);
+      throw error; // Rethrow the error to propagate it up to the calling code.
+    }
+  };
+
+    //Get all Todos of a user irrespective of Id.
+
+    const getAllTodos = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/todo/`, {
+          headers: {
+            authorization: AUTH_TKN,
+          },
+        });
+    
+        if (!res.ok) {
+          throw new Error(`Failed to fetch data. Status: ${res.status}`);
+        }
+    
+        const data = await res.json();
+        return data;
+
+      } catch (error) {
+        console.error("Error in getAllTodos:", error);
+        throw error; // Rethrow the error to propagate it up to the calling code.
+      }
+    };
+  
+
+  const addTodo = async (title) => {
+
+    const defaultTasksList = await getDefaultTasksList();
+
+    if(!defaultList && selectedList){
+      try {
+
       const req = await fetch(`${host}/todo`, {
         method: "POST",
         headers: {
@@ -59,9 +110,90 @@ export const TodoProvider = ({ children }) => {
     } catch (error) {
       console.error(error.message);
     }
+  }
+
+    else if(defaultList==="Tasks"&&!selectedList){
+
+      try {
+
+        const req = await fetch(`${host}/todo`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: AUTH_TKN,
+            todolist: defaultTasksList._id,
+          },
+          body: JSON.stringify({ title }),
+        });
+        const newTodo = await req.json();
+        if (req.ok) {
+          setTodos([...todos, newTodo]);
+          return true;
+        }
+      } catch (error) {
+        console.error(error.message);
+      }
+
+    }
+    else if(defaultList==="MyDay"&&!selectedList){
+
+      try {
+
+        const req = await fetch(`${host}/todo`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: AUTH_TKN,
+            todolist: defaultTasksList._id,
+          },
+          body: JSON.stringify({ title,inMyDay:"true" }),
+        });
+        const newTodo = await req.json();
+        if (req.ok) {
+          setTodos([...todos, newTodo]);
+          return true;
+        }
+      } catch (error) {
+        console.error(error.message);
+      }
+
+    }
+    else if(defaultList==="Important"&&!selectedList){
+
+      try {
+
+        const req = await fetch(`${host}/todo`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: AUTH_TKN,
+            todolist: defaultTasksList._id,
+          },
+          body: JSON.stringify({ title,markedImp:"true" }),
+        });
+        const newTodo = await req.json();
+        if (req.ok) {
+          setTodos([...todos, newTodo]);
+          return true;
+        }
+      } catch (error) {
+        console.error(error.message);
+      }
+
+    }
+
+
   };
 
   const deleteTodo = async (todoId) =>{
+
+    let listToDeleteFrom;
+
+    if(selectedList && !defaultList){
+      listToDeleteFrom = selectedList;
+    }else if(!selectedList && defaultList){
+      listToDeleteFrom = await getDefaultTasksList();
+    }
 
     try {
       const res = await fetch(`http://localhost:3000/todo/${todoId}`,{
@@ -69,7 +201,7 @@ export const TodoProvider = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
           'authorization': AUTH_TKN,
-          todolist: selectedList._id,
+          todolist: listToDeleteFrom._id,
         }
       })
       if (!res.ok) {
@@ -145,6 +277,12 @@ export const TodoProvider = ({ children }) => {
     try {
       
       const updatedTodo = await editTodo({ markedImp: `${!checkedTodo.markedImp}` }, checkedTodo._id);
+
+      if(!updatedTodo.markedImp && defaultList==="Important"){
+        setTodos(todos.filter(todo=>todo._id !== updatedTodo._id));
+        setSelectedTodo(null);
+        return
+      }
       
   
       // Only update the todos state if the updatedTodo is available
@@ -189,7 +327,7 @@ export const TodoProvider = ({ children }) => {
   }
 
   return (
-    <TodoContext.Provider value={{ todos, setTodos, addTodo, deleteTodo, editTodo ,selectTodo,handleOnCheck,editTodoStep,handleToggleMarkedImp, selectedTodo, completedTodoStyle }}>
+    <TodoContext.Provider value={{ todos, setTodos, getTodosData,getAllTodos, addTodo, deleteTodo, editTodo ,selectTodo,handleOnCheck,editTodoStep,handleToggleMarkedImp, selectedTodo, completedTodoStyle }}>
       {children}
     </TodoContext.Provider>
   );

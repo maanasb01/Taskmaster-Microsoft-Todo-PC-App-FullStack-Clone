@@ -4,6 +4,8 @@ const User = require("../models/User");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const {ToDoList} = require("../models/ToDoList");
+const {ToDo} = require("../models/ToDo");
 
 const assignToken = (user) => {
   const data = {
@@ -39,7 +41,7 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-
+//would work even without it too cuz of mongoose unique property
     // const existingUser = await User.findOne({ email: req.body.email });
     // if (existingUser) {
     //     return res.status(400).json({ message: 'Email already exists' });
@@ -55,6 +57,16 @@ router.post(
         email: req.body.email,
         password: secPassword,
       });
+
+      // Create the default todo list for the user
+      const defaultTodoList = new ToDoList({
+        title: `Default Tasks List for user ${user._id}`,
+        user: user._id, // Link the list to the new user
+        isDefaultTasksList: true,
+      });
+
+      await defaultTodoList.save();
+
       const authtoken = assignToken(user);
       res.json({ authtoken });
       //res.json(user);

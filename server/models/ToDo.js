@@ -50,6 +50,4 @@ const toDoSchema = new Schema({
 {timestamps:true});
 
 const ToDo = mongoose.model("toDos", toDoSchema);
-const Tasks = mongoose.model("tasksDefaultList", toDoSchema);
-
-module.exports = { ToDo, Tasks};
+module.exports = { ToDo};

@@ -28,7 +28,7 @@ router.post(
 
     try {
       const todo = await ToDo.create({
-        title: req.body.title,
+        ...req.body,
         user: req.user.id,
         toDoList: req.headers.todolist,
       });
@@ -234,9 +234,9 @@ router.put(
     }
 
     const todoId = req.params.id;
-    const { title, note, dueAt, isCompleted, markedImp } = req.body;
+    const { title, note, dueAt, isCompleted, markedImp,inMyDay } = req.body;
 
-    if (!title && !note && !dueAt && !isCompleted && !markedImp) {
+    if (!title && !note && !dueAt && !isCompleted && !markedImp &&!inMyDay) {
       return res.status(400).json({ message: "No Things to Update" });
     }
 
@@ -257,6 +257,9 @@ router.put(
     }
     if (markedImp) {
       newTodo.markedImp = markedImp;
+    }
+    if (inMyDay) {
+      newTodo.inMyDay = inMyDay;
     }
 
     //This just checks whether the id is a MongoDB id or not. It checks a pattern. A wrong id which matches the pattern would also be accepted here.

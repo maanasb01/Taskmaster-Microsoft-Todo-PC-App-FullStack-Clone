@@ -26,7 +26,7 @@ router.post("/new", tokenAuth, async (req, res) => {
 router.get("/lists", tokenAuth, async (req, res) => {
 
   try {
-    const todoLists = await ToDoList.find({ user: req.user.id });
+    const todoLists = await ToDoList.find({ user: req.user.id, isDefaultTasksList:false });
     if(todoLists===null){
       res.status(500).json({message:"Internal Server Error"})
     }
@@ -34,6 +34,25 @@ router.get("/lists", tokenAuth, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.sendStatus(500);
+  }
+});
+
+//Get all info of default list 
+router.get("/tasks", tokenAuth, async (req, res) => {
+
+  try {
+    
+    // const userId = mongoose.Types.ObjectId(req.user.id);
+    const defaultList = await ToDoList.findOne({isDefaultTasksList:true,user:req.user.id})
+    if(!defaultList){
+      return res.status(404).json({message:"List not Found"})
+    }
+    // if(defaultList.user.toString() !== req.user.id){
+    //   return res.status(403).json({message:"Forbidden"})
+    // }
+    res.json(defaultList);
+  } catch (error) {
+    res.status(500).json({message:"Internal Server Error",error:error.message});
   }
 });
 
@@ -81,6 +100,9 @@ router.delete("/delete/:id", tokenAuth, async (req, res) => {
     if (!list) {
       return res.status(404).json({ error: "List not found" });
     }
+    if (list.isDefaultTasksList) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
 
     if(list.user.toString() !== req.user.id){
       return res.status(403).json({message:"Forbidden"})
@@ -88,11 +110,11 @@ router.delete("/delete/:id", tokenAuth, async (req, res) => {
 
     await ToDo.deleteMany({ _id: { $in: list.toDos } });
 
-    await ToDoList.findByIdAndDelete(listId);
+    const deletedList = await ToDoList.findByIdAndDelete(listId);
 
     await session.commitTransaction();
     session.endSession();
-    res.status(200).json({ message: "Deleted Successfully." });
+    res.status(200).json({ message: "Deleted Successfully.",deletedList });
   } catch (error) {
     console.error(error);
     res

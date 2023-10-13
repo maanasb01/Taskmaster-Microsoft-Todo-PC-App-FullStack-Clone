@@ -8,6 +8,7 @@ import plusIcon from "../assets/plus_icon.svg";
 import folderIcon from "../assets/folder_icon.svg";
 import deleteIcon from "../assets/delete_icon.svg";
 import { useListContext } from "../contexts/ListContext";
+import { useTodoContext } from "../contexts/TodoContext";
 
 
 //Component for new list
@@ -25,22 +26,22 @@ function NewList() {
             <img src={plusIcon} alt="" className="h-6 pt-1 mr-3" />
             <span>New List</span>
           </div>
-          <div className="w-14 h-full  flex items-center rounded-md hover:bg-slate-300 cursor-pointer">
+          {/* <div className="w-14 h-full  flex items-center rounded-md hover:bg-slate-300 cursor-pointer">
             <img src={folderIcon} alt="" className="h-6 pt-1 mx-auto" />
-          </div>
+          </div> */}
         </div>
       </div>
     </>
   );
 }
 
-function SpecialListOption(props) {
-  const { icon, title, onCLick } = props;
+function DefaultListOption(props) {
+  const { icon, title, onClick } = props;
 
   return (
     <div
       className="flex items-center h-10 p-3 rounded-sm hover:bg-slate-300 cursor-pointer"
-      onClick={onCLick}
+      onClick={onClick}
     >
 
       <img src={icon} alt="" srcset="" className="h-6 pt-1" />
@@ -135,6 +136,13 @@ function ListOption(props) {
       }
     }, 0);
   }
+
+  function handleDeleteList(e){
+
+    e.stopPropagation();
+
+    deleteList(listId);
+  }
   return (
     <>
       {isEditing ? (
@@ -167,8 +175,8 @@ function ListOption(props) {
           >
             {listTitle}
           </span>
-          <div className="ml-auto rounded-full w-7 h-7 hover:bg-slate-400 active:bg-[#fafafa]" onClick={()=>deleteList(listId)}>
-          <img src={deleteIcon} alt="" srcset="" className="h-6 pt-1 mx-auto" />
+          <div className="ml-auto rounded-full w-7 h-7 hover:bg-slate-200 active:bg-[#fafafa]" onClick={(e)=>handleDeleteList(e)}>
+          <img src={deleteIcon} alt="Delete List"  className="h-6 pt-1 mx-auto" />
           </div>
         </div>
       )}
@@ -177,7 +185,96 @@ function ListOption(props) {
 }
 
 export default function NavigationCol() {
-  const { lists, selectList } = useListContext();
+  const { lists, selectList, setSelectedList, selectedListName, setSelectedListName, getDefaultTasksList,defaultList, setDefaultList } = useListContext();
+  const { todos, setTodos, getTodosData,getAllTodos, addTodo, deleteTodo, editTodo ,selectTodo,handleOnCheck,editTodoStep,handleToggleMarkedImp, selectedTodo, completedTodoStyle } = useTodoContext();
+  const [listsToDisplay, setListsToDisplay] =useState([]);
+
+  useEffect(()=>{
+    
+    if(lists){
+      setListsToDisplay(lists)
+    }
+
+  },[lists])
+
+
+async function handleMyDayDefaultList(){
+
+
+  try {
+    const allTodos = await getAllTodos();
+    const myDayTodos = allTodos.filter(todo=>todo.inMyDay===true);
+    setTodos(myDayTodos);
+    setSelectedList(null);
+    setSelectedListName("My Day");
+    setDefaultList("MyDay")
+    
+  } catch (error) {
+
+    console.error(error.message);
+    
+  }
+
+}
+async function handleImportantDefaultList(){
+
+  try {
+    const allTodos = await getAllTodos();
+    const importantTodos = allTodos.filter(todo=>todo.markedImp===true);
+    setTodos(importantTodos);
+    setSelectedList(null);
+    setSelectedListName("Important");
+    setDefaultList("Important")
+    
+  } catch (error) {
+
+    console.error(error.message);
+    
+  }
+
+
+}
+async function handlePlannedDefaultList(){
+
+  try {
+    const allTodos = await getAllTodos();
+    const dueTodos = allTodos.filter(todo=>todo.dueAt);
+    setTodos(dueTodos);
+    setSelectedList(null);
+    setSelectedListName("Planned");
+    setDefaultList("Planned")
+    
+  } catch (error) {
+
+    console.error(error.message);
+    
+  }
+
+
+}
+async function handleTasksDefaultList(){
+
+  try {
+    const defaultTasksList = await getDefaultTasksList();
+    console.log(defaultTasksList)
+    const tasksTodos = await getTodosData(defaultTasksList._id)
+    setTodos(tasksTodos);
+    setSelectedList(null);
+    setSelectedListName("Tasks");
+    setDefaultList("Tasks")
+    
+  } catch (error) {
+
+    console.error(error.message);
+    
+  }
+}
+
+function handleSelectList(listId){
+
+  setDefaultList(null);
+  selectList(listId);
+}
 
   return (
     <>
@@ -206,10 +303,10 @@ export default function NavigationCol() {
             id="keyOptions"
             className="w-full py-3 flex flex-col px-1 space-y-1"
           >
-            <SpecialListOption icon={sunIcon} title="My Day" />
-            <SpecialListOption icon={starIcon} title="Important" />
-            <SpecialListOption icon={calendarIcon} title="Planned" />
-            <SpecialListOption icon={tasksIcon} title="Tasks" />
+            <DefaultListOption icon={sunIcon} title="My Day" onClick={handleMyDayDefaultList}/>
+            <DefaultListOption icon={starIcon} title="Important" onClick={handleImportantDefaultList}/>
+            <DefaultListOption icon={calendarIcon} title="Planned" onClick={handlePlannedDefaultList}/>
+            <DefaultListOption icon={tasksIcon} title="Tasks" onClick={handleTasksDefaultList}/>
           </div>
 
           <div
@@ -218,17 +315,22 @@ export default function NavigationCol() {
           ></div>
 
           <div id="customLists" className=" px-1 pb-1  ">
-            {lists &&
-              lists.map((list, index) => {
-                return (
-                  <ListOption
-                    icon={list.icon ? list.icon : listIcon}
-                    title={list.title}
-                    key={index}
-                    selectList={() => selectList(list._id)}
-                    listId={list._id}
-                  />
-                );
+            {listsToDisplay &&
+              listsToDisplay.map((list) => {
+                if(list){
+
+                  return (
+                  
+                      <ListOption
+                        icon={listIcon}
+                        title={list.title}
+                        key={list._id}
+                        selectList={()=>handleSelectList(list._id)}
+                        listId={list._id}
+                      />
+                    
+                  );
+                }
               })}
           </div>
         </div>
@@ -240,3 +342,4 @@ export default function NavigationCol() {
     </>
   );
 }
+

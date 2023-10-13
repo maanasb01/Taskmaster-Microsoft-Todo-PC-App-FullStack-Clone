@@ -77,7 +77,7 @@ function TodoComponent(props) {
 
   return (
     <div
-      className={`bg-[#e1e0e0] flex items-center  px-2 w-5/6 mx-auto h-14 rounded-md hover:bg-[#f6f6f6] cursor-default`}
+      className={`bg-[#f6f6f6] flex items-center  px-2 w-5/6 mx-auto h-14 rounded-md hover:bg-[#e1e0e0] cursor-default`}
       onClick={onSelect}
     >
       <div onClick={() => handleOnCheck(thisTodo)}>
@@ -109,7 +109,7 @@ function TodoComponent(props) {
       </span>
 
       <div
-        className="cursor-pointer ml-auto mr-1 pt-1"
+        className="cursor-pointer ml-auto mr-1 pt-1 bg-inherit"
         onClick={() => handleToggleMarkedImp(thisTodo)}
       >
         {thisTodo && thisTodo.markedImp ? (
@@ -123,47 +123,40 @@ function TodoComponent(props) {
 }
 
 export default function TodosDisplay() {
-  const { selectedList, lists } = useListContext();
-  const { todos, setTodos, addTodo, selectTodo, selectedTodo } =
+  const { selectedList, lists,selectedListName, setSelectedListName,defaultList } = useListContext();
+  const { todos, setTodos, addTodo, selectTodo, selectedTodo, getTodosData } =
     useTodoContext();
   const [listTitle, setListTitle] = useState("");
   const [isCompletedTaskOpen, setIsCompletedTaskOpen] = useState(true)
 
-  const getTodosData = async (url) => {
-    const res = await fetch(url, {
-      headers: {
-        authorization: AUTH_TKN,
-      },
-    });
-    const data = await res.json();
 
-    return data;
-  };
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (selectedList) {
-        setListTitle(selectedList.title);
-        console.log("list Title updated: " + listTitle);
-      } else {
-        setListTitle("Select a List to Get its Tasks");
-      }
-    }, 0);
-  }, [selectedList, lists]);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     if (selectedList) {
+  //       setSelectedListName(selectedList.title);
+  //       console.log("list Title updated: " + listTitle);
+  //     } else {
+  //       setSelectedListName("Select a List to Get its Tasks");
+  //     }
+  //   }, 0);
+  // }, [selectedList, lists]);
 
   useEffect(() => {
     // setTimeout(() => {
 
     // }, 0);
     if (selectedList) {
+      console.log("inside UseEffect")
       const getTodos = async () => {
-        const fetchedTodos = await getTodosData(
-          `http://localhost:3000/todo/${selectedList._id}`
-        );
+        const fetchedTodos = await getTodosData(selectedList._id);
         setTodos(fetchedTodos);
       };
 
       getTodos();
+    }else{
+      console.log("Selected List is Null")
+      return
     }
   }, [selectedList]);
 
@@ -173,10 +166,8 @@ export default function TodosDisplay() {
         <div className="w-8/12 mx-auto relative">
           <div className=" mx-5  h-1/6 bg-[#5c70be] flex items-center">
             <span className="text-white text-3xl overflow-hidden whitespace-nowrap overflow-ellipsis">
-              {/* {(selectedList && selectedList.title)
-                ? selectedList.title
-                : "Select a List to Display its Tasks"} */}
-              {listTitle}
+              {selectedListName??"Select a List to Display its Tasks"}
+          
             </span>
           </div>
           <div className="w-full h-4/6 bg-[#5c70be] overflow-y-auto space-y-1">
@@ -230,7 +221,7 @@ export default function TodosDisplay() {
             ) : null}
           </div>
 
-          <AddTask onSubmit={addTodo} />
+          {defaultList!=="Planned"?<AddTask onSubmit={addTodo}/>:null}
         </div>
         {/* //The sidebar for Todo */}
         <TodoSidebar />

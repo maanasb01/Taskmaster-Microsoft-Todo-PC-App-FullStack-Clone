@@ -16,10 +16,11 @@ const listSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "toDos"
   }],
-  starred: {
+
+  isDefaultTasksList:{
     type: Boolean,
-    default: false,
-  },
+    default: false
+  }
 }, { timestamps: true });
 
 // Create separate models for to-do lists

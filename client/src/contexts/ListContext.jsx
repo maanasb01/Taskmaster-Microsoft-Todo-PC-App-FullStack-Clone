@@ -7,18 +7,33 @@ export const useListContext = () => {
     return useContext(ListContext);
 };
 
-async function getLists(url){
-  const response = await fetch(url,{ headers:{
-      'authorization': AUTH_TKN
-    }});
-  let data = await response.json();
-  return data
+async function getLists(url) {
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'authorization': AUTH_TKN
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Request failed with status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(`Error in getLists: ${error.message}`);
   }
+}
+
 
 export const ListProvider = ({children}) => {
     const [lists,setLists] = useState([]);
     const [selectedList, setSelectedList] = useState(null);
-    const [latestListId,setLatestListId] = useState(null)
+    const [latestListId,setLatestListId] = useState(null);
+    const [selectedListName, setSelectedListName] = useState("")
+    const [defaultList, setDefaultList] = useState(null);
+    /**MyDay, Important, Planned, Tasks */
 
     useEffect( ()=> {
         //fetch Lists
@@ -32,11 +47,34 @@ export const ListProvider = ({children}) => {
 
 //Setting up the selected List Value
     const selectList = (listId)=>{
-      console.log("selectList Running..")
+   
       const listToSelect = lists.find(list=>list._id===listId);
-      setSelectedList(listToSelect)
-      console.log("List selected")
+      setSelectedList(listToSelect);
+      setSelectedListName(listToSelect.title);
+
     }
+
+// Get the default Tasks List
+async function getDefaultTasksList() {
+  try {
+    const response = await fetch("http://localhost:3000/todolist/tasks", {
+      headers: {
+        'authorization': AUTH_TKN
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Request failed with status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+  
+    console.error(`Error in getLists: ${error.message}`);
+  }
+}
+
 
 //Add New List
    const addNewList = async (title)=>{
@@ -94,6 +132,7 @@ const editList = async (editedTitle, listId) => {
         
       // }, 1000);
       selectList(listId)
+      setSelectedListName(newTitle);
   
       return newTitle; // Indicate success
     } catch (error) {
@@ -119,11 +158,17 @@ const editList = async (editedTitle, listId) => {
         throw new Error(`Failed to Delete the List (status ${res.status})`);
       }
 
-      if(res.ok){
-        setLists(lists.filter(list=> (list._id!==listId)))
+      const data = await res.json();
+      const deletedList = data.deletedList;
+      const updatedList = lists.filter(list=> (list._id!==deletedList._id));
+
+      setLists(updatedList);
+      if(deletedList._id === selectedList._id){
+        setSelectedList(null)
+        setSelectedListName(null)
+        console.log("DONE")
       }
-  
-      
+
     } catch (error) {
       console.error("Error deleting the list:", error);
       
@@ -132,8 +177,11 @@ const editList = async (editedTitle, listId) => {
   }
 
 
+  
+
+
     return (
-        <ListContext.Provider value={{lists,selectedList, selectList,addNewList, editList , deleteList ,latestListId,setLatestListId}}>
+        <ListContext.Provider value={{lists,selectedList, setSelectedList,getDefaultTasksList, selectList,addNewList, editList , deleteList ,latestListId,setLatestListId, selectedListName, setSelectedListName, defaultList, setDefaultList}}>
             {children}
         </ListContext.Provider>
     )
