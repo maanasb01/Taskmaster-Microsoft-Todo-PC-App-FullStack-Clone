@@ -80,7 +80,7 @@ function TodoComponent(props) {
       className={`bg-[#f6f6f6] flex items-center  px-2 w-5/6 mx-auto h-14 rounded-md hover:bg-[#e1e0e0] cursor-default`}
       onClick={onSelect}
     >
-      <div onClick={() => handleOnCheck(thisTodo)}>
+      <div onClick={() => handleOnCheck(thisTodo)} className="">
         {!thisTodo.isCompleted ? (
           <img
             src={isHovered ? hoverCheckIcon : cirlceIcon}

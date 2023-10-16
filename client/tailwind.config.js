@@ -5,7 +5,11 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily:{
+        popins:["Poppins","ui-sans-serif", "system-ui", "-apple-system"]
+      }
+    },
   },
   plugins: [],
 }

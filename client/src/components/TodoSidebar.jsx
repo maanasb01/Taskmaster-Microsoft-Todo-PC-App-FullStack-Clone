@@ -86,7 +86,7 @@ function SidebarFooter() {
 }
 
 export default function TodoSidebar() {
-  const { selectedList } = useListContext();
+  const { selectedList, defaultList, setDefaultList } = useListContext();
   const {
     todos,
     setTodos,
@@ -94,6 +94,7 @@ export default function TodoSidebar() {
     addTodo,
     selectTodo,
     selectedTodo,
+    setSelectedTodo,
     completedTodoStyle,
     handleOnCheck,
     handleToggleMarkedImp
@@ -215,7 +216,7 @@ export default function TodoSidebar() {
 
   async function handleRemoveDate(e) {
     e.stopPropagation();
-    console.log("Hi from remove date!");
+
 
     try {
       const updatedTodo = await editTodo(
@@ -340,6 +341,12 @@ export default function TodoSidebar() {
         { inMyDay: 'false' },
         selectedTodo._id
       );
+
+      if(!updatedTodo.inMyDay && defaultList==="MyDay"){
+        setTodos(todos.filter(todo=>todo._id !== updatedTodo._id));
+        setSelectedTodo(null);
+        return
+      }
 
       // Only update the todos state if the updatedTodo is available
       setTodos((prevTodos) => {

@@ -44,7 +44,7 @@ function DefaultListOption(props) {
       onClick={onClick}
     >
 
-      <img src={icon} alt="" srcset="" className="h-6 pt-1" />
+      <img src={icon} alt=""   className="h-6 pt-1" />
       <span className="ml-4 overflow-hidden whitespace-nowrap overflow-ellipsis">
         {title}
       </span>
@@ -168,7 +168,7 @@ function ListOption(props) {
           onClick={selectList}
         >
           {" "}
-          <img src={icon} alt="" srcset="" className="h-6 pt-1" />{" "}
+          <img src={icon} alt=""   className="h-6 pt-1" />{" "}
           <span
             className="ml-4 overflow-hidden whitespace-nowrap overflow-ellipsis"
             onDoubleClick={handleOnEditing}
