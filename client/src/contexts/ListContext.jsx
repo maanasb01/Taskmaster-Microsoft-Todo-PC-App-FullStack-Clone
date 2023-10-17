@@ -10,9 +10,10 @@ export const useListContext = () => {
 async function getLists(url) {
   try {
     const response = await fetch(url, {
-      headers: {
-        'authorization': AUTH_TKN
-      }
+      // headers: {
+      //   'authorization': AUTH_TKN
+      // }
+      credentials: 'include'
     });
 
     if (!response.ok) {

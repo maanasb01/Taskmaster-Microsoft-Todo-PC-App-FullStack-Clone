@@ -22,8 +22,7 @@ function LandingPage() {
 
 
         <Navbar />
-        <Home />
-        {/* <Login /> */}
+        <Signup/>
     </>
   );
 }

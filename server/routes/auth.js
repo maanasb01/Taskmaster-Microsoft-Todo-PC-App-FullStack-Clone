@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const {ToDoList} = require("../models/ToDoList");
 const {ToDo} = require("../models/ToDo");
+const tokenAuth = require("../middlewares/tokenAuth");
 
 const assignToken = (user) => {
   const data = {
@@ -20,7 +21,7 @@ const assignToken = (user) => {
   return authtoken;
 };
 
-//Create a User using: POST "/api/auth/createuser". No Login required.
+//Create a User using: POST "/auth/createuser". No Login required.
 router.post(
   "/createuser",
   [
@@ -35,7 +36,6 @@ router.post(
       ),
   ],
   async (req, res) => {
-    console.log(req.body);
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -67,8 +67,11 @@ router.post(
 
       await defaultTodoList.save();
 
-      const authtoken = assignToken(user);
-      res.json({ authtoken });
+      const authToken = assignToken(user);
+      res.cookie('authToken', authToken, {
+        expires: new Date(Date.now()+ 15*60*60*1000),
+        httpOnly: true
+      }).json({ authToken,success:true });
       //res.json(user);
     } catch (error) {
       if (error.name === "MongoServerError" && error.code === 11000) {
@@ -76,12 +79,13 @@ router.post(
         return res.status(400).json({
           message: "Email already exists. Please enter a different email.",
           error: error.message,
+          success: false
         });
       } else {
         console.error(error);
         res
           .status(500)
-          .json({ message: "Internal server error", message: error.message });
+          .json({ message: "Internal server error", error: error.message, success:false });
       }
     }
   }
@@ -97,7 +101,7 @@ router.post(
     //check for errors in the request with express-validator.
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(404).json({ error: errors.array() });
+      return res.status(404).json({ error: errors.array(),success:false });
     }
 
     try {
@@ -112,22 +116,39 @@ router.post(
           );
 
           if (passwordMatch) {
-            const authtoken = assignToken(user);
-            return res.json({ authtoken });
+            const authToken = assignToken(user);
+            return res.cookie('authToken', authToken, {
+              expires: new Date(Date.now()+ 15*60*60*1000),
+              httpOnly: true
+            }).json({ authToken,success:true });
           } else {
-            return res.status(500).json({ message: "Internal Server Error." });
+            return res.status(500).json({ message: "Please Enter Valid Credentials",success:false });
           }
         } catch (error) {
           console.log(error);
-          res.status(401).json({ message: "Please Enter Valid Credentials." });
+          res.status(401).json({ message: "Please Enter Valid Credentials.",success:false });
         }
       } else {
-        res.status(401).json({ message: "Please Enter Valid Credentials." });
+        res.status(401).json({ message: "Please Enter Valid Credentials.",success:false });
       }
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error." });
+      res.status(500).json({ message: "Internal Server Error.",success:false });
     }
   }
 );
+
+//Logout Route
+
+router.get("/logout",tokenAuth, (req, res) => {
+  try {
+    
+    res.clearCookie('authToken');
+    res.status(200).json({ message: "Logged out successfully",success:true });
+    
+  } catch (error) {
+    res.status(500).json({message:"Internal Server Error.", success:false})
+    
+  }
+});
 
 module.exports = router;
