@@ -9,7 +9,12 @@ import folderIcon from "../assets/folder_icon.svg";
 import deleteIcon from "../assets/delete_icon.svg";
 import { useListContext } from "../contexts/ListContext";
 import { useTodoContext } from "../contexts/TodoContext";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { Navigate, redirect, redirectDocument, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
+const host = "http://localhost:3000";
 
 //Component for new list
 function NewList() {
@@ -43,8 +48,7 @@ function DefaultListOption(props) {
       className="flex items-center h-10 p-3 rounded-sm hover:bg-slate-300 cursor-pointer"
       onClick={onClick}
     >
-
-      <img src={icon} alt=""   className="h-6 pt-1" />
+      <img src={icon} alt="" className="h-6 pt-1" />
       <span className="ml-4 overflow-hidden whitespace-nowrap overflow-ellipsis">
         {title}
       </span>
@@ -58,7 +62,8 @@ function ListOption(props) {
 
   const [listTitle, setTitle] = useState(title);
 
-  const { editList,deleteList, latestListId,setLatestListId } = useListContext();
+  const { editList, deleteList, latestListId, setLatestListId } =
+    useListContext();
 
   const oldTitle = title;
 
@@ -68,14 +73,12 @@ function ListOption(props) {
   const handleEscKeyPress = (event) => {
     if (event.key === "Escape") {
       inputref.current.blur(); // Blur the input when "Esc" is pressed
-      
     }
   };
 
   useEffect(() => {
     // Add event listener when the component mounts
     window.addEventListener("keydown", handleEscKeyPress);
-    
 
     // Remove event listener when the component unmounts
     return () => {
@@ -85,10 +88,9 @@ function ListOption(props) {
 
   useEffect(() => {
     // const prevList = listRef.current;
-    
+
     //latestListId === listId && lists.length === prevList.length --- previous condition
     if (latestListId === listId) {
-      
       //setIsEditing(true);
       setLatestListId(null);
       handleOnEditing();
@@ -98,10 +100,10 @@ function ListOption(props) {
   async function handleNameChange(e) {
     e.preventDefault();
     const editedTitle = inputref.current.value;
-  
+
     try {
       const editedListTitle = await editList(editedTitle, listId);
-  
+
       // Check if the edit was successful
       if (editedListTitle) {
         setIsEditing(false);
@@ -110,7 +112,7 @@ function ListOption(props) {
       } else {
         setTitle(oldTitle);
         setIsEditing(false);
-        alert("Something went wrong while updating the Title.")
+        alert("Something went wrong while updating the Title.");
       }
     } catch (error) {
       // Handle errors here, e.g., display an error message
@@ -137,8 +139,7 @@ function ListOption(props) {
     }, 0);
   }
 
-  function handleDeleteList(e){
-
+  function handleDeleteList(e) {
     e.stopPropagation();
 
     deleteList(listId);
@@ -168,15 +169,22 @@ function ListOption(props) {
           onClick={selectList}
         >
           {" "}
-          <img src={icon} alt=""   className="h-6 pt-1" />{" "}
+          <img src={icon} alt="" className="h-6 pt-1" />{" "}
           <span
             className="ml-4 overflow-hidden whitespace-nowrap overflow-ellipsis"
             onDoubleClick={handleOnEditing}
           >
             {listTitle}
           </span>
-          <div className="ml-auto rounded-full w-7 h-7 hover:bg-slate-200 active:bg-[#fafafa]" onClick={(e)=>handleDeleteList(e)}>
-          <img src={deleteIcon} alt="Delete List"  className="h-6 pt-1 mx-auto" />
+          <div
+            className="ml-auto rounded-full w-7 h-7 hover:bg-slate-200 active:bg-[#fafafa]"
+            onClick={(e) => handleDeleteList(e)}
+          >
+            <img
+              src={deleteIcon}
+              alt="Delete List"
+              className="h-6 pt-1 mx-auto"
+            />
           </div>
         </div>
       )}
@@ -185,96 +193,135 @@ function ListOption(props) {
 }
 
 export default function NavigationCol() {
-  const { lists, selectList, setSelectedList, selectedListName, setSelectedListName, getDefaultTasksList,defaultList, setDefaultList } = useListContext();
-  const { todos, setTodos, getTodosData,getAllTodos, addTodo, deleteTodo, editTodo ,selectTodo,handleOnCheck,editTodoStep,handleToggleMarkedImp, selectedTodo, completedTodoStyle } = useTodoContext();
-  const [listsToDisplay, setListsToDisplay] =useState([]);
+  const {
+    lists,
+    selectList,
+    setSelectedList,
+    selectedListName,
+    setSelectedListName,
+    getDefaultTasksList,
+    defaultList,
+    setDefaultList,
+  } = useListContext();
+  const {
+    todos,
+    setTodos,
+    getTodosData,
+    getAllTodos,
+    addTodo,
+    deleteTodo,
+    editTodo,
+    selectTodo,
+    handleOnCheck,
+    editTodoStep,
+    handleToggleMarkedImp,
+    selectedTodo,
+    completedTodoStyle,
+  } = useTodoContext();
+  
+  const {user, setUser} = useAuth();
 
-  useEffect(()=>{
-    
-    if(lists){
-      setListsToDisplay(lists)
+  const [listsToDisplay, setListsToDisplay] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const navigate = useNavigate();
+
+  const open = Boolean(anchorEl);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  useEffect(() => {
+    if (lists) {
+      setListsToDisplay(lists);
     }
+  }, [lists]);
 
-  },[lists])
-
-
-async function handleMyDayDefaultList(){
-
-
-  try {
-    const allTodos = await getAllTodos();
-    const myDayTodos = allTodos.filter(todo=>todo.inMyDay===true);
-    setTodos(myDayTodos);
-    setSelectedList(null);
-    setSelectedListName("My Day");
-    setDefaultList("MyDay")
-    
-  } catch (error) {
-
-    console.error(error.message);
-    
+  async function handleMyDayDefaultList() {
+    try {
+      const allTodos = await getAllTodos();
+      const myDayTodos = allTodos.filter((todo) => todo.inMyDay === true);
+      setTodos(myDayTodos);
+      setSelectedList(null);
+      setSelectedListName("My Day");
+      setDefaultList("MyDay");
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+  async function handleImportantDefaultList() {
+    try {
+      const allTodos = await getAllTodos();
+      const importantTodos = allTodos.filter((todo) => todo.markedImp === true);
+      setTodos(importantTodos);
+      setSelectedList(null);
+      setSelectedListName("Important");
+      setDefaultList("Important");
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+  async function handlePlannedDefaultList() {
+    try {
+      const allTodos = await getAllTodos();
+      const dueTodos = allTodos.filter((todo) => todo.dueAt);
+      setTodos(dueTodos);
+      setSelectedList(null);
+      setSelectedListName("Planned");
+      setDefaultList("Planned");
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+  async function handleTasksDefaultList() {
+    try {
+      const defaultTasksList = await getDefaultTasksList();
+      console.log(defaultTasksList);
+      const tasksTodos = await getTodosData(defaultTasksList._id);
+      setTodos(tasksTodos);
+      setSelectedList(null);
+      setSelectedListName("Tasks");
+      setDefaultList("Tasks");
+    } catch (error) {
+      console.error(error.message);
+    }
   }
 
-}
-async function handleImportantDefaultList(){
-
-  try {
-    const allTodos = await getAllTodos();
-    const importantTodos = allTodos.filter(todo=>todo.markedImp===true);
-    setTodos(importantTodos);
-    setSelectedList(null);
-    setSelectedListName("Important");
-    setDefaultList("Important")
-    
-  } catch (error) {
-
-    console.error(error.message);
-    
+  function handleSelectList(listId) {
+    setDefaultList(null);
+    selectList(listId);
   }
 
+  async function handleLogout() {
 
-}
-async function handlePlannedDefaultList(){
-
-  try {
-    const allTodos = await getAllTodos();
-    const dueTodos = allTodos.filter(todo=>todo.dueAt);
-    setTodos(dueTodos);
-    setSelectedList(null);
-    setSelectedListName("Planned");
-    setDefaultList("Planned")
+    try {
+      const response = await fetch(`${host}/auth/logout`,{
+        method:"GET",
+        credentials: 'include',
+      });
+      const data = await response.json();
     
-  } catch (error) {
+      if (response.ok) {
+          
+          if(data.success){
 
-    console.error(error.message);
+              setUser(null)
+              navigate("/login",{replace: true});
+          }
+
+        } else {
+          console.error(data.message);
+          
+        }
+      } catch (error) {
+        console.error("An error occurred while logging out:", error.message);
+      }
+    };
+
     
-  }
-
-
-}
-async function handleTasksDefaultList(){
-
-  try {
-    const defaultTasksList = await getDefaultTasksList();
-    console.log(defaultTasksList)
-    const tasksTodos = await getTodosData(defaultTasksList._id)
-    setTodos(tasksTodos);
-    setSelectedList(null);
-    setSelectedListName("Tasks");
-    setDefaultList("Tasks")
-    
-  } catch (error) {
-
-    console.error(error.message);
-    
-  }
-}
-
-function handleSelectList(listId){
-
-  setDefaultList(null);
-  selectList(listId);
-}
 
   return (
     <>
@@ -283,30 +330,69 @@ function handleSelectList(listId){
         className="bg-[#fafafa] w-3/12  h-full flex flex-col  relative "
       >
         <div id="profile" className="w-full p-3 flex">
-          <div className="rounded-3xl h-16 w-16 bg-slate-500">MB</div>
-          <div className="mr-auto my-auto pl-5">
-            <span className="text-2xl font-semibold">Maanas Bhardwaj</span>
-            <div className="text-gray-600">maanas@gmail</div>
+          <div
+            className="rounded-3xl h-16 w-16 min-w-[4rem] bg-slate-500 cursor-pointer text-white flex items-center justify-center text-4xl"
+            onClick={handleMenuOpen}
+          >
+            {user.name.trim().split()[0][0].toUpperCase()}
+          </div>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleMenuClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+            <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          </Menu>
+          <div className="mr-auto my-auto w-full px-3 flex flex-col overflow-hidden whitespace-nowrap overflow-ellipsis">
+            <span className="text-xl font-semibold overflow-hidden whitespace-nowrap overflow-ellipsis">{user.name.trim()}</span>
+            <div className="text-gray-600 text-sm overflow-hidden whitespace-nowrap overflow-ellipsis">{user.email}</div>
           </div>
         </div>
 
-        <div id="search" className="w-full p-3">
+        {/* <div id="search" className="w-full p-3">
           <input
             type="text"
             className="bg-white  outline-none w-full rounded-sm p-1 px-2 border border-b-2 border-b-gray-400 focus:border-b-blue-900"
             placeholder="Search"
           />
-        </div>
+        </div> */}
+
+        <div
+          id="separatingDiv"
+          className="mx-1 mb-2  border-b-[1px] border-slate-400 "
+        ></div>
 
         <div className="overflow-y-auto h-full">
           <div
             id="keyOptions"
             className="w-full py-3 flex flex-col px-1 space-y-1"
           >
-            <DefaultListOption icon={sunIcon} title="My Day" onClick={handleMyDayDefaultList}/>
-            <DefaultListOption icon={starIcon} title="Important" onClick={handleImportantDefaultList}/>
-            <DefaultListOption icon={calendarIcon} title="Planned" onClick={handlePlannedDefaultList}/>
-            <DefaultListOption icon={tasksIcon} title="Tasks" onClick={handleTasksDefaultList}/>
+            <DefaultListOption
+              icon={sunIcon}
+              title="My Day"
+              onClick={handleMyDayDefaultList}
+            />
+            <DefaultListOption
+              icon={starIcon}
+              title="Important"
+              onClick={handleImportantDefaultList}
+            />
+            <DefaultListOption
+              icon={calendarIcon}
+              title="Planned"
+              onClick={handlePlannedDefaultList}
+            />
+            <DefaultListOption
+              icon={tasksIcon}
+              title="Tasks"
+              onClick={handleTasksDefaultList}
+            />
           </div>
 
           <div
@@ -317,18 +403,15 @@ function handleSelectList(listId){
           <div id="customLists" className=" px-1 pb-1  ">
             {listsToDisplay &&
               listsToDisplay.map((list) => {
-                if(list){
-
+                if (list) {
                   return (
-                  
-                      <ListOption
-                        icon={listIcon}
-                        title={list.title}
-                        key={list._id}
-                        selectList={()=>handleSelectList(list._id)}
-                        listId={list._id}
-                      />
-                    
+                    <ListOption
+                      icon={listIcon}
+                      title={list.title}
+                      key={list._id}
+                      selectList={() => handleSelectList(list._id)}
+                      listId={list._id}
+                    />
                   );
                 }
               })}
@@ -342,4 +425,3 @@ function handleSelectList(listId){
     </>
   );
 }
-

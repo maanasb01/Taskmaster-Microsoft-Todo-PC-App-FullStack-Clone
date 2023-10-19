@@ -71,7 +71,7 @@ router.post(
       res.cookie('authToken', authToken, {
         expires: new Date(Date.now()+ 15*60*60*1000),
         httpOnly: true
-      }).json({ authToken,success:true });
+      }).json({ authToken,success:true,user });
       //res.json(user);
     } catch (error) {
       if (error.name === "MongoServerError" && error.code === 11000) {
@@ -119,8 +119,9 @@ router.post(
             const authToken = assignToken(user);
             return res.cookie('authToken', authToken, {
               expires: new Date(Date.now()+ 15*60*60*1000),
+              // expires: new Date(Date.now()+ 15*1000),
               httpOnly: true
-            }).json({ authToken,success:true });
+            }).json({ authToken,success:true,user });
           } else {
             return res.status(500).json({ message: "Please Enter Valid Credentials",success:false });
           }

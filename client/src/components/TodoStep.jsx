@@ -52,6 +52,7 @@ export function AddStep(props) {
     try {
       const res = await fetch(`${host}/todo/${selectedTodo._id}/step`, {
         method: "POST",
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json",
           authorization: AUTH_TKN,
@@ -149,6 +150,7 @@ function StepsMenu(props) {
         `${host}/todo/${selectedTodo._id}/step/${thisStep._id}`,
         {
           method: "DELETE",
+          credentials: 'include',
           headers: {
             authorization: AUTH_TKN,
           },

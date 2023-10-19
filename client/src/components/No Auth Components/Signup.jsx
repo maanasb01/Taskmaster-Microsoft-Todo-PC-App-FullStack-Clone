@@ -3,6 +3,8 @@ import { Input, Button } from "@material-tailwind/react";
 import { ThemeProvider } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import textFieldTheme from "./textFieldTheme";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function Signup() {
   const [fullName, setFullName] = useState("");
@@ -11,6 +13,8 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
+  const {setUser} = useAuth();
 
   useEffect(() => {
     if (!fullName && !email && !password && !confirmPassword) {
@@ -62,7 +66,8 @@ export default function Signup() {
     return emailRegex.test(email);
   };
 
-  const handleRegister = async () => {
+  const handleRegister = async (e) => {
+    e.preventDefault();
     if (
       fullName.trim() === "" ||
       email.trim() === "" ||
@@ -93,17 +98,21 @@ export default function Signup() {
     try {
       const response = await fetch("http://localhost:3000/auth/createuser", {
         method: "POST",
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name: fullName, email, password }),
+        body: JSON.stringify({ name: fullName.trim(), email:email.trim(), password:password.trim() }),
       });
 
       if (response.ok) {
         const data = await response.json();
         if (data.success) {
+          console.log("signup successful")
           setSuccess("Registration successful!");
-          setError(""); // Clear any previous error
+          setError("");
+          setUser(data.user); 
+          navigate("/app",{replace: true});
         } else {
           setError(data.message);
           setSuccess("");
@@ -122,15 +131,17 @@ export default function Signup() {
   return (
     <>
       <div className="h-full flex flex-col items-center justify-center">
-        <p className="font-popins text-4xl md:text-4xl font-semibold text-gray-200 mb-8 mt-2">
+        <p className="font-popins text-4xl md:text-4xl font-semibold text-gray-200 mb-3 mt-2">
           Sign Up
         </p>
         <div className="h-3 mb-8">
-          {error && <p className="text-red-500 p-2 text-xs md:text-base">* {error}</p>}
+          {error && (
+            <p className="text-red-500 p-2 text-xs md:text-base">* {error}</p>
+          )}
           {success && <p className="text-white">* {success}</p>}
         </div>
         <ThemeProvider theme={textFieldTheme}>
-          <form className="w-full">
+          <form className="w-full" onSubmit={(e)=>handleRegister(e)}>
             <div className="flex flex-col space-y-6 items-center mx-auto w-3/6 md:w-2/6">
               <TextField
                 variant="standard"
@@ -168,19 +179,22 @@ export default function Signup() {
                   // validatePasswords(e); // Real-time validation
                 }}
               />
-              <button  type="submit" className="text-white bg-[#444684] px-4 py-2 rounded-lg text-lg hover:bg-[#4a4c8f]">
-              Register
-            </button>
-            <div className="flex flex-col items-center space-y-2 ">
-              <p className="text-gray-200">New User?</p>
-              <button className="bg-gray-300 px-4 py-2 rounded-md ">
-                Login Here
+              <button
+                type="submit"
+                className="text-white bg-[#444684] px-4 py-2 rounded-lg text-lg hover:bg-[#4a4c8f]"
+              >
+                Register
               </button>
             </div>
-         
-            </div>
           </form>
-          <div className="h-2"></div>
+              <div className="flex flex-col items-center space-y-2 mt-5">
+              <p className="text-gray-200">Already Registered?</p>
+              <Link to={'/login'}>
+                <button className="bg-gray-200 hover:bg-gray-100 px-4 py-2 rounded-md">
+                  Login Here
+                </button>
+              </Link>
+            </div>
         </ThemeProvider>
       </div>
     </>

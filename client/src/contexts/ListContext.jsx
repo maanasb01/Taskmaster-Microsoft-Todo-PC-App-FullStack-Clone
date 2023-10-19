@@ -59,6 +59,7 @@ export const ListProvider = ({children}) => {
 async function getDefaultTasksList() {
   try {
     const response = await fetch("http://localhost:3000/todolist/tasks", {
+      credentials: 'include',
       headers: {
         'authorization': AUTH_TKN
       }
@@ -82,6 +83,7 @@ async function getDefaultTasksList() {
     try {
       const res = await fetch("http://localhost:3000/todolist/new",{
     method: "POST",
+    credentials: 'include',
     headers:{
         'Content-Type': 'application/json',
         'authorization': AUTH_TKN,   
@@ -107,6 +109,7 @@ const editList = async (editedTitle, listId) => {
     try {
       const res = await fetch(`http://localhost:3000/todolist/updatetitle/${listId}`, {
         method: "PATCH",
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           'authorization': AUTH_TKN,
@@ -150,6 +153,7 @@ const editList = async (editedTitle, listId) => {
     try {
       const res = await fetch(`http://localhost:3000/todolist/delete/${listId}`,{
         method:"DELETE",
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           'authorization': AUTH_TKN,

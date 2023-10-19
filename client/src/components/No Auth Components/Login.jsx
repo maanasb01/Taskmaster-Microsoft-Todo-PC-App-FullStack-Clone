@@ -3,6 +3,8 @@ import { useState } from "react";
 import {ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import textFieldTheme from "./textFieldTheme";
+import { Link, Navigate, redirect, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 
 export default function Login() {
@@ -10,6 +12,12 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error,setError] = useState("");
   const [success, setSuccess] = useState("");
+  const {setUser} = useAuth();
+  const {user} = useAuth();
+  
+
+  const navigate = useNavigate();
+
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -58,9 +66,13 @@ export default function Login() {
 
       if (response.ok) {
         const data = await response.json();
+
         if (data.success) {
           setSuccess("Login successful!");
-          setError(""); 
+          setError("");
+          setUser(data.user); 
+          navigate("/app",{replace: true});
+
         } else {
           setError(data.message);
           setSuccess("");
@@ -78,8 +90,8 @@ export default function Login() {
 
   return (
     <>
-      <div className="h-full flex flex-col items-center justify-center">
-        <p className="font-popins text-4xl md:text-5xl font-semibold text-gray-200 mb-14 mt-20">LogIn</p>
+      {<div className="h-full flex flex-col items-center justify-center">
+        <p className="font-popins text-4xl md:text-5xl font-semibold text-gray-200 mb-3 mt-20">LogIn</p>
         
         <div className="h-3 mb-8">
           {error && <p className="text-red-500 p-2">* {error}</p>}
@@ -95,7 +107,7 @@ export default function Login() {
               label="Email"
               value={email}
               onChange={handleEmailChange}
-              className="w-full"
+              className="w-full bg-[#6063B1]"
               />
             <TextField
               variant="standard"
@@ -108,16 +120,18 @@ export default function Login() {
             <button  type="submit" className="text-white bg-[#444684] px-4 py-2 rounded-lg text-lg hover:bg-[#4a4c8f]">
               Login
             </button>
-            <div className="flex flex-col items-center space-y-2 ">
-              <p className="text-gray-200">New User?</p>
-              <button className="bg-gray-300 px-4 py-2 rounded-md">
-                Register Here
-              </button>
-            </div>
           </div>
         </form>
+            <div className="flex flex-col items-center space-y-2 mt-5">
+              <p className="text-gray-200">New User?</p>
+              <Link to={'/signup'}>
+                <button className="bg-gray-200 hover:bg-gray-100 px-4 py-2 rounded-md">
+                  Register Here
+                </button>
+              </Link>
+            </div>
               </ThemeProvider>
-      </div>
+      </div>}
     </>
   );
 }

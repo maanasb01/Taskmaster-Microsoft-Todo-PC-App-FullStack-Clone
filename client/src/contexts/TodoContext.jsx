@@ -20,6 +20,7 @@ export const TodoProvider = ({ children }) => {
   const selectTodo = async (todoId) => {
     try {
       const res = await fetch(`${host}/todo/info/${todoId}`, {
+        credentials: 'include',
         headers: {
           authorization: AUTH_TKN,
         },
@@ -41,6 +42,7 @@ export const TodoProvider = ({ children }) => {
   const getTodosData = async (listId) => {
     try {
       const res = await fetch(`http://localhost:3000/todo/${listId}`, {
+        credentials: 'include',
         headers: {
           authorization: AUTH_TKN,
         },
@@ -86,6 +88,7 @@ export const TodoProvider = ({ children }) => {
       try {
         const req = await fetch(`${host}/todo`, {
           method: "POST",
+          credentials: 'include',
           headers: {
             "Content-Type": "application/json",
             authorization: AUTH_TKN,
@@ -107,6 +110,7 @@ export const TodoProvider = ({ children }) => {
       try {
         const req = await fetch(`${host}/todo`, {
           method: "POST",
+          credentials: 'include',
           headers: {
             "Content-Type": "application/json",
             authorization: AUTH_TKN,
@@ -127,6 +131,7 @@ export const TodoProvider = ({ children }) => {
       try {
         const req = await fetch(`${host}/todo`, {
           method: "POST",
+          credentials: 'include',
           headers: {
             "Content-Type": "application/json",
             authorization: AUTH_TKN,
@@ -147,6 +152,7 @@ export const TodoProvider = ({ children }) => {
       try {
         const req = await fetch(`${host}/todo`, {
           method: "POST",
+          credentials: 'include',
           headers: {
             "Content-Type": "application/json",
             authorization: AUTH_TKN,
@@ -177,6 +183,7 @@ export const TodoProvider = ({ children }) => {
     try {
       const res = await fetch(`http://localhost:3000/todo/${todoId}`, {
         method: "DELETE",
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json",
           authorization: AUTH_TKN,
@@ -201,6 +208,7 @@ export const TodoProvider = ({ children }) => {
     try {
       const res = await fetch(`${host}/todo/${todoId}`, {
         method: "PUT",
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json",
           authorization: AUTH_TKN,
@@ -281,6 +289,7 @@ export const TodoProvider = ({ children }) => {
     try {
       const res = await fetch(`${host}/todo/${todoId}/step/${stepId}`, {
         method: "PUT",
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json",
           authorization: AUTH_TKN,
