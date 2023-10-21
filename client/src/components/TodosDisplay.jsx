@@ -6,6 +6,8 @@ import checkedCircleIcon from "../assets/checked_circle.svg";
 import hoverCheckIcon from "../assets/hover_check_circle.svg";
 import cirlceIcon from "../assets/circle_icon.svg";
 import deleteIcon from "../assets/delete_icon.svg";
+import listIconWhite from "../assets/list_icon_white.svg";
+import listIcon from "../assets/list_icon.svg";
 import dropdownArrow from "../assets/dropdownArrow_icon.svg";
 import todoStarIcon from "../assets/todoStar_icon.svg";
 import todoStarMarkedIcon from "../assets/todoStarMarked_icon.svg";
@@ -109,8 +111,11 @@ function TodoComponent(props) {
       </span>
 
       <div
-        className="cursor-pointer ml-auto mr-1 pt-1 bg-inherit"
-        onClick={() => handleToggleMarkedImp(thisTodo)}
+        className="cursor-pointer ml-auto mr-1 pt-1 bg-inherit h-7 w-7"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleToggleMarkedImp(thisTodo);
+        }}
       >
         {thisTodo && thisTodo.markedImp ? (
           <img src={todoStarMarkedIcon} alt="" className="h-5 ml-1" />
@@ -123,13 +128,19 @@ function TodoComponent(props) {
 }
 
 export default function TodosDisplay() {
-  const { selectedList, lists,selectedListName, setSelectedListName,defaultList } = useListContext();
+  const {
+    selectedList,
+    lists,
+    selectedListName,
+    setSelectedListName,
+    defaultList,
+    setIsNavColOpen,
+    isNavColOpen,
+  } = useListContext();
   const { todos, setTodos, addTodo, selectTodo, selectedTodo, getTodosData } =
     useTodoContext();
   const [listTitle, setListTitle] = useState("");
-  const [isCompletedTaskOpen, setIsCompletedTaskOpen] = useState(true)
-
-
+  const [isCompletedTaskOpen, setIsCompletedTaskOpen] = useState(true);
 
   // useEffect(() => {
   //   setTimeout(() => {
@@ -147,30 +158,47 @@ export default function TodosDisplay() {
 
     // }, 0);
     if (selectedList) {
-      console.log("inside UseEffect")
       const getTodos = async () => {
         const fetchedTodos = await getTodosData(selectedList._id);
         setTodos(fetchedTodos);
       };
 
       getTodos();
-    }else{
-      console.log("Selected List is Null")
-      return
+    } else {
+      console.log("Selected List is Null");
+      return;
     }
   }, [selectedList]);
 
   return (
     <>
-      <div id="display" className="bg-[#5c70be] w-10/12   flex">
-        <div className="w-8/12 mx-auto relative">
-          <div className=" mx-5  h-1/6 bg-[#5c70be] flex items-center">
+      <div id="display" className="bg-[#5c70be] w-full flex">
+        <div
+          className={`w-full mx-auto relative ${
+            selectedTodo ? "hidden" : ""} md:block `}
+        >
+
+{/* <div className={` ${selectedTodo ? 'w-full' : 'w-full'} relative mx-auto transition-width duration-300`}> */}
+
+          {/* Nav Toggle */}
+          <div className="px-3 pt-5  lg:hidden">
+            <img
+              src={listIconWhite}
+              alt="toggle"
+              className="h-6 cursor-pointer"
+              onClick={() => setIsNavColOpen(!isNavColOpen)}
+            />
+          </div>
+          {/* List Name */}
+          <div className=" w-5/6 mx-auto h-[10%] lg:h-1/6 bg-[#5c70be] flex items-center">
             <span className="text-white text-3xl overflow-hidden whitespace-nowrap overflow-ellipsis">
-              {selectedListName??"Select a List to Display its Tasks"}
-          
+              {selectedListName
+                ? selectedListName
+                : "Select a List to Display its Tasks"}
             </span>
           </div>
-          <div className="w-full h-4/6 bg-[#5c70be] overflow-y-auto space-y-1">
+
+          <div className="w-full h-[70%] md:h-[72%] lg:h-[70%] xl:h-4/6 2xl:h-[74%] bg-[#5c70be] overflow-y-auto space-y-1">
             <div className="w-full  bg-[#5c70be] space-y-1">
               {todos && todos.length !== 0 && todos.map ? (
                 todos.map((todo, index) => {
@@ -186,8 +214,10 @@ export default function TodosDisplay() {
                   }
                 })
               ) : (
-                <p className="mx-5 text-2xl text-slate-100">
-                  Add Your Tasks Here...
+                <p className="w-5/6 mx-auto text-2xl text-slate-100">
+                  {defaultList && defaultList === "Planned"
+                    ? "Your Tasks with Due Date Appear here..."
+                    : "Add Your Tasks Here..."}
                 </p>
               )}
             </div>
@@ -197,13 +227,27 @@ export default function TodosDisplay() {
             todos.map &&
             todos.some((todo) => todo.isCompleted) ? (
               <div id="completedTasks" className="w-full ">
-                  <div className="w-5/6 mx-auto mt-4">
-                    <div className="  border bg-gray-300 rounded-md w-fit p-2 flex items-center cursor-pointer" onClick={()=>setIsCompletedTaskOpen(!isCompletedTaskOpen)}>
-                      <img src={dropdownArrow} alt="" className={`h-5 transition-transform ${isCompletedTaskOpen?"":"rotate-180"}`}  />
-                      <span>Completed</span>
-                    </div>
-                    </div>
-                <div id="completedTasksContainer" className={`space-y-1 mt-1 ${isCompletedTaskOpen?"":"hidden"}`}>
+                <div className="w-5/6 mx-auto mt-4">
+                  <div
+                    className="  border bg-gray-300 rounded-md w-fit p-2 flex items-center cursor-pointer"
+                    onClick={() => setIsCompletedTaskOpen(!isCompletedTaskOpen)}
+                  >
+                    <img
+                      src={dropdownArrow}
+                      alt=""
+                      className={`h-5 transition-transform ${
+                        isCompletedTaskOpen ? "" : "rotate-180"
+                      }`}
+                    />
+                    <span>Completed</span>
+                  </div>
+                </div>
+                <div
+                  id="completedTasksContainer"
+                  className={`space-y-1 mt-1 ${
+                    isCompletedTaskOpen ? "" : "hidden"
+                  }`}
+                >
                   {todos.map((todo, index) => {
                     if (todo.isCompleted) {
                       return (
@@ -221,10 +265,21 @@ export default function TodosDisplay() {
             ) : null}
           </div>
 
-          {defaultList!=="Planned"?<AddTask onSubmit={addTodo}/>:null}
+          {defaultList !== "Planned" ? <AddTask onSubmit={addTodo} /> : null}
         </div>
         {/* //The sidebar for Todo */}
-        <TodoSidebar />
+        {/* <div
+          id="todo-sidebar-wrapper"
+          className={`w-full h-full  md:w-[75%] xl:w-[52%] flex transition-transform duration-300 ${
+            selectedTodo
+              ? "transform translate-x-0"
+              : "transform translate-x-full"
+          }`}
+        > */}
+
+<div id="todo-sidebar-wrapper" className={` ${selectedTodo ? 'w-full md:w-[75%] xl:w-[52%]' : 'w-0'} duration-300`}>
+          <TodoSidebar />
+        </div>
       </div>
     </>
   );

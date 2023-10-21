@@ -32,7 +32,8 @@ export const ListProvider = ({children}) => {
     const [lists,setLists] = useState([]);
     const [selectedList, setSelectedList] = useState(null);
     const [latestListId,setLatestListId] = useState(null);
-    const [selectedListName, setSelectedListName] = useState("")
+    const [selectedListName, setSelectedListName] = useState("");
+    const [isNavColOpen, setIsNavColOpen] = useState(true);
     const [defaultList, setDefaultList] = useState(null);
     /**MyDay, Important, Planned, Tasks */
 
@@ -186,7 +187,7 @@ const editList = async (editedTitle, listId) => {
 
 
     return (
-        <ListContext.Provider value={{lists,selectedList, setSelectedList,getDefaultTasksList, selectList,addNewList, editList , deleteList ,latestListId,setLatestListId, selectedListName, setSelectedListName, defaultList, setDefaultList}}>
+        <ListContext.Provider value={{lists,selectedList, setSelectedList,getDefaultTasksList, selectList,addNewList, editList , deleteList ,latestListId,setLatestListId, selectedListName, setSelectedListName, defaultList, setDefaultList,isNavColOpen, setIsNavColOpen}}>
             {children}
         </ListContext.Provider>
     )

@@ -11,7 +11,12 @@ import { useListContext } from "../contexts/ListContext";
 import { useTodoContext } from "../contexts/TodoContext";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { Navigate, redirect, redirectDocument, useNavigate } from "react-router-dom";
+import {
+  Navigate,
+  redirect,
+  redirectDocument,
+  useNavigate,
+} from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 const host = "http://localhost:3000";
@@ -171,7 +176,7 @@ function ListOption(props) {
           {" "}
           <img src={icon} alt="" className="h-6 pt-1" />{" "}
           <span
-            className="ml-4 overflow-hidden whitespace-nowrap overflow-ellipsis"
+            className="ml-4 overflow-hidden whitespace-nowrap overflow-ellipsis cursor-text"
             onDoubleClick={handleOnEditing}
           >
             {listTitle}
@@ -202,6 +207,8 @@ export default function NavigationCol() {
     getDefaultTasksList,
     defaultList,
     setDefaultList,
+    isNavColOpen,
+    setIsNavColOpen,
   } = useListContext();
   const {
     todos,
@@ -217,13 +224,18 @@ export default function NavigationCol() {
     handleToggleMarkedImp,
     selectedTodo,
     completedTodoStyle,
+    setSelectedTodo,
   } = useTodoContext();
-  
-  const {user, setUser} = useAuth();
+
+  const { user, setUser } = useAuth();
 
   const [listsToDisplay, setListsToDisplay] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
+
   const navigate = useNavigate();
+
+  const navColRef = useRef(null);
+  const navToggleBtnRef = useRef(null);
 
   const open = Boolean(anchorEl);
 
@@ -240,6 +252,52 @@ export default function NavigationCol() {
     }
   }, [lists]);
 
+  //Close navbar when medium screens 
+
+  const navColCloseHandler = (e) => {
+    if(window.innerWidth>767 && window.innerWidth<1024){
+
+    if (
+      !navColRef.current.contains(e.target) &&
+      !navToggleBtnRef.current.contains(e.target)
+    ) {
+      setIsNavColOpen(false);
+    }    
+  }
+  }
+  useEffect(()=>{
+
+      document.addEventListener("mousedown", navColCloseHandler);
+      document.addEventListener("resize", navColCloseHandler);
+      return () => {
+      document.removeEventListener("mousedown", navColCloseHandler);
+      document.addEventListener("resize", navColCloseHandler);
+    };
+ 
+  },[]);
+
+  //Set the navbar state to true automatically when window gets resize
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsNavColOpen(true);
+      }
+    };
+
+    // Initial check
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+
+  
+
   async function handleMyDayDefaultList() {
     try {
       const allTodos = await getAllTodos();
@@ -248,6 +306,10 @@ export default function NavigationCol() {
       setSelectedList(null);
       setSelectedListName("My Day");
       setDefaultList("MyDay");
+      setSelectedTodo(null);
+      if(window.innerWidth<1024){
+      setIsNavColOpen(false);
+    }
     } catch (error) {
       console.error(error.message);
     }
@@ -260,6 +322,10 @@ export default function NavigationCol() {
       setSelectedList(null);
       setSelectedListName("Important");
       setDefaultList("Important");
+      setSelectedTodo(null);
+      if(window.innerWidth<1024){
+      setIsNavColOpen(false);
+    }
     } catch (error) {
       console.error(error.message);
     }
@@ -272,6 +338,10 @@ export default function NavigationCol() {
       setSelectedList(null);
       setSelectedListName("Planned");
       setDefaultList("Planned");
+      setSelectedTodo(null);
+      if(window.innerWidth<1024){
+      setIsNavColOpen(false);
+    }
     } catch (error) {
       console.error(error.message);
     }
@@ -285,141 +355,165 @@ export default function NavigationCol() {
       setSelectedList(null);
       setSelectedListName("Tasks");
       setDefaultList("Tasks");
+      setSelectedTodo(null);
+      if(window.innerWidth<1024){
+      setIsNavColOpen(false);
+    }
     } catch (error) {
       console.error(error.message);
     }
   }
 
   function handleSelectList(listId) {
+    setSelectedTodo(null);
     setDefaultList(null);
     selectList(listId);
+    
+    if(window.innerWidth<1024){
+      setIsNavColOpen(false);
+    }
   }
 
   async function handleLogout() {
-
     try {
-      const response = await fetch(`${host}/auth/logout`,{
-        method:"GET",
-        credentials: 'include',
+      const response = await fetch(`${host}/auth/logout`, {
+        method: "GET",
+        credentials: "include",
       });
       const data = await response.json();
-    
+
       if (response.ok) {
-          
-          if(data.success){
-
-              setUser(null)
-              navigate("/login",{replace: true});
-          }
-
-        } else {
-          console.error(data.message);
-          
+        if (data.success) {
+          setUser(null);
+          navigate("/login", { replace: true });
         }
-      } catch (error) {
-        console.error("An error occurred while logging out:", error.message);
+      } else {
+        console.error(data.message);
       }
-    };
-
-    
+    } catch (error) {
+      console.error("An error occurred while logging out:", error.message);
+    }
+  }
 
   return (
     <>
       <div
         id="nav"
-        className="bg-[#fafafa] w-3/12  h-full flex flex-col  relative "
+        ref= {navColRef}
+        // className={`bg-[#fafafa] w-[100%] md:w-[50%] lg:w-[30%] h-full fixed z-10 top-0 left-0 lg:static   ${
+        //   isNavColOpen ? "" : "hidden"}`}
+        className={`bg-[#fafafa] w-[100%] md:w-[50%] lg:w-[30%] h-full fixed z-10 top-0 lg:static transition-transform duration-300 ${
+          isNavColOpen ? "transform translate-x-0" : "transform -translate-x-full"
+        }`}
       >
-        <div id="profile" className="w-full p-3 flex">
+        <div id="nav-col-wrapper" className="h-full flex flex-col relative">
+          {/* {Toggle Button} */}
           <div
-            className="rounded-3xl h-16 w-16 min-w-[4rem] bg-slate-500 cursor-pointer text-white flex items-center justify-center text-4xl"
-            onClick={handleMenuOpen}
+            className="px-3 pt-2 text-xl lg:hidden"
+            
           >
-            {user.name.trim().split()[0][0].toUpperCase()}
+            <img src={listIcon} ref={navToggleBtnRef} alt="toggle" className="h-6 cursor-pointer" onClick={() => setIsNavColOpen(!isNavColOpen)} />
           </div>
-          <Menu
-            id="basic-menu"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleMenuClose}
-            MenuListProps={{
-              "aria-labelledby": "basic-button",
-            }}
-          >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
-          </Menu>
-          <div className="mr-auto my-auto w-full px-3 flex flex-col overflow-hidden whitespace-nowrap overflow-ellipsis">
-            <span className="text-xl font-semibold overflow-hidden whitespace-nowrap overflow-ellipsis">{user.name.trim()}</span>
-            <div className="text-gray-600 text-sm overflow-hidden whitespace-nowrap overflow-ellipsis">{user.email}</div>
+
+          <div className="font-popins px-3 pt-2 text-xl text-slate-700  font-bold">
+            Taskmaster
           </div>
-        </div>
-
-        {/* <div id="search" className="w-full p-3">
-          <input
-            type="text"
-            className="bg-white  outline-none w-full rounded-sm p-1 px-2 border border-b-2 border-b-gray-400 focus:border-b-blue-900"
-            placeholder="Search"
-          />
-        </div> */}
-
-        <div
-          id="separatingDiv"
-          className="mx-1 mb-2  border-b-[1px] border-slate-400 "
-        ></div>
-
-        <div className="overflow-y-auto h-full">
-          <div
-            id="keyOptions"
-            className="w-full py-3 flex flex-col px-1 space-y-1"
-          >
-            <DefaultListOption
-              icon={sunIcon}
-              title="My Day"
-              onClick={handleMyDayDefaultList}
-            />
-            <DefaultListOption
-              icon={starIcon}
-              title="Important"
-              onClick={handleImportantDefaultList}
-            />
-            <DefaultListOption
-              icon={calendarIcon}
-              title="Planned"
-              onClick={handlePlannedDefaultList}
-            />
-            <DefaultListOption
-              icon={tasksIcon}
-              title="Tasks"
-              onClick={handleTasksDefaultList}
-            />
+          <div id="profile" className="w-full p-3 flex">
+            <div
+              className="rounded-3xl h-16 w-16 min-w-[4rem] bg-slate-500 cursor-pointer text-white flex items-center justify-center text-4xl"
+              onClick={handleMenuOpen}
+            >
+              {user.name.trim().split()[0][0].toUpperCase()}
+            </div>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleMenuClose}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+            >
+              <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+              <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            </Menu>
+            <div className="mr-auto my-auto w-full px-3 flex flex-col overflow-hidden whitespace-nowrap overflow-ellipsis">
+              <span className="text-xl font-semibold overflow-hidden whitespace-nowrap overflow-ellipsis">
+                {user.name.trim()}
+              </span>
+              <div className="text-gray-600 text-sm overflow-hidden whitespace-nowrap overflow-ellipsis">
+                {user.email}
+              </div>
+            </div>
           </div>
+
+          {/* <div id="search" className="w-full p-3">
+            <input
+              type="text"
+              className="bg-white  outline-none w-full rounded-sm p-1 px-2 border border-b-2 border-b-gray-400 focus:border-b-blue-900"
+              placeholder="Search"
+            />
+          </div> */}
 
           <div
             id="separatingDiv"
             className="mx-1 mb-2  border-b-[1px] border-slate-400 "
           ></div>
 
-          <div id="customLists" className=" px-1 pb-1  ">
-            {listsToDisplay &&
-              listsToDisplay.map((list) => {
-                if (list) {
-                  return (
-                    <ListOption
-                      icon={listIcon}
-                      title={list.title}
-                      key={list._id}
-                      selectList={() => handleSelectList(list._id)}
-                      listId={list._id}
-                    />
-                  );
-                }
-              })}
+          <div className="overflow-y-auto h-full">
+            <div
+              id="keyOptions"
+              className="w-full py-3 flex flex-col px-1 space-y-1"
+            >
+              <DefaultListOption
+                icon={sunIcon}
+                title="My Day"
+                onClick={handleMyDayDefaultList}
+              />
+              <DefaultListOption
+                icon={starIcon}
+                title="Important"
+                onClick={handleImportantDefaultList}
+              />
+              <DefaultListOption
+                icon={calendarIcon}
+                title="Planned"
+                onClick={handlePlannedDefaultList}
+              />
+              <DefaultListOption
+                icon={tasksIcon}
+                title="Tasks"
+                onClick={handleTasksDefaultList}
+              />
+            </div>
+
+            <div
+              id="separatingDiv"
+              className="mx-1 mb-2  border-b-[1px] border-slate-400 "
+            ></div>
+
+            <div id="customLists" className=" px-1 pb-1  ">
+              {listsToDisplay &&
+                listsToDisplay.map((list) => {
+                  if (list) {
+                    return (
+                      <ListOption
+                        icon={listIcon}
+                        title={list.title}
+                        key={list._id}
+                        selectList={() => handleSelectList(list._id)}
+                        listId={list._id}
+                      />
+                    );
+                  }
+                })}
+            </div>
           </div>
-        </div>
-        {/* <div id = 'separatingDiv' className="mx-1 mb-2  border-b-2 border-slate-400 "></div> */}
-        <div className="w-full h-16 bg-[#fafafa] ">
-          <NewList />
+          {/* <div id = 'separatingDiv' className="mx-1 mb-2  border-b-2 border-slate-400 "></div> */}
+          <div className="w-full h-16 bg-[#fafafa] ">
+            <NewList />
+          </div>
         </div>
       </div>
     </>

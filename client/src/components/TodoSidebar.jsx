@@ -394,13 +394,25 @@ export default function TodoSidebar() {
 
   return (
     selectedTodo && (
+
       <div
         id="sidebar"
-        className="bg-[#fafafa] h-full w-4/12 relative flex flex-col"
+        className={`bg-[#fafafa] h-full w-full relative flex flex-col pb-4 pt-9`}
       >
+      {/* <div
+        id="sidebar"
+        className={`bg-[#fafafa] h-full w-full md:w-[75%] xl:w-[52%] relative flex flex-col pb-4 pt-9 `}
+      > */}
+
+
+        {/* Close the Sidebar */}
+        <div className="h-8 w-8 hover:bg-gray-100 flex items-center justify-center absolute right-6 top-1 cursor-pointer" onClick={()=>setSelectedTodo(null)}>
+          <img src={crossIcon} alt="" className="h-5" />
+        </div>
+
         <div
           id="sidebar-properties-container"
-          className="flex flex-col px-5 py-5 w-full h-full overflow-y-auto space-y-2"
+          className="flex flex-col px-5 pb-5 w-full h-full overflow-y-auto space-y-2 "
         >
           <div id="title-steps" className="border p-3">
             <div className="flex  w-full">

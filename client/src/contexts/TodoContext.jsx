@@ -14,7 +14,7 @@ export const TodoProvider = ({ children }) => {
   const { selectedList, defaultList, setDefaultList, getDefaultTasksList } =
     useListContext();
   const [todos, setTodos] = useState([]);
-  const [selectedTodo, setSelectedTodo] = useState({});
+  const [selectedTodo, setSelectedTodo] = useState(null);
   const completedTodoStyle = "line-through font-light";
 
   const selectTodo = async (todoId) => {
@@ -65,6 +65,7 @@ export const TodoProvider = ({ children }) => {
   const getAllTodos = async () => {
     try {
       const res = await fetch(`http://localhost:3000/todo/`, {
+        credentials: 'include',
         headers: {
           authorization: AUTH_TKN,
         },
@@ -279,7 +280,8 @@ export const TodoProvider = ({ children }) => {
           return todo;
         });
       });
-      selectTodo(checkedTodo._id);
+      //Only select the todo when the sidebar is open
+      if(selectedTodo) selectTodo(checkedTodo._id);
     } catch (error) {
       console.error("Error updating todo:", error);
     }
