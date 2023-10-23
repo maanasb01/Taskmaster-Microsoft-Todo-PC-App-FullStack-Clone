@@ -30,6 +30,8 @@ app.use("/auth", require("./routes/auth"));
 app.use("/user", require("./routes/user"));
 app.use("/todolist", require("./routes/toDoList"));
 app.use("/todo", require("./routes/toDo"));
+app.use("/edit", require("./routes/edit"));
+app.use("/deleteuser", require("./routes/deleteUser"));
 
 // Schedule a task to run daily at midnight to update "My Day"
 cron.schedule('0 0 * * *', async () => {

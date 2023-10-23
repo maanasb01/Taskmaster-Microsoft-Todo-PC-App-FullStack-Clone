@@ -251,7 +251,7 @@ export const TodoProvider = ({ children }) => {
           return todo;
         });
       });
-      selectTodo(checkedTodo._id);
+      if(selectedTodo) selectTodo(checkedTodo._id);
     } catch (error) {
       console.error("Error updating todo:", error);
     }

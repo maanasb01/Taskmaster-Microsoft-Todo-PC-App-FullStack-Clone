@@ -117,7 +117,6 @@ function ListOption(props) {
       } else {
         setTitle(oldTitle);
         setIsEditing(false);
-        alert("Something went wrong while updating the Title.");
       }
     } catch (error) {
       // Handle errors here, e.g., display an error message
@@ -176,7 +175,7 @@ function ListOption(props) {
           {" "}
           <img src={icon} alt="" className="h-6 pt-1" />{" "}
           <span
-            className="ml-4 overflow-hidden whitespace-nowrap overflow-ellipsis cursor-text"
+            className="ml-4 w-[90%] overflow-hidden whitespace-nowrap overflow-ellipsis cursor-text"
             onDoubleClick={handleOnEditing}
           >
             {listTitle}
@@ -395,6 +394,11 @@ export default function NavigationCol() {
     }
   }
 
+  function handleProfile() {
+    navigate("/app/profile");
+
+  }
+
   return (
     <>
       <div
@@ -402,7 +406,7 @@ export default function NavigationCol() {
         ref= {navColRef}
         // className={`bg-[#fafafa] w-[100%] md:w-[50%] lg:w-[30%] h-full fixed z-10 top-0 left-0 lg:static   ${
         //   isNavColOpen ? "" : "hidden"}`}
-        className={`bg-[#fafafa] w-[100%] md:w-[50%] lg:w-[30%] h-full fixed z-10 top-0 lg:static transition-transform duration-300 ${
+        className={`bg-[#fafafa] w-[100%] md:w-[50%] lg:w-[30%] h-full fixed z-10 top-0 lg:static transition-transform duration-300 overflow-hidden ${
           isNavColOpen ? "transform translate-x-0" : "transform -translate-x-full"
         }`}
       >
@@ -430,13 +434,13 @@ export default function NavigationCol() {
               anchorEl={anchorEl}
               open={open}
               onClose={handleMenuClose}
+              autoFocus={false}
               MenuListProps={{
                 "aria-labelledby": "basic-button",
               }}
             >
-              <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-              <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              <MenuItem onClick={handleProfile} >My account</MenuItem>
+              <MenuItem onClick={handleLogout} >Logout</MenuItem>
             </Menu>
             <div className="mr-auto my-auto w-full px-3 flex flex-col overflow-hidden whitespace-nowrap overflow-ellipsis">
               <span className="text-xl font-semibold overflow-hidden whitespace-nowrap overflow-ellipsis">
@@ -447,14 +451,6 @@ export default function NavigationCol() {
               </div>
             </div>
           </div>
-
-          {/* <div id="search" className="w-full p-3">
-            <input
-              type="text"
-              className="bg-white  outline-none w-full rounded-sm p-1 px-2 border border-b-2 border-b-gray-400 focus:border-b-blue-900"
-              placeholder="Search"
-            />
-          </div> */}
 
           <div
             id="separatingDiv"

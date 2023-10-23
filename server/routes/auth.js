@@ -66,12 +66,17 @@ router.post(
       });
 
       await defaultTodoList.save();
-
       const authToken = assignToken(user);
+      const userResponse = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+      };
+
       res.cookie('authToken', authToken, {
         expires: new Date(Date.now()+ 15*60*60*1000),
         httpOnly: true
-      }).json({ authToken,success:true,user });
+      }).json({ success:true,user:userResponse });
       //res.json(user);
     } catch (error) {
       if (error.name === "MongoServerError" && error.code === 11000) {
@@ -117,11 +122,16 @@ router.post(
 
           if (passwordMatch) {
             const authToken = assignToken(user);
+            const userResponse = {
+              _id: user._id,
+              name: user.name,
+              email: user.email,
+            };
             return res.cookie('authToken', authToken, {
               expires: new Date(Date.now()+ 15*60*60*1000),
               // expires: new Date(Date.now()+ 15*1000),
               httpOnly: true
-            }).json({ authToken,success:true,user });
+            }).json({ success:true,user:userResponse });
           } else {
             return res.status(500).json({ message: "Please Enter Valid Credentials",success:false });
           }

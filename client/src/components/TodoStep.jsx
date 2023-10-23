@@ -268,6 +268,34 @@ export default function TodoStep(props) {
     }
   }
 
+//Step title edit
+  async function handleStepTitleChange(e) {
+    e.preventDefault();
+
+    try {
+      const updatedTodoStep = await editTodoStep(
+        { stepTitle: `${editInputref.current.value}` },
+        selectedTodo._id,
+        thisStep._id
+      );
+
+      // Only update the todos state if the updatedTodo is available
+      setSteps((prevTodoSteps) => {
+        return prevTodoSteps.map((todoStep) => {
+          if (todoStep._id === thisStep._id) {
+            return updatedTodoStep;
+          }
+          return todoStep;
+        });
+      });
+      setIsEditing(false);
+      selectTodo(selectedTodo._id);
+    } catch (error) {
+      console.error("Error updating todo Step:", error);
+    }
+
+  }
+
   return (
     <>
       <div className="flex items-center  hover:bg-gray-100 px-3 py-2">
@@ -287,7 +315,7 @@ export default function TodoStep(props) {
 
         <div className="w-full">
           {isEditing ? (
-            <form>
+            <form onSubmit={(e)=>handleStepTitleChange(e)}>
               <input
                 type="text"
                 ref={editInputref}

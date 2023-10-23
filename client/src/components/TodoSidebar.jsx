@@ -140,9 +140,11 @@ export default function TodoSidebar() {
     if(selectedTodo){
       setInitialTitleValue(selectedTodo.title);
       setTimeout(() => {
+
         todoTitleRef.current.style.height = "auto"
-          const scrollHeight = todoTitleRef.current.scrollHeight;
-          todoTitleRef.current.style.height = `${scrollHeight}px`;
+        const scrollHeight = todoTitleRef.current.scrollHeight;
+        todoTitleRef.current.style.height = `${scrollHeight}px`;
+       
       }, 0);
       if (selectedTodo.note) {
         setTimeout(() => {
@@ -160,7 +162,7 @@ export default function TodoSidebar() {
     }
   
   }
-  }, [selectedTodo]);
+  }, [selectedTodo,todoTitleRef.current]);
 
   //Setting Todos Steps
   useEffect(() => {
@@ -300,6 +302,10 @@ export default function TodoSidebar() {
     try {
       if (todoTitleRef.current.value === initialTitleValue || todoTitleRef.current.value.trim() === "") {
         setTodoTitle(initialTitleValue);
+        setTimeout(() => {
+          setSelectedTodo(selectedTodo);
+        }, 10);
+        
         return;
       }
 
@@ -414,9 +420,9 @@ export default function TodoSidebar() {
           id="sidebar-properties-container"
           className="flex flex-col px-5 pb-5 w-full h-full overflow-y-auto space-y-2 "
         >
-          <div id="title-steps" className="border p-3">
-            <div className="flex  w-full">
-              <div onClick={() => handleOnCheck(selectedTodo)}>
+          <div id="title-steps" className="border p-3 w-full">
+            <div className="flex  h-fit  w-full">
+              <div onClick={() => handleOnCheck(selectedTodo)} className="h-fit">
                 {!selectedTodo.isCompleted ? (
                   <img
                     src={isHovered ? hoverCheckIcon : cirlceIcon}
@@ -449,7 +455,7 @@ export default function TodoSidebar() {
               </div>
               {/* Star Icon */}
 
-              <div className="cursor-pointer ml-auto pl-3 pt-1" onClick={()=>handleToggleMarkedImp(selectedTodo)}>
+              <div className="cursor-pointer h-fit ml-auto pl-3 pt-1" onClick={()=>handleToggleMarkedImp(selectedTodo)}>
                 {(selectedTodo && selectedTodo.markedImp)?<img src={todoStarMarkedIcon} alt="" className="h-5 ml-1" />:<img src={todoStarIcon} alt="star todo"  className="h-5 ml-1" />}
               </div>
 

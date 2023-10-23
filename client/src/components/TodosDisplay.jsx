@@ -82,7 +82,10 @@ function TodoComponent(props) {
       className={`bg-[#f6f6f6] flex items-center  px-2 w-5/6 mx-auto h-14 rounded-md hover:bg-[#e1e0e0] cursor-default`}
       onClick={onSelect}
     >
-      <div onClick={() => handleOnCheck(thisTodo)} className="">
+      <div onClick={(e) => {
+        e.stopPropagation();
+        handleOnCheck(thisTodo)
+        }} className="">
         {!thisTodo.isCompleted ? (
           <img
             src={isHovered ? hoverCheckIcon : cirlceIcon}
@@ -103,7 +106,7 @@ function TodoComponent(props) {
       </div>
 
       <span
-        className={`overflow-hidden whitespace-nowrap overflow-ellipsis ${
+        className={`w-[90%] overflow-hidden whitespace-nowrap overflow-ellipsis ${
           thisTodo.isCompleted ? completedTodoStyle : ""
         }`}
       >
@@ -172,13 +175,12 @@ export default function TodosDisplay() {
 
   return (
     <>
-      <div id="display" className="bg-[#5c70be] w-full flex">
+      <div id="display" className="bg-[#5c70be] w-full  overflow-hidden flex">
         <div
-          className={`w-full mx-auto relative ${
-            selectedTodo ? "hidden" : ""} md:block `}
+          className={`w-full  flex flex-col  mx-auto  relative overflow-hidden ${
+            selectedTodo ? "hidden" : ""} md:block`}
         >
 
-{/* <div className={` ${selectedTodo ? 'w-full' : 'w-full'} relative mx-auto transition-width duration-300`}> */}
 
           {/* Nav Toggle */}
           <div className="px-3 pt-5  lg:hidden">

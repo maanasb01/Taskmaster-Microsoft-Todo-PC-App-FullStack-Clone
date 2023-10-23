@@ -59,7 +59,7 @@ export default function Home() {
 
         <section className="font-popins w-full my-14 bg-[#6063B1]">
           <div className="w-5/6 pb-5 xl:w-5/6 2xl:w-3/6 mx-auto flex flex-col lg:flex-row lg:space-x-7 rounded-xl bg-[#4F5295] lg:bg-[#6063B1]">
-            <div className=" w-5/6 md:bg-[#4F5295] rounded-xl py-5 px-10 text-center lg:text-left mx-auto  lg:py-20  flex flex-col sm:space-y-4 ">
+            <div className=" w-5/6 md:bg-[#4F5295] rounded-xl py-5 px-3 md:px-10 text-center lg:text-left mx-auto  lg:py-20  flex flex-col sm:space-y-4 ">
               <h1 className="text-3xl text-[#B095D2] lg:text-5xl xl:text-6xl">
                 Task Lists
               </h1>
@@ -82,7 +82,7 @@ export default function Home() {
         </section>
 
         <section className="font-popins w-full my-14 bg-[#6063B1]">
-          <div className=" pb-5 w-5/6 xl:w-5/6 2xl:w-3/6 mx-auto flex flex-col-reverse lg:flex-row lg:space-x-7 rounded-xl bg-[#4F5295] px-10">
+          <div className=" pb-5 w-5/6 xl:w-5/6 2xl:w-3/6 mx-auto flex flex-col-reverse lg:flex-row lg:space-x-7 rounded-xl bg-[#4F5295] px-3 md:px-10">
             <div className="w-5/6 md:w-1/2 md:bg-[#4F5295] mx-auto rounded-xl lg:py-20 flex items-center">
               <img
                 src={addTaskImg}
@@ -91,7 +91,7 @@ export default function Home() {
                 className="object-cover object-center rounded mx-auto"
               />
             </div>
-            <div className=" w-5/6 md:bg-[#4F5295] rounded-xl py-5 px-10 text-center lg:text-left mx-auto  lg:py-20  flex flex-col sm:space-y-4 ">
+            <div className=" w-5/6 md:bg-[#4F5295] rounded-xl py-5 lg:px-10 text-center lg:text-left mx-auto  lg:py-20  flex flex-col sm:space-y-4 ">
               <h1 className="text-3xl text-[#B095D2] lg:text-5xl xl:text-6xl">
                 Create Advanced Tasks
               </h1>
@@ -120,7 +120,7 @@ export default function Home() {
 
         <section className="font-popins w-full my-14 bg-[#6063B1]">
           <div className="w-5/6 pb-5 xl:w-5/6 2xl:w-3/6 mx-auto flex flex-col lg:flex-row lg:space-x-7 rounded-xl bg-[#4F5295] lg:bg-[#6063B1]">
-            <div className=" w-5/6 md:bg-[#4F5295] rounded-xl py-5 px-10 text-center lg:text-left mx-auto  lg:py-20  flex flex-col sm:space-y-4 ">
+            <div className=" w-5/6 md:bg-[#4F5295] rounded-xl py-5 px-3 lg:px-10 text-center lg:text-left mx-auto  lg:py-20  flex flex-col sm:space-y-4 ">
               <h1 className="text-3xl text-[#B095D2] lg:text-5xl xl:text-6xl">
                 Specialized Lists
               </h1>
@@ -166,7 +166,7 @@ export default function Home() {
         </section>
 
         <section className="font-popins w-full my-14 bg-[#6063B1]">
-          <div className=" pb-5 w-5/6 xl:w-5/6 2xl:w-3/6 mx-auto flex flex-col-reverse lg:flex-row lg:space-x-7 rounded-xl bg-[#4F5295] px-10">
+          <div className=" pb-5 w-5/6 xl:w-5/6 2xl:w-3/6 mx-auto flex flex-col-reverse lg:flex-row lg:space-x-7 rounded-xl bg-[#4F5295] px-3 md:px-10">
             <div className=" md:w-1/2 md:bg-[#4F5295] mx-auto rounded-xl lg:py-20 flex items-center">
               <img
                 src={myDayImg}
@@ -175,7 +175,7 @@ export default function Home() {
                 className="object-cover object-center rounded mx-auto"
               />
             </div>
-            <div className=" w-5/6 md:bg-[#4F5295] rounded-xl py-5 px-10 text-center lg:text-left mx-auto  lg:py-20  flex flex-col sm:space-y-4 ">
+            <div className=" w-5/6 md:bg-[#4F5295] rounded-xl py-5 lg:px-10 text-center lg:text-left mx-auto  lg:py-20  flex flex-col sm:space-y-4 ">
               <h1 className="text-3xl text-[#B095D2] lg:text-5xl xl:text-6xl">
                 Effortless Daily Task Planning
               </h1>

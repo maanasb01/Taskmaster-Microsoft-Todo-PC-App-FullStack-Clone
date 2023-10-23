@@ -49,8 +49,8 @@ export default function Login() {
 
     // Create a data object to send to the API
     const data = {
-      email,
-      password,
+      email:  email.trim(),
+      password: password.trim(),
     };
 
     try {
@@ -84,6 +84,7 @@ export default function Login() {
       }
     } catch (error) {
       console.error("An error occurred while logging in:", error);
+      setError("An error occurred while logging in")
     }
   };
 
@@ -105,6 +106,7 @@ export default function Login() {
             <TextField
               variant="standard"
               label="Email"
+              type="email"
               value={email}
               onChange={handleEmailChange}
               className="w-full bg-[#6063B1]"
@@ -117,7 +119,7 @@ export default function Login() {
               onChange={handlePasswordChange}
               className="w-full"
               />
-            <button  type="submit" className="text-white bg-[#444684] px-4 py-2 rounded-lg text-lg hover:bg-[#4a4c8f]">
+            <button type="submit" className="text-white bg-[#444684] px-4 py-2 rounded-lg text-lg hover:bg-[#4a4c8f]">
               Login
             </button>
           </div>

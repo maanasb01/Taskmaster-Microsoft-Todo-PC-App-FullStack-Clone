@@ -81,6 +81,7 @@ async function getDefaultTasksList() {
 
 //Add New List
    const addNewList = async (title)=>{
+
     try {
       const res = await fetch("http://localhost:3000/todolist/new",{
     method: "POST",
@@ -93,6 +94,7 @@ async function getDefaultTasksList() {
     
     });
 
+
     const newList = await res.json();
 
     //setLists(lists.concat(newList));
@@ -100,7 +102,7 @@ async function getDefaultTasksList() {
     setLatestListId(newList._id);
     setSelectedList(newList._id)
     } catch (error) {
-      console.error(error.message)
+      console.error(error.message);
       
     }
    }
