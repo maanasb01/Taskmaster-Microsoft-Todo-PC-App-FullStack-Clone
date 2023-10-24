@@ -204,7 +204,7 @@ export const TodoProvider = ({ children }) => {
     }
   };
 
-  //updatedBody can have one property to all properties of the todo. its an object
+  // updatedBody can have one property to all properties of the todo. its an object
   const editTodo = async (updatedBody, todoId) => {
     try {
       const res = await fetch(`${host}/todo/${todoId}`, {
