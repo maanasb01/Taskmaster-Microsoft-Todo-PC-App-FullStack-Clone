@@ -22,9 +22,7 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-// app.get('/', (req, res) => {
-//   res.send('Hello World!')
-// })
+
 
 app.use("/auth", require("./routes/auth"));
 app.use("/user", require("./routes/user"));

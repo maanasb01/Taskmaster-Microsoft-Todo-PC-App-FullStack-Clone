@@ -77,7 +77,7 @@ function ListOption(props) {
   // Function to handle "Esc" key press
   const handleEscKeyPress = (event) => {
     if (event.key === "Escape") {
-      inputref.current.blur(); // Blur the input when "Esc" is pressed
+      if(inputref.current) inputref.current.blur(); // Blur the input when "Esc" is pressed
     }
   };
 

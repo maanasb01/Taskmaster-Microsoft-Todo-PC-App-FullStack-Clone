@@ -109,15 +109,16 @@ export default function TodoSidebar() {
   const [initialTitleValue, setInitialTitleValue] = useState("");
   const [todoTitle, setTodoTitle] = useState("");
 
-  const textAreaRef = useRef(null);
+  const todoNoteRef = useRef(null);
   const todoTitleRef = useRef(null);
-
+  
   useEffect(()=>{
-
     if(selectedTodo){
       setTodoTitle(selectedTodo.title);
     }
+
   },[selectedTodo])
+
 
   //Setting up the Styles of the Due Date div based on the due Date the todo has
   useEffect(() => {
@@ -135,34 +136,56 @@ export default function TodoSidebar() {
     }
   }, [selectedTodo]);
 
-  //Setting Todo note's value
+  //Setting Todo note's value and title height
   useEffect(() => {
-    if(selectedTodo){
+    if (selectedTodo) {
+     
       setInitialTitleValue(selectedTodo.title);
       setTimeout(() => {
+        
+        const dummyTextArea = document.createElement('textarea');
+        dummyTextArea.style.height = 'auto';
 
-        todoTitleRef.current.style.height = "auto"
-        const scrollHeight = todoTitleRef.current.scrollHeight;
-        todoTitleRef.current.style.height = `${scrollHeight}px`;
-       
+        dummyTextArea.value = selectedTodo.title;
+        dummyTextArea.className = ' text-xl   bg-inherit  ';
+        document.body.appendChild(dummyTextArea); 
+        const scrollHeight = dummyTextArea.scrollHeight;
+        document.body.removeChild(dummyTextArea); 
+        if (todoTitleRef.current) {
+          todoTitleRef.current.style.height = 'auto';
+          todoTitleRef.current.style.height = `${scrollHeight}px`;
+        }
       }, 0);
+  
       if (selectedTodo.note) {
+        setNoteValue(selectedTodo.note);
+        setInitialNoteValue(selectedTodo.note);
         setTimeout(() => {
           
-          const scrollHeight = textAreaRef.current.scrollHeight;
-          textAreaRef.current.style.height = `${scrollHeight}px`;
-    
-  }, 0);
-  setNoteValue(selectedTodo.note);
-      setInitialNoteValue(selectedTodo.note);
-      
-    } else {
-      setNoteValue("");
-      textAreaRef.current.style.height = "auto";
+          const dummyTextArea =document.createElement('textarea');
+          dummyTextArea.style.height='auto';
+        
+          dummyTextArea.className = 'text-xs p-2 bg-inherit  ';
+          dummyTextArea.value = selectedTodo.note;
+          document.body.appendChild(dummyTextArea);
+          const scrollHeight = dummyTextArea.scrollHeight;
+          document.body.removeChild(dummyTextArea);
+          
+          if (todoNoteRef.current) {
+          todoNoteRef.current.style.height = 'auto';
+          todoNoteRef.current.style.height = `${scrollHeight}px`;
+          
+        }
+         
+        }, 0);
+      } else {
+        setNoteValue('');
+        todoNoteRef.current.style.height = 'auto';
+      }
     }
+  }, [selectedTodo]);
   
-  }
-  }, [selectedTodo,todoTitleRef.current]);
+  
 
   //Setting Todos Steps
   useEffect(() => {
@@ -245,25 +268,25 @@ export default function TodoSidebar() {
   //Handles TextArea's Size when the input changes
 
   function textAreaAdjust() {
-    textAreaRef.current.style.height = "auto";
-    textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px";
-    setNoteValue(textAreaRef.current.value);
+    todoNoteRef.current.style.height = "auto";
+    todoNoteRef.current.style.height = todoNoteRef.current.scrollHeight + "px";
+    setNoteValue(todoNoteRef.current.value);
   }
 
   //Handeling Saving of the Todo Note
   async function handleSaveNoteChanges() {
     try {
-      if (textAreaRef.current.value === initialNoteValue) {
+      if (todoNoteRef.current.value === initialNoteValue) {
         return;
       }
 
       let updatedTodo;
 
-      if (textAreaRef.current.value.trim() === "") {
+      if (todoNoteRef.current.value.trim() === "") {
         updatedTodo = await editTodo({ note: "REMOVENOTE" }, selectedTodo._id);
       } else {
         updatedTodo = await editTodo(
-          { note: textAreaRef.current.value },
+          { note: todoNoteRef.current.value },
           selectedTodo._id
         );
       }
@@ -398,6 +421,17 @@ export default function TodoSidebar() {
     }
   }
 
+    //Handle exit from Title Changing, the moment enter or esc pressed.
+
+    function handleTitleChangeExitEventNote(e){
+
+      if (e.key === "Escape") {
+        todoNoteRef.current.blur(); // Blur the input when "Esc" is pressed
+        
+      }
+  
+    }
+
   return (
     selectedTodo && (
 
@@ -439,7 +473,7 @@ export default function TodoSidebar() {
                   />
                 )}
               </div>
-{/* Todo Title  */}
+                {/* Todo Title  */}
               <div className="pb-1 w-full">
                 <textarea
                 typeof="text"
@@ -448,7 +482,7 @@ export default function TodoSidebar() {
                 onChange={todoTitleChange}
                 onBlur={handleTodoTitleChange}
                 value={todoTitle??''}
-                className={`text-xl  w-full pb-1 bg-inherit outline-none resize-none  ${selectedTodo.isCompleted ? completedTodoStyle : "font-semibold"}`}
+                className={`text-xl  w-full  bg-inherit outline-none resize-none  ${selectedTodo.isCompleted ? completedTodoStyle : "font-semibold"}`}
                 >
                 </textarea>
   
@@ -529,17 +563,19 @@ export default function TodoSidebar() {
           </div>
 
           {/* Note */}
-          <div className=" border p-3 h-fit w-full  ">
+          <div className=" border p-3 w-full ">
             <textarea
-              ref={textAreaRef}
+              ref={todoNoteRef}
               value={noteValue}
+              onKeyDown={(e)=>handleTitleChangeExitEventNote(e)}
               onBlur={handleSaveNoteChanges}
               onChange={(e) => textAreaAdjust(e)}
               type="text"
-              className="bg-inherit w-full h-fit outline-none p-2 resize-none overflow-hidden"
+              className="bg-inherit w-full  outline-none p-2 resize-none"
               placeholder="Add a Note"
             />
           </div>
+
 
           {isCalenderActive && (
             <Calender
