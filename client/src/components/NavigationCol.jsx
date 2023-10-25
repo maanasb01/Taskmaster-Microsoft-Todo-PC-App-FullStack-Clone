@@ -18,12 +18,19 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { useLoading } from "../contexts/LoadingContext";
 
 const host = "http://localhost:3000";
 
 //Component for new list
 function NewList() {
   const { addNewList } = useListContext();
+  async function handleAddList(){
+
+    await addNewList();
+    return;
+
+  }
   return (
     <>
       <div className="w-full h-10 bg-[#fafafa]  pl-1 absolute bottom-0 border-t-[1px] border-slate-400">
@@ -31,7 +38,7 @@ function NewList() {
         <div className="flex justify-between h-full">
           <div
             className="w-full h-full px-3  rounded-md flex items-center hover:bg-slate-300 cursor-pointer"
-            onClick={() => addNewList()}
+            onClick={handleAddList}
           >
             <img src={plusIcon} alt="" className="h-6 pt-1 mr-3" />
             <span>New List</span>
@@ -69,6 +76,8 @@ function ListOption(props) {
 
   const { editList, deleteList, latestListId, setLatestListId } =
     useListContext();
+
+  const {setTodos} = useTodoContext();
 
   const oldTitle = title;
 
@@ -143,10 +152,11 @@ function ListOption(props) {
     }, 0);
   }
 
-  function handleDeleteList(e) {
+  async function handleDeleteList(e) {
     e.stopPropagation();
-
-    deleteList(listId);
+    
+    await deleteList(listId);
+    return;
   }
   return (
     <>
@@ -230,6 +240,8 @@ export default function NavigationCol() {
 
   const [listsToDisplay, setListsToDisplay] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const {fetchWithLoader} = useLoading();
 
   const navigate = useNavigate();
 
@@ -366,6 +378,7 @@ export default function NavigationCol() {
   function handleSelectList(listId) {
     setSelectedTodo(null);
     setDefaultList(null);
+    setTodos(null);
     selectList(listId);
     
     if(window.innerWidth<1024){
@@ -375,7 +388,7 @@ export default function NavigationCol() {
 
   async function handleLogout() {
     try {
-      const response = await fetch(`${host}/auth/logout`, {
+      const response = await fetchWithLoader(`${host}/auth/logout`, {
         method: "GET",
         credentials: "include",
       });

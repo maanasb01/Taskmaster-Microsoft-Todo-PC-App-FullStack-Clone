@@ -9,6 +9,7 @@ import deleteRedIcon from "../assets/deleteRed_icon.svg";
 import plusIcon from "../assets/plus_icon.svg";
 import { AUTH_TKN } from "../authToken";
 import { useTodoContext } from "../contexts/TodoContext";
+import { useLoading } from "../contexts/LoadingContext";
 
 const host = "http://localhost:3000";
 
@@ -19,6 +20,7 @@ export function AddStep(props) {
   const [isAddingStep, setIsAddingStep] = useState(false);
   const stepInputRef = useRef(null);
   const { selectedTodo, selectTodo } = useTodoContext();
+  const {fetchWithLoader} = useLoading();
 
   const handleEscKeyPress = (event) => {
     if (event.key === "Escape" && stepInputRef.current) {
@@ -50,7 +52,7 @@ export function AddStep(props) {
     e.preventDefault();
 
     try {
-      const res = await fetch(`${host}/todo/${selectedTodo._id}/step`, {
+      const res = await fetchWithLoader(`${host}/todo/${selectedTodo._id}/step`, {
         method: "POST",
         credentials: 'include',
         headers: {
@@ -117,6 +119,7 @@ function StepsMenu(props) {
   const { thisStep, steps, setSteps, setIsMenuOpen, menuButtonRef } = props;
   const menuRef = useRef(null);
   const { selectedTodo, selectTodo, addTodo } = useTodoContext();
+  const {fetchWithLoader} = useLoading();
 
   useEffect(() => {
     const handler = (e) => {
@@ -146,7 +149,7 @@ function StepsMenu(props) {
 
   async function handleDeleteStep() {
     try {
-      const res = await fetch(
+      const res = await fetchWithLoader(
         `${host}/todo/${selectedTodo._id}/step/${thisStep._id}`,
         {
           method: "DELETE",

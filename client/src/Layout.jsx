@@ -1,7 +1,7 @@
 import LandingPage from "./pages/LandingPage";
 import TodoApp from "./pages/TodoApp";
 import ErrorPage from "./pages/ErrorPage";
-import RootBoundary from "./pages/RootBoundary";
+
 import {
   Navigate,
   Route,

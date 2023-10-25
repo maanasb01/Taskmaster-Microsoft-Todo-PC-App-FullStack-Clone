@@ -5,6 +5,7 @@ import TextField from "@mui/material/TextField";
 import textFieldTheme from "./textFieldTheme";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { useLoading } from "../../contexts/LoadingContext";
 
 export default function Signup() {
   const [fullName, setFullName] = useState("");
@@ -15,6 +16,7 @@ export default function Signup() {
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
   const {setUser} = useAuth();
+  const {setLoading} = useLoading();
 
   useEffect(() => {
     if (!fullName && !email && !password && !confirmPassword) {
@@ -66,8 +68,10 @@ export default function Signup() {
     return emailRegex.test(email);
   };
 
+  //Handle Signup Request
   const handleRegister = async (e) => {
     e.preventDefault();
+   
     if (
       fullName.trim() === "" ||
       email.trim() === "" ||
@@ -94,6 +98,8 @@ export default function Signup() {
       setError("Enter a Valid Email Address.");
       return;
     }
+
+    setLoading(true);
 
     try {
       const response = await fetch("http://localhost:3000/auth/createuser", {
@@ -125,6 +131,8 @@ export default function Signup() {
     } catch (error) {
       setError("An error occurred while registering.");
       setSuccess("");
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -182,6 +190,7 @@ export default function Signup() {
               <button
                 type="submit"
                 className="text-white bg-[#444684] px-4 py-2 rounded-lg text-lg hover:bg-[#4a4c8f]"
+                onClick={handleRegister}
               >
                 Register
               </button>

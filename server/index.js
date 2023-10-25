@@ -33,7 +33,7 @@ app.use("/deleteuser", require("./routes/deleteUser"));
 
 // Schedule a task to run daily at midnight to update "My Day"
 cron.schedule('0 0 * * *', async () => {
-  console.log("Inside cron ")
+  
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Set time to the beginning of the day
   const endOfDay = new Date();
@@ -47,7 +47,6 @@ cron.schedule('0 0 * * *', async () => {
         $lte: endOfDay    // Less than or equal to the end of the day
       }
     });
-    console.log(todos)
 
     await ToDo.updateMany(
       {_id:{$in: todos.map(todo=>todo._id)} }, //Update the todos whose Ids are in the array of Ids (the array created from the map function)
@@ -77,5 +76,5 @@ cron.schedule('59 23 * * *', async () => {
 });
 
 app.listen(port, () => {
-  console.log(`ToDo app listening on port ${port}`);
+  console.log(`Taskmaster Backend listening on port ${port}...`);
 });
