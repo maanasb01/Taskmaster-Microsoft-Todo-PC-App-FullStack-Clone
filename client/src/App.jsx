@@ -1,33 +1,22 @@
-import LandingPage from "./pages/LandingPage";
-import TodoApp from "./pages/TodoApp";
 import Layout from "./Layout";
-import {
-  Route,
-  RouterProvider,
-  createBrowserRouter,
-  createRoutesFromElements,
-  BrowserRouter,
-  Router
-} from "react-router-dom";
-import Login from "./components/No Auth Components/Login";
-import Signup from "./components/No Auth Components/Signup";
+import { AuthProvider } from "./contexts/AuthContext";
+import { LoadingProvider, useLoading } from "./contexts/LoadingContext";
+import TopLoader from "react-top-loader";
 
-import Home from "./components/No Auth Components/Home";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
+function TopLoaderComponent() {
+  const { loading } = useLoading();
 
-
-
-
+  return <TopLoader show={loading} color="magenta" />;
+}
 
 function App() {
-
-
   return (
-    
+    <LoadingProvider>
+      <TopLoaderComponent />
       <AuthProvider>
         <Layout />
       </AuthProvider>
-
+    </LoadingProvider>
   );
 }
 

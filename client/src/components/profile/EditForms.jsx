@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { useLoading } from "../../contexts/LoadingContext";
 
 const host = "http://localhost:3000";
 
@@ -9,6 +10,7 @@ export function NameEditForm() {
   const [newName, setNewName] = useState(""); // State variable for new name
   const [password, setPassword] = useState(""); // State variable for password
   const { user, setUser } = useAuth();
+  const {fetchWithLoader} = useLoading();
 
   const navigate = useNavigate();
 
@@ -34,7 +36,7 @@ export function NameEditForm() {
     };
 
     try {
-      const response = await fetch(`${host}/edit/name`, {
+      const response = await fetchWithLoader(`${host}/edit/name`, {
         method: "PATCH",
         credentials: "include",
         headers: {
@@ -119,6 +121,7 @@ export function EmailEditForm() {
   const [newEmail, setNewEmail] = useState("");
   const [password, setPassword] = useState("");
   const { user, setUser } = useAuth();
+  const {fetchWithLoader} = useLoading();
   const navigate = useNavigate();
 
   const handleEmailChange = (event) => {
@@ -153,7 +156,7 @@ export function EmailEditForm() {
     };
 
     try {
-      const response = await fetch(`${host}/edit/email`, {
+      const response = await fetchWithLoader(`${host}/edit/email`, {
         method: "PATCH",
         credentials: "include",
         headers: {
@@ -236,6 +239,7 @@ export function PasswordEditForm() {
   const [successMsg, setsuccessMsg] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [previousPassword, setPreviousPassword] = useState("");
+  const {fetchWithLoader} = useLoading();
   const navigate = useNavigate();
 
   const handleNewPasswordChange = (event) => {
@@ -268,7 +272,7 @@ export function PasswordEditForm() {
     };
 
     try {
-      const response = await fetch(`${host}/edit/password`, {
+      const response = await fetchWithLoader(`${host}/edit/password`, {
         method: "PATCH",
         credentials: "include",
         headers: {

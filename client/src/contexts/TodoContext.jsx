@@ -1,6 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useListContext } from "./ListContext";
 import { AUTH_TKN } from "../authToken";
+import { useLoading } from "./LoadingContext";
+
+
+
 
 const host = "http://localhost:3000";
 
@@ -17,9 +21,11 @@ export const TodoProvider = ({ children }) => {
   const [selectedTodo, setSelectedTodo] = useState(null);
   const completedTodoStyle = "line-through font-light";
 
+  const {fetchWithLoader} = useLoading();
+
   const selectTodo = async (todoId) => {
     try {
-      const res = await fetch(`${host}/todo/info/${todoId}`, {
+      const res = await fetchWithLoader(`${host}/todo/info/${todoId}`, {
         credentials: 'include',
         headers: {
           authorization: AUTH_TKN,
@@ -41,7 +47,7 @@ export const TodoProvider = ({ children }) => {
 
   const getTodosData = async (listId) => {
     try {
-      const res = await fetch(`http://localhost:3000/todo/${listId}`, {
+      const res = await fetchWithLoader(`http://localhost:3000/todo/${listId}`, {
         credentials: 'include',
         headers: {
           authorization: AUTH_TKN,
@@ -49,7 +55,7 @@ export const TodoProvider = ({ children }) => {
       });
 
       if (!res.ok) {
-        throw new Error(`Failed to fetch data. Status: ${res.status}`);
+        throw new Error(`Failed to fetchWithLoader data. Status: ${res.status}`);
       }
 
       const data = await res.json();
@@ -64,7 +70,7 @@ export const TodoProvider = ({ children }) => {
 
   const getAllTodos = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/todo/`, {
+      const res = await fetchWithLoader(`http://localhost:3000/todo/`, {
         credentials: 'include',
         headers: {
           authorization: AUTH_TKN,
@@ -72,7 +78,7 @@ export const TodoProvider = ({ children }) => {
       });
 
       if (!res.ok) {
-        throw new Error(`Failed to fetch data. Status: ${res.status}`);
+        throw new Error(`Failed to fetchWithLoader data. Status: ${res.status}`);
       }
 
       const data = await res.json();
@@ -87,7 +93,7 @@ export const TodoProvider = ({ children }) => {
   const addTodo = async (title) => {
     if (!defaultList && selectedList) {
       try {
-        const req = await fetch(`${host}/todo`, {
+        const req = await fetchWithLoader(`${host}/todo`, {
           method: "POST",
           credentials: 'include',
           headers: {
@@ -109,7 +115,7 @@ export const TodoProvider = ({ children }) => {
       const defaultTasksList = await getDefaultTasksList();
 
       try {
-        const req = await fetch(`${host}/todo`, {
+        const req = await fetchWithLoader(`${host}/todo`, {
           method: "POST",
           credentials: 'include',
           headers: {
@@ -130,7 +136,7 @@ export const TodoProvider = ({ children }) => {
     } else if (defaultList === "MyDay" && !selectedList) {
       const defaultTasksList = await getDefaultTasksList();
       try {
-        const req = await fetch(`${host}/todo`, {
+        const req = await fetchWithLoader(`${host}/todo`, {
           method: "POST",
           credentials: 'include',
           headers: {
@@ -151,7 +157,7 @@ export const TodoProvider = ({ children }) => {
     } else if (defaultList === "Important" && !selectedList) {
       const defaultTasksList = await getDefaultTasksList();
       try {
-        const req = await fetch(`${host}/todo`, {
+        const req = await fetchWithLoader(`${host}/todo`, {
           method: "POST",
           credentials: 'include',
           headers: {
@@ -182,7 +188,7 @@ export const TodoProvider = ({ children }) => {
     }
 
     try {
-      const res = await fetch(`http://localhost:3000/todo/${todoId}`, {
+      const res = await fetchWithLoader(`http://localhost:3000/todo/${todoId}`, {
         method: "DELETE",
         credentials: 'include',
         headers: {
@@ -204,10 +210,10 @@ export const TodoProvider = ({ children }) => {
     }
   };
 
-  //updatedBody can have one property to all properties of the todo. its an object
+  // updatedBody can have one property to all properties of the todo. its an object
   const editTodo = async (updatedBody, todoId) => {
     try {
-      const res = await fetch(`${host}/todo/${todoId}`, {
+      const res = await fetchWithLoader(`${host}/todo/${todoId}`, {
         method: "PUT",
         credentials: 'include',
         headers: {
@@ -228,7 +234,7 @@ export const TodoProvider = ({ children }) => {
 
       return updatedTodo;
     } catch (error) {
-      // Handle fetch or parsing errors here
+      // Handle fetchWithLoader or parsing errors here
       console.error("Error editing the Todo:", error);
     }
   };
@@ -289,7 +295,7 @@ export const TodoProvider = ({ children }) => {
 
   const editTodoStep = async (updatedBody, todoId, stepId) => {
     try {
-      const res = await fetch(`${host}/todo/${todoId}/step/${stepId}`, {
+      const res = await fetchWithLoader(`${host}/todo/${todoId}/step/${stepId}`, {
         method: "PUT",
         credentials: 'include',
         headers: {
@@ -310,7 +316,7 @@ export const TodoProvider = ({ children }) => {
 
       return updatedTodoStep;
     } catch (error) {
-      // Handle fetch or parsing errors here
+      // Handle fetchWithLoader or parsing errors here
       console.error("Error editing the Todo Step:", error);
     }
   };

@@ -14,6 +14,7 @@ import todoStarMarkedIcon from "../assets/todoStarMarked_icon.svg";
 import { AUTH_TKN } from "../authToken";
 import { useTodoContext } from "../contexts/TodoContext";
 import TodoSidebar from "./TodoSidebar";
+import { useLoading } from "../contexts/LoadingContext";
 
 const host = "http://localhost:3000";
 
@@ -82,10 +83,13 @@ function TodoComponent(props) {
       className={`bg-[#f6f6f6] flex items-center  px-2 w-5/6 mx-auto h-14 rounded-md hover:bg-[#e1e0e0] cursor-default`}
       onClick={onSelect}
     >
-      <div onClick={(e) => {
-        e.stopPropagation();
-        handleOnCheck(thisTodo)
-        }} className="">
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          handleOnCheck(thisTodo);
+        }}
+        className=""
+      >
         {!thisTodo.isCompleted ? (
           <img
             src={isHovered ? hoverCheckIcon : cirlceIcon}
@@ -144,6 +148,7 @@ export default function TodosDisplay() {
     useTodoContext();
   const [listTitle, setListTitle] = useState("");
   const [isCompletedTaskOpen, setIsCompletedTaskOpen] = useState(true);
+  const { loading } = useLoading();
 
   // useEffect(() => {
   //   setTimeout(() => {
@@ -178,10 +183,9 @@ export default function TodosDisplay() {
       <div id="display" className="bg-[#5c70be] w-full  overflow-hidden flex">
         <div
           className={`w-full  flex flex-col  mx-auto  relative overflow-hidden ${
-            selectedTodo ? "hidden" : ""} md:block`}
+            selectedTodo ? "hidden" : ""
+          } md:block`}
         >
-
-
           {/* Nav Toggle */}
           <div className="px-3 pt-5  lg:hidden">
             <img
@@ -215,11 +219,15 @@ export default function TodosDisplay() {
                     );
                   }
                 })
-              ) : (
+              ) : !loading ? (
                 <p className="w-5/6 mx-auto text-2xl text-slate-100">
                   {defaultList && defaultList === "Planned"
                     ? "Your Tasks with Due Date Appear here..."
                     : "Add Your Tasks Here..."}
+                </p>
+              ) : (
+                <p className="w-5/6 mx-auto text-2xl text-slate-100">
+                  Loading...
                 </p>
               )}
             </div>
@@ -279,7 +287,12 @@ export default function TodosDisplay() {
           }`}
         > */}
 
-<div id="todo-sidebar-wrapper" className={` ${selectedTodo ? 'w-full md:w-[75%] xl:w-[52%]' : 'w-0'} duration-300`}>
+        <div
+          id="todo-sidebar-wrapper"
+          className={` ${
+            selectedTodo ? "w-full md:w-[75%] xl:w-[52%]" : "w-0"
+          } duration-300`}
+        >
           <TodoSidebar />
         </div>
       </div>

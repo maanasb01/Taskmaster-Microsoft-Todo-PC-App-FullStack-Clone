@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { AUTH_TKN } from "../authToken";
+import { useLoading } from "./LoadingContext";
 
 const ListContext =  createContext();
 
@@ -7,45 +8,47 @@ export const useListContext = () => {
     return useContext(ListContext);
 };
 
-async function getLists(url) {
-  try {
-    const response = await fetch(url, {
-      // headers: {
-      //   'authorization': AUTH_TKN
-      // }
-      credentials: 'include'
-    });
-
-    if (!response.ok) {
-      throw new Error(`Request failed with status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error(`Error in getLists: ${error.message}`);
-  }
-}
 
 
 export const ListProvider = ({children}) => {
-    const [lists,setLists] = useState([]);
-    const [selectedList, setSelectedList] = useState(null);
-    const [latestListId,setLatestListId] = useState(null);
-    const [selectedListName, setSelectedListName] = useState("");
-    const [isNavColOpen, setIsNavColOpen] = useState(true);
-    const [defaultList, setDefaultList] = useState(null);
-    /**MyDay, Important, Planned, Tasks */
+  const [lists,setLists] = useState([]);
+  const [selectedList, setSelectedList] = useState(null);
+  const [latestListId,setLatestListId] = useState(null);
+  const [selectedListName, setSelectedListName] = useState("");
+  const [isNavColOpen, setIsNavColOpen] = useState(true);
+  const [defaultList, setDefaultList] = useState(null);
+  /**MyDay, Important, Planned, Tasks */
 
-    useEffect( ()=> {
-        //fetch Lists
-        async function fetchData() {
-        const fetchedLists = await getLists("http://localhost:3000/todolist/lists");
-        setLists(fetchedLists);
-        }
-        fetchData();
-    },[]);
-
+  const {fetchWithLoader} = useLoading();
+  
+  useEffect( ()=> {
+    //fetch Lists
+    async function fetchData() {
+      const fetchedLists = await getLists("http://localhost:3000/todolist/lists");
+      setLists(fetchedLists);
+    }
+    fetchData();
+  },[]);
+  
+  async function getLists(url) {
+    try {
+      const response = await fetchWithLoader(url, {
+        // headers: {
+        //   'authorization': AUTH_TKN
+        // }
+        credentials: 'include'
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Request failed with status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(`Error in getLists: ${error.message}`);
+    }
+  }
 
 //Setting up the selected List Value
     const selectList = (listId)=>{
@@ -59,7 +62,7 @@ export const ListProvider = ({children}) => {
 // Get the default Tasks List
 async function getDefaultTasksList() {
   try {
-    const response = await fetch("http://localhost:3000/todolist/tasks", {
+    const response = await fetchWithLoader("http://localhost:3000/todolist/tasks", {
       credentials: 'include',
       headers: {
         'authorization': AUTH_TKN
@@ -83,7 +86,7 @@ async function getDefaultTasksList() {
    const addNewList = async (title)=>{
 
     try {
-      const res = await fetch("http://localhost:3000/todolist/new",{
+      const res = await fetchWithLoader("http://localhost:3000/todolist/new",{
     method: "POST",
     credentials: 'include',
     headers:{
@@ -110,7 +113,7 @@ async function getDefaultTasksList() {
 // Edit List Title
 const editList = async (editedTitle, listId) => {
     try {
-      const res = await fetch(`http://localhost:3000/todolist/updatetitle/${listId}`, {
+      const res = await fetchWithLoader(`http://localhost:3000/todolist/updatetitle/${listId}`, {
         method: "PATCH",
         credentials: 'include',
         headers: {
@@ -143,7 +146,7 @@ const editList = async (editedTitle, listId) => {
   
       return newTitle; // Indicate success
     } catch (error) {
-      // Handle fetch or parsing errors here
+      // Handle fetchWithLoader or parsing errors here
       console.error("Error editing list:", error);
       return false; // Indicate failure
     }
@@ -154,7 +157,7 @@ const editList = async (editedTitle, listId) => {
   const deleteList = async (listId) =>{
 
     try {
-      const res = await fetch(`http://localhost:3000/todolist/delete/${listId}`,{
+      const res = await fetchWithLoader(`http://localhost:3000/todolist/delete/${listId}`,{
         method:"DELETE",
         credentials: 'include',
         headers: {

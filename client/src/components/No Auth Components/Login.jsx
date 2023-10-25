@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField';
 import textFieldTheme from "./textFieldTheme";
 import { Link, Navigate, redirect, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { useLoading } from "../../contexts/LoadingContext";
 
 
 export default function Login() {
@@ -12,8 +13,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error,setError] = useState("");
   const [success, setSuccess] = useState("");
-  const {setUser} = useAuth();
-  const {user} = useAuth();
+  const {user, setUser} = useAuth();
+  const {setLoading} = useLoading();
   
 
   const navigate = useNavigate();
@@ -33,9 +34,10 @@ export default function Login() {
     return emailRegex.test(email);
   };
 
-
+//Handle Login Request
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     if(email.trim()==="" || password.trim()===""){
       setError("All Fields are Necessary.");
@@ -85,12 +87,19 @@ export default function Login() {
     } catch (error) {
       console.error("An error occurred while logging in:", error);
       setError("An error occurred while logging in")
+    }finally{
+      setLoading(false);
     }
   };
 
 
   return (
     <>
+    {user?
+    <p className="text-gray-300 text-xl font-semibold fixed top-16 left-3">Redirecting to the App...</p>
+    :
+    null
+  }
       {<div className="h-full flex flex-col items-center justify-center">
         <p className="font-popins text-4xl md:text-5xl font-semibold text-gray-200 mb-3 mt-20">LogIn</p>
         

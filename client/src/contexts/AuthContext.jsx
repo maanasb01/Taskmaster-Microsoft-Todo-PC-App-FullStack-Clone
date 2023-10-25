@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState} from "react";
 import { AUTH_TKN } from "../authToken";
 import { redirect } from "react-router-dom";
+import { useLoading } from "./LoadingContext";
 // import { useNavigate } from "react-router-dom";
 const host = "http://localhost:3000";
 
@@ -15,8 +16,10 @@ export const useAuth = () => {
 export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
     // const navigate = useNavigate();
+    const {fetchWithLoader,setLoading} = useLoading()
     
    async function getUser(){
+    setLoading(true);
         
         try {
             const res = await fetch(`${host}/user`,{
@@ -35,12 +38,13 @@ export const AuthProvider = ({children}) => {
         } catch (error) {
             console.error(error.message);
             
-        }
+        }finally {
+            setLoading(false);
+          }
     };
     useEffect(()=>{
 
         getUser();
-        console.log("inside auth provider")
 
     },[]);
 
@@ -48,7 +52,7 @@ export const AuthProvider = ({children}) => {
     // async function logout(){
 
     //     try {
-    //         const response = await fetch(`${host}/auth/logout`,{
+    //         const response = await fetchWithLoader(`${host}/auth/logout`,{
     //    credentials: 'include',
     // });
     //         const data = await response.json();

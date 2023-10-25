@@ -136,7 +136,6 @@ router.post(
             return res.status(500).json({ message: "Please Enter Valid Credentials",success:false });
           }
         } catch (error) {
-          console.log(error);
           res.status(401).json({ message: "Please Enter Valid Credentials.",success:false });
         }
       } else {
