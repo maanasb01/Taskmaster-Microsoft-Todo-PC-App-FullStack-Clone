@@ -1,4 +1,3 @@
-// LoadingContext.js (using React Context)
 import { createContext, useContext, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -36,10 +35,6 @@ export function LoadingProvider({ children }) {
     }
   };
 
-  const handleWarningModalOpen = () => {
-    setSessionExpiredModalOpen(true);
-  };
-
   const handleClose = () => {
     setSessionExpiredModalOpen(false);
     location.reload();
@@ -47,6 +42,7 @@ export function LoadingProvider({ children }) {
 
   return (
     <LoadingContext.Provider value={{ loading, setLoading, fetchWithLoader }}>
+      {/* Modal to show when Session is Expired */}
       <Dialog
         open={sessionExpiredModalOpen}
         onClose={handleClose}

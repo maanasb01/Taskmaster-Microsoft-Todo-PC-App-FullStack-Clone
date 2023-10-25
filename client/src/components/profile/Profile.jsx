@@ -2,14 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import emailIcon from "../../assets/email_icon.svg";
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-
-
-const host = "http://localhost:3000";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import { HOST } from "../../config/config";
 
 //Profile Navbar
 
@@ -43,75 +41,74 @@ function ProfileNav({ handleLogout }) {
 
 //The right side displayed user info. (Inside the space which get replaced with Edit forms)
 
-export function UserInfo(){
+export function UserInfo() {
   const { user, setUser } = useAuth();
 
-
-  return(
+  return (
     <>
-    <div className="w-full sm:w-2/3 sm:pl-8 sm:py-8  mt-4 pt-4 sm:mt-0 text-center sm:text-left">
-                
-                <div className="text-gray-300 flex items-center  mx-auto border-b pb-10 mb-10 border-gray-200 sm:flex-row flex-col w-full">
-                  <div className="w-11 h-11 md:w-14 md:h-14  sm:mr-10 inline-flex items-center justify-center rounded-full bg-purple-100 text-[#859080] text-4xl font-semibold">
-                    {user.name.trim().split()[0][0].toUpperCase()}
-                  </div>
-                  <div className="flex-grow sm:text-left text-center mt-6 sm:mt-0">
-                    <h2 className=" text-2xl title-font font-bold mb-2">
-                      Full Name
-                    </h2>
-                    <p className="leading-relaxed text-base">{user.name}</p>
-                    <Link to={"/app/profile/editname"} className="mt-3 bg-gray-300 text-slate-700 rounded-md px-3 py-1  inline-flex items-center cursor-pointer">
-                      Edit
-                      <svg
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        className="w-4 h-4 ml-2"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M5 12h14M12 5l7 7-7 7"></path>
-                      </svg>
-                    </Link>
-                  </div>
-                </div>
+      <div className="w-full sm:w-2/3 sm:pl-8 sm:py-8  mt-4 pt-4 sm:mt-0 text-center sm:text-left">
+        <div className="text-gray-300 flex items-center  mx-auto border-b pb-10 mb-10 border-gray-200 sm:flex-row flex-col w-full">
+          <div className="w-11 h-11 md:w-14 md:h-14  sm:mr-10 inline-flex items-center justify-center rounded-full bg-purple-100 text-[#859080] text-4xl font-semibold">
+            {user.name.trim().split()[0][0].toUpperCase()}
+          </div>
+          <div className="flex-grow sm:text-left text-center mt-6 sm:mt-0">
+            <h2 className=" text-2xl title-font font-bold mb-2">Full Name</h2>
+            <p className="leading-relaxed text-base">{user.name}</p>
+            <Link
+              to={"/app/profile/editname"}
+              className="mt-3 bg-gray-300 text-slate-700 rounded-md px-3 py-1  inline-flex items-center cursor-pointer"
+            >
+              Edit
+              <svg
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                className="w-4 h-4 ml-2"
+                viewBox="0 0 24 24"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+              </svg>
+            </Link>
+          </div>
+        </div>
 
-                <div className="text-gray-300 flex items-center  mx-auto border-b pb-10 mb-10 border-gray-200 sm:flex-row flex-col">
-                  <div className="w-11 h-11 md:w-14 md:h-14  sm:mr-10 inline-flex items-center justify-center rounded-full bg-purple-100 text-purple-500 flex-shrink-0">
-                    <img src={emailIcon} alt="" className="h-28" />
-                  </div>
-                  <div className="flex-grow sm:text-left text-center mt-6 sm:mt-0">
-                    <h2 className=" text-2xl title-font font-bold mb-2">Email</h2>
-                    <p className="leading-relaxed text-base">{user.email}</p>
-                    <Link to={"/app/profile/editemail"} className="mt-3 bg-gray-300 text-slate-700 rounded-md px-3 py-1  inline-flex items-center cursor-pointer">
-                      Edit
-                      <svg
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        className="w-4 h-4 ml-2"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M5 12h14M12 5l7 7-7 7"></path>
-                      </svg>
-                    </Link>
-                  </div>
-                </div>
-              </div>
+        <div className="text-gray-300 flex items-center  mx-auto border-b pb-10 mb-10 border-gray-200 sm:flex-row flex-col">
+          <div className="w-11 h-11 md:w-14 md:h-14  sm:mr-10 inline-flex items-center justify-center rounded-full bg-purple-100 text-purple-500 flex-shrink-0">
+            <img src={emailIcon} alt="" className="h-28" />
+          </div>
+          <div className="flex-grow sm:text-left text-center mt-6 sm:mt-0">
+            <h2 className=" text-2xl title-font font-bold mb-2">Email</h2>
+            <p className="leading-relaxed text-base">{user.email}</p>
+            <Link
+              to={"/app/profile/editemail"}
+              className="mt-3 bg-gray-300 text-slate-700 rounded-md px-3 py-1  inline-flex items-center cursor-pointer"
+            >
+              Edit
+              <svg
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                className="w-4 h-4 ml-2"
+                viewBox="0 0 24 24"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+              </svg>
+            </Link>
+          </div>
+        </div>
+      </div>
     </>
-  )
+  );
 }
-
-
 
 function Profile() {
   const { user, setUser } = useAuth();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-
 
   useEffect(() => {
     document.body.style.backgroundColor = "#5c70be";
@@ -131,7 +128,7 @@ function Profile() {
 
   async function handleLogout() {
     try {
-      const response = await fetch(`${host}/auth/logout`, {
+      const response = await fetch(`${HOST}/auth/logout`, {
         method: "GET",
         credentials: "include",
       });
@@ -150,60 +147,61 @@ function Profile() {
     }
   }
 
-  async function handleDeleteAccount(){
-
+  async function handleDeleteAccount() {
     try {
-      const res = await fetch(`${host}/deleteuser`,{
-        method:"DELETE",
-        credentials:"include"
+      const res = await fetch(`${HOST}/deleteuser`, {
+        method: "DELETE",
+        credentials: "include",
       });
       const data = await res.json();
-      if(data.success){
+      if (data.success) {
         setOpen(false);
         setUser(null);
-        navigate("/",{replace:true});
+        navigate("/", { replace: true });
         return;
-      }else{
+      } else {
         alert("Something went wrong while deleting your account! ");
         return;
       }
-      
     } catch (error) {
-      console.error("Something went wrong: "+error.message);
+      console.error("Something went wrong: " + error.message);
       alert("Something went wrong while deleting your account! ");
-      
     }
   }
 
-
-
-
   return (
     <>
-
-<Dialog
+      <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        
       >
         <DialogTitle id="alert-dialog-title">
           {"Delete Account Permanently?"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete your account from Taskmaster permanently?
+            Are you sure you want to delete your account from Taskmaster
+            permanently?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <button className="mr-2 bg-gray-500 cursor-pointer hover:bg-gray-600 text-white py-1 px-2 rounded-md" onClick={handleClose} autoFocus>
+          <button
+            className="mr-2 bg-gray-500 cursor-pointer hover:bg-gray-600 text-white py-1 px-2 rounded-md"
+            onClick={handleClose}
+            autoFocus
+          >
             Cancel
           </button>
-          <button className="mr-2 bg-red-800 cursor-pointer hover:bg-red-900 text-white py-1 px-2 rounded-md" onClick={handleDeleteAccount}>Proceed</button>
+          <button
+            className="mr-2 bg-red-800 cursor-pointer hover:bg-red-900 text-white py-1 px-2 rounded-md"
+            onClick={handleDeleteAccount}
+          >
+            Proceed
+          </button>
         </DialogActions>
       </Dialog>
-
 
       <ProfileNav handleLogout={handleLogout} />
 
@@ -241,17 +239,17 @@ function Profile() {
                       Reset Password
                     </button>
                   </Link>
-                  <button onClick={handleWarningModalOpen} className="bg-red-800 cursor-pointer hover:bg-red-900 text-gray-300 py-1 px-2 rounded-md">
+                  <button
+                    onClick={handleWarningModalOpen}
+                    className="bg-red-800 cursor-pointer hover:bg-red-900 text-gray-300 py-1 px-2 rounded-md"
+                  >
                     Delete Account
                   </button>
                 </div>
               </div>
 
-            
-
-                {/* User's Details and Edit Forms */}
-                <Outlet/>
-              
+              {/* User's Details and Edit Forms */}
+              <Outlet />
             </div>
           </div>
         </div>

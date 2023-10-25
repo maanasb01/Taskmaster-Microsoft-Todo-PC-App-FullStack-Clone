@@ -1,14 +1,12 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const connectionLink = process.env.DB_CONNECTION_STRING
+const connectionLink = process.env.DB_CONNECTION_STRING;
 
-const connectToMongo = () =>{
-    mongoose.connect(connectionLink)
-    .then(
-        () => console.log("Connected to DB"),
-        err => console.error(err)
-      );
-}
+const connectToMongo = () => {
+  mongoose.connect(connectionLink).then(
+    () => console.log("Connected to Taskmaster's Database"),
+    (err) => console.error(err)
+  );
+};
 
 module.exports = connectToMongo;
-

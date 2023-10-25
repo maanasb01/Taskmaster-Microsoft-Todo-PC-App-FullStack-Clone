@@ -1,8 +1,8 @@
 const express = require("express");
 const { body, param, validationResult } = require("express-validator");
 const tokenAuth = require("../middlewares/tokenAuth");
-const {ToDoList} = require("../models/ToDoList");
-const {ToDo} = require("../models/ToDo");
+const { ToDoList } = require("../models/ToDoList");
+const { ToDo } = require("../models/ToDo");
 const mongoose = require("mongoose");
 const { isValidObjectId } = mongoose;
 
@@ -24,11 +24,13 @@ router.post("/new", tokenAuth, async (req, res) => {
 
 //Get all the Lists of a Given User
 router.get("/lists", tokenAuth, async (req, res) => {
-
   try {
-    const todoLists = await ToDoList.find({ user: req.user.id, isDefaultTasksList:false });
-    if(todoLists===null){
-      res.status(500).json({message:"Internal Server Error"})
+    const todoLists = await ToDoList.find({
+      user: req.user.id,
+      isDefaultTasksList: false,
+    });
+    if (todoLists === null) {
+      res.status(500).json({ message: "Internal Server Error" });
     }
     res.json(todoLists);
   } catch (error) {
@@ -37,47 +39,53 @@ router.get("/lists", tokenAuth, async (req, res) => {
   }
 });
 
-//Get all info of default list 
+//Get all info of default list
 router.get("/tasks", tokenAuth, async (req, res) => {
-
   try {
-    
     // const userId = mongoose.Types.ObjectId(req.user.id);
-    const defaultList = await ToDoList.findOne({isDefaultTasksList:true,user:req.user.id})
-    if(!defaultList){
-      return res.status(404).json({message:"List not Found"})
+    const defaultList = await ToDoList.findOne({
+      isDefaultTasksList: true,
+      user: req.user.id,
+    });
+    if (!defaultList) {
+      return res.status(404).json({ message: "List not Found" });
     }
-    // if(defaultList.user.toString() !== req.user.id){
-    //   return res.status(403).json({message:"Forbidden"})
-    // }
+
     res.json(defaultList);
   } catch (error) {
-    res.status(500).json({message:"Internal Server Error",error:error.message});
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 });
 
-//Get all info of a list 
-router.get("/:id",[param("id").exists().withMessage("Id parameter is missing")], tokenAuth, async (req, res) => {
+//Get all info of a list
+router.get(
+  "/:id",
+  [param("id").exists().withMessage("Id parameter is missing")],
+  tokenAuth,
+  async (req, res) => {
+    const errors = validationResult(req);
 
-  const errors = validationResult(req);
-
-  if(!errors.isEmpty()){
-    return res.status(400).json({message:"Bad Request"})
-  }
-  try {
-    const todoList = await ToDoList.findById(req.params.id);
-    if(todoList===null){
-      return res.status(404).json({message:"List not Found"})
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ message: "Bad Request" });
     }
-    if(todoList.user.toString() !== req.user.id){
-      return res.status(403).json({message:"Forbidden"})
+    try {
+      const todoList = await ToDoList.findById(req.params.id);
+      if (todoList === null) {
+        return res.status(404).json({ message: "List not Found" });
+      }
+      if (todoList.user.toString() !== req.user.id) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      res.json(todoList);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Internal Server Error", error: error.message });
     }
-    res.json(todoList);
-  } catch (error) {
-    res.status(500).json({message:"Internal Server Error",error:error.message});
   }
-});
-
+);
 
 //Route to delete a List. /todolist/delete/:id
 router.delete("/delete/:id", tokenAuth, async (req, res) => {
@@ -104,8 +112,8 @@ router.delete("/delete/:id", tokenAuth, async (req, res) => {
       return res.status(403).json({ error: "Forbidden" });
     }
 
-    if(list.user.toString() !== req.user.id){
-      return res.status(403).json({message:"Forbidden"})
+    if (list.user.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Forbidden" });
     }
 
     await ToDo.deleteMany({ _id: { $in: list.toDos } });
@@ -114,7 +122,7 @@ router.delete("/delete/:id", tokenAuth, async (req, res) => {
 
     await session.commitTransaction();
     session.endSession();
-    res.status(200).json({ message: "Deleted Successfully.",deletedList });
+    res.status(200).json({ message: "Deleted Successfully.", deletedList });
   } catch (error) {
     console.error(error);
     res
@@ -152,14 +160,16 @@ router.patch(
         return res.status(404).json({ error: "List not found" });
       }
 
-      if(list.user.toString() !== req.user.id){
-        return res.status(403).json({message:"Forbidden"})
+      if (list.user.toString() !== req.user.id) {
+        return res.status(403).json({ message: "Forbidden" });
       }
 
       list.title = newTitle;
       await list.save();
 
-      res.status(200).json({ message: "Title Updated Successfully.",newTitle });
+      res
+        .status(200)
+        .json({ message: "Title Updated Successfully.", newTitle });
     } catch (error) {
       console.error(error);
       res

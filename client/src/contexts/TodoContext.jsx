@@ -1,12 +1,7 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { useListContext } from "./ListContext";
-import { AUTH_TKN } from "../authToken";
 import { useLoading } from "./LoadingContext";
-
-
-
-
-const host = "http://localhost:3000";
+import { HOST } from "../config/config";
 
 const TodoContext = createContext();
 
@@ -15,21 +10,17 @@ export const useTodoContext = () => {
 };
 
 export const TodoProvider = ({ children }) => {
-  const { selectedList, defaultList, setDefaultList, getDefaultTasksList } =
-    useListContext();
+  const { selectedList, defaultList, getDefaultTasksList } = useListContext();
   const [todos, setTodos] = useState([]);
   const [selectedTodo, setSelectedTodo] = useState(null);
   const completedTodoStyle = "line-through font-light";
 
-  const {fetchWithLoader} = useLoading();
+  const { fetchWithLoader } = useLoading();
 
   const selectTodo = async (todoId) => {
     try {
-      const res = await fetchWithLoader(`${host}/todo/info/${todoId}`, {
-        credentials: 'include',
-        headers: {
-          authorization: AUTH_TKN,
-        },
+      const res = await fetchWithLoader(`${HOST}/todo/info/${todoId}`, {
+        credentials: "include",
       });
       let data = await res.json();
       if (!res.ok) {
@@ -47,15 +38,17 @@ export const TodoProvider = ({ children }) => {
 
   const getTodosData = async (listId) => {
     try {
-      const res = await fetchWithLoader(`http://localhost:3000/todo/${listId}`, {
-        credentials: 'include',
-        headers: {
-          authorization: AUTH_TKN,
-        },
-      });
+      const res = await fetchWithLoader(
+        `http://localhost:3000/todo/${listId}`,
+        {
+          credentials: "include",
+        }
+      );
 
       if (!res.ok) {
-        throw new Error(`Failed to fetchWithLoader data. Status: ${res.status}`);
+        throw new Error(
+          `Failed to fetchWithLoader data. Status: ${res.status}`
+        );
       }
 
       const data = await res.json();
@@ -71,14 +64,13 @@ export const TodoProvider = ({ children }) => {
   const getAllTodos = async () => {
     try {
       const res = await fetchWithLoader(`http://localhost:3000/todo/`, {
-        credentials: 'include',
-        headers: {
-          authorization: AUTH_TKN,
-        },
+        credentials: "include",
       });
 
       if (!res.ok) {
-        throw new Error(`Failed to fetchWithLoader data. Status: ${res.status}`);
+        throw new Error(
+          `Failed to fetchWithLoader data. Status: ${res.status}`
+        );
       }
 
       const data = await res.json();
@@ -93,12 +85,11 @@ export const TodoProvider = ({ children }) => {
   const addTodo = async (title) => {
     if (!defaultList && selectedList) {
       try {
-        const req = await fetchWithLoader(`${host}/todo`, {
+        const req = await fetchWithLoader(`${HOST}/todo`, {
           method: "POST",
-          credentials: 'include',
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            authorization: AUTH_TKN,
             todolist: selectedList._id,
           },
           body: JSON.stringify({ title }),
@@ -115,12 +106,11 @@ export const TodoProvider = ({ children }) => {
       const defaultTasksList = await getDefaultTasksList();
 
       try {
-        const req = await fetchWithLoader(`${host}/todo`, {
+        const req = await fetchWithLoader(`${HOST}/todo`, {
           method: "POST",
-          credentials: 'include',
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            authorization: AUTH_TKN,
             todolist: defaultTasksList._id,
           },
           body: JSON.stringify({ title }),
@@ -136,12 +126,11 @@ export const TodoProvider = ({ children }) => {
     } else if (defaultList === "MyDay" && !selectedList) {
       const defaultTasksList = await getDefaultTasksList();
       try {
-        const req = await fetchWithLoader(`${host}/todo`, {
+        const req = await fetchWithLoader(`${HOST}/todo`, {
           method: "POST",
-          credentials: 'include',
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            authorization: AUTH_TKN,
             todolist: defaultTasksList._id,
           },
           body: JSON.stringify({ title, inMyDay: "true" }),
@@ -157,12 +146,11 @@ export const TodoProvider = ({ children }) => {
     } else if (defaultList === "Important" && !selectedList) {
       const defaultTasksList = await getDefaultTasksList();
       try {
-        const req = await fetchWithLoader(`${host}/todo`, {
+        const req = await fetchWithLoader(`${HOST}/todo`, {
           method: "POST",
-          credentials: 'include',
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            authorization: AUTH_TKN,
             todolist: defaultTasksList._id,
           },
           body: JSON.stringify({ title, markedImp: "true" }),
@@ -188,15 +176,17 @@ export const TodoProvider = ({ children }) => {
     }
 
     try {
-      const res = await fetchWithLoader(`http://localhost:3000/todo/${todoId}`, {
-        method: "DELETE",
-        credentials: 'include',
-        headers: {
-          "Content-Type": "application/json",
-          authorization: AUTH_TKN,
-          todolist: listToDeleteFrom._id,
-        },
-      });
+      const res = await fetchWithLoader(
+        `http://localhost:3000/todo/${todoId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            todolist: listToDeleteFrom._id,
+          },
+        }
+      );
       if (!res.ok) {
         throw new Error(`Failed to Delete the Task (status ${res.status})`);
       }
@@ -213,12 +203,11 @@ export const TodoProvider = ({ children }) => {
   // updatedBody can have one property to all properties of the todo. its an object
   const editTodo = async (updatedBody, todoId) => {
     try {
-      const res = await fetchWithLoader(`${host}/todo/${todoId}`, {
+      const res = await fetchWithLoader(`${HOST}/todo/${todoId}`, {
         method: "PUT",
-        credentials: 'include',
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          authorization: AUTH_TKN,
         },
         body: JSON.stringify(updatedBody),
       });
@@ -257,7 +246,7 @@ export const TodoProvider = ({ children }) => {
           return todo;
         });
       });
-      if(selectedTodo) selectTodo(checkedTodo._id);
+      if (selectedTodo) selectTodo(checkedTodo._id);
     } catch (error) {
       console.error("Error updating todo:", error);
     }
@@ -287,7 +276,7 @@ export const TodoProvider = ({ children }) => {
         });
       });
       //Only select the todo when the sidebar is open
-      if(selectedTodo) selectTodo(checkedTodo._id);
+      if (selectedTodo) selectTodo(checkedTodo._id);
     } catch (error) {
       console.error("Error updating todo:", error);
     }
@@ -295,15 +284,17 @@ export const TodoProvider = ({ children }) => {
 
   const editTodoStep = async (updatedBody, todoId, stepId) => {
     try {
-      const res = await fetchWithLoader(`${host}/todo/${todoId}/step/${stepId}`, {
-        method: "PUT",
-        credentials: 'include',
-        headers: {
-          "Content-Type": "application/json",
-          authorization: AUTH_TKN,
-        },
-        body: JSON.stringify(updatedBody),
-      });
+      const res = await fetchWithLoader(
+        `${HOST}/todo/${todoId}/step/${stepId}`,
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedBody),
+        }
+      );
 
       if (!res.ok) {
         throw new Error(

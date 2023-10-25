@@ -1,5 +1,6 @@
 import { createTheme} from '@mui/material/styles';
  
+//Theme for the MUI TextFields used in Login and SignUp 
  const textFieldTheme = createTheme({
     palette: {
       mode: 'dark',

@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { Input, Button } from "@material-tailwind/react";
 import { ThemeProvider } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import textFieldTheme from "./textFieldTheme";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useLoading } from "../../contexts/LoadingContext";
+import { HOST } from "../../config/config";
+
 
 export default function Signup() {
   const [fullName, setFullName] = useState("");
@@ -102,7 +103,7 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/auth/createuser", {
+      const response = await fetch(`${HOST}/auth/createuser`, {
         method: "POST",
         credentials: 'include',
         headers: {

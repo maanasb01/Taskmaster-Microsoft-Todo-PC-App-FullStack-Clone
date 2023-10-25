@@ -1,35 +1,26 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import sunIcon from "../assets/sun_icon.svg";
 import starIcon from "../assets/star_icon.svg";
 import calendarIcon from "../assets/calendar_icon.svg";
 import tasksIcon from "../assets/tasks_icon.svg";
 import listIcon from "../assets/list_icon.svg";
 import plusIcon from "../assets/plus_icon.svg";
-import folderIcon from "../assets/folder_icon.svg";
 import deleteIcon from "../assets/delete_icon.svg";
 import { useListContext } from "../contexts/ListContext";
 import { useTodoContext } from "../contexts/TodoContext";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import {
-  Navigate,
-  redirect,
-  redirectDocument,
-  useNavigate,
-} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useLoading } from "../contexts/LoadingContext";
-
-const host = "http://localhost:3000";
+import { HOST } from "../config/config";
 
 //Component for new list
 function NewList() {
   const { addNewList } = useListContext();
-  async function handleAddList(){
-
+  async function handleAddList() {
     await addNewList();
     return;
-
   }
   return (
     <>
@@ -52,6 +43,7 @@ function NewList() {
   );
 }
 
+//List Component for Default Lists "My Day, Important, Planned, Tasks"
 function DefaultListOption(props) {
   const { icon, title, onClick } = props;
 
@@ -71,22 +63,17 @@ function DefaultListOption(props) {
 function ListOption(props) {
   const { icon, title, selectList, listId } = props;
   const [isEditing, setIsEditing] = useState(false);
-
   const [listTitle, setTitle] = useState(title);
-
   const { editList, deleteList, latestListId, setLatestListId } =
     useListContext();
 
-  const {setTodos} = useTodoContext();
-
   const oldTitle = title;
-
   const inputref = useRef(null);
 
   // Function to handle "Esc" key press
   const handleEscKeyPress = (event) => {
     if (event.key === "Escape") {
-      if(inputref.current) inputref.current.blur(); // Blur the input when "Esc" is pressed
+      if (inputref.current) inputref.current.blur(); // Blur the input when "Esc" is pressed
     }
   };
 
@@ -101,9 +88,6 @@ function ListOption(props) {
   }, []);
 
   useEffect(() => {
-    // const prevList = listRef.current;
-
-    //latestListId === listId && lists.length === prevList.length --- previous condition
     if (latestListId === listId) {
       //setIsEditing(true);
       setLatestListId(null);
@@ -154,7 +138,7 @@ function ListOption(props) {
 
   async function handleDeleteList(e) {
     e.stopPropagation();
-    
+
     await deleteList(listId);
     return;
   }
@@ -211,37 +195,21 @@ export default function NavigationCol() {
     lists,
     selectList,
     setSelectedList,
-    selectedListName,
     setSelectedListName,
     getDefaultTasksList,
-    defaultList,
     setDefaultList,
     isNavColOpen,
     setIsNavColOpen,
   } = useListContext();
-  const {
-    todos,
-    setTodos,
-    getTodosData,
-    getAllTodos,
-    addTodo,
-    deleteTodo,
-    editTodo,
-    selectTodo,
-    handleOnCheck,
-    editTodoStep,
-    handleToggleMarkedImp,
-    selectedTodo,
-    completedTodoStyle,
-    setSelectedTodo,
-  } = useTodoContext();
+  const { setTodos, getTodosData, getAllTodos, setSelectedTodo } =
+    useTodoContext();
 
   const { user, setUser } = useAuth();
 
   const [listsToDisplay, setListsToDisplay] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const {fetchWithLoader} = useLoading();
+  const { fetchWithLoader } = useLoading();
 
   const navigate = useNavigate();
 
@@ -263,29 +231,26 @@ export default function NavigationCol() {
     }
   }, [lists]);
 
-  //Close navbar when medium screens 
+  //Close navbar when medium screens
 
   const navColCloseHandler = (e) => {
-    if(window.innerWidth>767 && window.innerWidth<1024){
-
-    if (
-      !navColRef.current.contains(e.target) &&
-      !navToggleBtnRef.current.contains(e.target)
-    ) {
-      setIsNavColOpen(false);
-    }    
-  }
-  }
-  useEffect(()=>{
-
-      document.addEventListener("mousedown", navColCloseHandler);
-      document.addEventListener("resize", navColCloseHandler);
-      return () => {
+    if (window.innerWidth > 767 && window.innerWidth < 1024) {
+      if (
+        !navColRef.current.contains(e.target) &&
+        !navToggleBtnRef.current.contains(e.target)
+      ) {
+        setIsNavColOpen(false);
+      }
+    }
+  };
+  useEffect(() => {
+    document.addEventListener("mousedown", navColCloseHandler);
+    document.addEventListener("resize", navColCloseHandler);
+    return () => {
       document.removeEventListener("mousedown", navColCloseHandler);
       document.addEventListener("resize", navColCloseHandler);
     };
- 
-  },[]);
+  }, []);
 
   //Set the navbar state to true automatically when window gets resize
 
@@ -299,15 +264,12 @@ export default function NavigationCol() {
     // Initial check
     handleResize();
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-
-  
 
   async function handleMyDayDefaultList() {
     try {
@@ -318,9 +280,9 @@ export default function NavigationCol() {
       setSelectedListName("My Day");
       setDefaultList("MyDay");
       setSelectedTodo(null);
-      if(window.innerWidth<1024){
-      setIsNavColOpen(false);
-    }
+      if (window.innerWidth < 1024) {
+        setIsNavColOpen(false);
+      }
     } catch (error) {
       console.error(error.message);
     }
@@ -334,9 +296,9 @@ export default function NavigationCol() {
       setSelectedListName("Important");
       setDefaultList("Important");
       setSelectedTodo(null);
-      if(window.innerWidth<1024){
-      setIsNavColOpen(false);
-    }
+      if (window.innerWidth < 1024) {
+        setIsNavColOpen(false);
+      }
     } catch (error) {
       console.error(error.message);
     }
@@ -350,9 +312,9 @@ export default function NavigationCol() {
       setSelectedListName("Planned");
       setDefaultList("Planned");
       setSelectedTodo(null);
-      if(window.innerWidth<1024){
-      setIsNavColOpen(false);
-    }
+      if (window.innerWidth < 1024) {
+        setIsNavColOpen(false);
+      }
     } catch (error) {
       console.error(error.message);
     }
@@ -360,16 +322,15 @@ export default function NavigationCol() {
   async function handleTasksDefaultList() {
     try {
       const defaultTasksList = await getDefaultTasksList();
-      console.log(defaultTasksList);
       const tasksTodos = await getTodosData(defaultTasksList._id);
       setTodos(tasksTodos);
       setSelectedList(null);
       setSelectedListName("Tasks");
       setDefaultList("Tasks");
       setSelectedTodo(null);
-      if(window.innerWidth<1024){
-      setIsNavColOpen(false);
-    }
+      if (window.innerWidth < 1024) {
+        setIsNavColOpen(false);
+      }
     } catch (error) {
       console.error(error.message);
     }
@@ -380,15 +341,15 @@ export default function NavigationCol() {
     setDefaultList(null);
     setTodos(null);
     selectList(listId);
-    
-    if(window.innerWidth<1024){
+
+    if (window.innerWidth < 1024) {
       setIsNavColOpen(false);
     }
   }
 
   async function handleLogout() {
     try {
-      const response = await fetchWithLoader(`${host}/auth/logout`, {
+      const response = await fetchWithLoader(`${HOST}/auth/logout`, {
         method: "GET",
         credentials: "include",
       });
@@ -409,27 +370,31 @@ export default function NavigationCol() {
 
   function handleProfile() {
     navigate("/app/profile");
-
   }
 
   return (
     <>
       <div
         id="nav"
-        ref= {navColRef}
+        ref={navColRef}
         // className={`bg-[#fafafa] w-[100%] md:w-[50%] lg:w-[30%] h-full fixed z-10 top-0 left-0 lg:static   ${
         //   isNavColOpen ? "" : "hidden"}`}
         className={`bg-[#fafafa] w-[100%] md:w-[50%] lg:w-[30%] h-full fixed z-10 top-0 lg:static transition-transform duration-300 overflow-hidden ${
-          isNavColOpen ? "transform translate-x-0" : "transform -translate-x-full"
+          isNavColOpen
+            ? "transform translate-x-0"
+            : "transform -translate-x-full"
         }`}
       >
         <div id="nav-col-wrapper" className="h-full flex flex-col relative">
           {/* {Toggle Button} */}
-          <div
-            className="px-3 pt-2 text-xl lg:hidden"
-            
-          >
-            <img src={listIcon} ref={navToggleBtnRef} alt="toggle" className="h-6 cursor-pointer" onClick={() => setIsNavColOpen(!isNavColOpen)} />
+          <div className="px-3 pt-2 text-xl lg:hidden">
+            <img
+              src={listIcon}
+              ref={navToggleBtnRef}
+              alt="toggle"
+              className="h-6 cursor-pointer"
+              onClick={() => setIsNavColOpen(!isNavColOpen)}
+            />
           </div>
 
           <div className="font-popins px-3 pt-2 text-xl text-slate-700  font-bold">
@@ -452,8 +417,8 @@ export default function NavigationCol() {
                 "aria-labelledby": "basic-button",
               }}
             >
-              <MenuItem onClick={handleProfile} >My account</MenuItem>
-              <MenuItem onClick={handleLogout} >Logout</MenuItem>
+              <MenuItem onClick={handleProfile}>My account</MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
             <div className="mr-auto my-auto w-full px-3 flex flex-col overflow-hidden whitespace-nowrap overflow-ellipsis">
               <span className="text-xl font-semibold overflow-hidden whitespace-nowrap overflow-ellipsis">

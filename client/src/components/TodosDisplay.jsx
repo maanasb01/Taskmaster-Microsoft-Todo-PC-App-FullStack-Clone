@@ -1,23 +1,18 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useListContext } from "../contexts/ListContext";
 import plusIcon from "../assets/plus_icon.svg";
-import addStepIcon from "../assets/addStep_icon.svg";
 import checkedCircleIcon from "../assets/checked_circle.svg";
 import hoverCheckIcon from "../assets/hover_check_circle.svg";
 import cirlceIcon from "../assets/circle_icon.svg";
-import deleteIcon from "../assets/delete_icon.svg";
 import listIconWhite from "../assets/list_icon_white.svg";
-import listIcon from "../assets/list_icon.svg";
 import dropdownArrow from "../assets/dropdownArrow_icon.svg";
 import todoStarIcon from "../assets/todoStar_icon.svg";
 import todoStarMarkedIcon from "../assets/todoStarMarked_icon.svg";
-import { AUTH_TKN } from "../authToken";
 import { useTodoContext } from "../contexts/TodoContext";
 import TodoSidebar from "./TodoSidebar";
 import { useLoading } from "../contexts/LoadingContext";
 
-const host = "http://localhost:3000";
-
+//The Input Task Component
 function AddTask(props) {
   const { onSubmit } = props;
   const [isInputFocused, setInputFocused] = useState(false);
@@ -68,15 +63,8 @@ function AddTask(props) {
 function TodoComponent(props) {
   const { todoTitle, onSelect, thisTodo } = props;
   const [isHovered, setIsHovered] = useState(false);
-  const {
-    todos,
-    setTodos,
-    editTodo,
-    completedTodoStyle,
-    selectTodo,
-    handleOnCheck,
-    handleToggleMarkedImp,
-  } = useTodoContext();
+  const { completedTodoStyle, handleOnCheck, handleToggleMarkedImp } =
+    useTodoContext();
 
   return (
     <div
@@ -137,34 +125,17 @@ function TodoComponent(props) {
 export default function TodosDisplay() {
   const {
     selectedList,
-    lists,
     selectedListName,
-    setSelectedListName,
     defaultList,
     setIsNavColOpen,
     isNavColOpen,
   } = useListContext();
   const { todos, setTodos, addTodo, selectTodo, selectedTodo, getTodosData } =
     useTodoContext();
-  const [listTitle, setListTitle] = useState("");
   const [isCompletedTaskOpen, setIsCompletedTaskOpen] = useState(true);
   const { loading } = useLoading();
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     if (selectedList) {
-  //       setSelectedListName(selectedList.title);
-  //       console.log("list Title updated: " + listTitle);
-  //     } else {
-  //       setSelectedListName("Select a List to Get its Tasks");
-  //     }
-  //   }, 0);
-  // }, [selectedList, lists]);
-
   useEffect(() => {
-    // setTimeout(() => {
-
-    // }, 0);
     if (selectedList) {
       const getTodos = async () => {
         const fetchedTodos = await getTodosData(selectedList._id);
@@ -172,9 +143,6 @@ export default function TodosDisplay() {
       };
 
       getTodos();
-    } else {
-      console.log("Selected List is Null");
-      return;
     }
   }, [selectedList]);
 
@@ -278,14 +246,6 @@ export default function TodosDisplay() {
           {defaultList !== "Planned" ? <AddTask onSubmit={addTodo} /> : null}
         </div>
         {/* //The sidebar for Todo */}
-        {/* <div
-          id="todo-sidebar-wrapper"
-          className={`w-full h-full  md:w-[75%] xl:w-[52%] flex transition-transform duration-300 ${
-            selectedTodo
-              ? "transform translate-x-0"
-              : "transform translate-x-full"
-          }`}
-        > */}
 
         <div
           id="todo-sidebar-wrapper"

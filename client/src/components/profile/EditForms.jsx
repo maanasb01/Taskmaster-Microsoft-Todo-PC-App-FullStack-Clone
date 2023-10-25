@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useLoading } from "../../contexts/LoadingContext";
-
-const host = "http://localhost:3000";
+import { HOST } from "../../config/config";
 
 export function NameEditForm() {
   const [error, setError] = useState("");
   const [newName, setNewName] = useState(""); // State variable for new name
   const [password, setPassword] = useState(""); // State variable for password
-  const { user, setUser } = useAuth();
-  const {fetchWithLoader} = useLoading();
+  const { setUser } = useAuth();
+  const { fetchWithLoader } = useLoading();
 
   const navigate = useNavigate();
 
@@ -36,7 +35,7 @@ export function NameEditForm() {
     };
 
     try {
-      const response = await fetchWithLoader(`${host}/edit/name`, {
+      const response = await fetchWithLoader(`${HOST}/edit/name`, {
         method: "PATCH",
         credentials: "include",
         headers: {
@@ -120,8 +119,8 @@ export function EmailEditForm() {
   const [error, setError] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { user, setUser } = useAuth();
-  const {fetchWithLoader} = useLoading();
+  const { setUser } = useAuth();
+  const { fetchWithLoader } = useLoading();
   const navigate = useNavigate();
 
   const handleEmailChange = (event) => {
@@ -156,7 +155,7 @@ export function EmailEditForm() {
     };
 
     try {
-      const response = await fetchWithLoader(`${host}/edit/email`, {
+      const response = await fetchWithLoader(`${HOST}/edit/email`, {
         method: "PATCH",
         credentials: "include",
         headers: {
@@ -239,7 +238,7 @@ export function PasswordEditForm() {
   const [successMsg, setsuccessMsg] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [previousPassword, setPreviousPassword] = useState("");
-  const {fetchWithLoader} = useLoading();
+  const { fetchWithLoader } = useLoading();
   const navigate = useNavigate();
 
   const handleNewPasswordChange = (event) => {
@@ -262,9 +261,11 @@ export function PasswordEditForm() {
       setError("* Please fill in all fields.");
       return;
     }
-    if(!isPasswordValid(newPassword)){
-        setError("* Password must be at least 6 characters long and contain at least one letter, one number, and one special character.");
-        return;
+    if (!isPasswordValid(newPassword)) {
+      setError(
+        "* Password must be at least 6 characters long and contain at least one letter, one number, and one special character."
+      );
+      return;
     }
     const data = {
       newPassword: newPassword,
@@ -272,7 +273,7 @@ export function PasswordEditForm() {
     };
 
     try {
-      const response = await fetchWithLoader(`${host}/edit/password`, {
+      const response = await fetchWithLoader(`${HOST}/edit/password`, {
         method: "PATCH",
         credentials: "include",
         headers: {
@@ -288,9 +289,8 @@ export function PasswordEditForm() {
           navigate("/app/profile", { replace: true });
         }, 500);
       } else {
-       
         const errorData = await response.json();
-        setError("* "+errorData.message); 
+        setError("* " + errorData.message);
       }
     } catch (error) {
       console.error("Error:", error);

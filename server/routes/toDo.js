@@ -1,8 +1,8 @@
 const express = require("express");
 const { body, header, param, validationResult } = require("express-validator");
 const tokenAuth = require("../middlewares/tokenAuth");
-const {ToDoList} = require("../models/ToDoList");
-const {ToDo} = require("../models/ToDo");
+const { ToDoList } = require("../models/ToDoList");
+const { ToDo } = require("../models/ToDo");
 const mongoose = require("mongoose");
 const { isValidObjectId } = mongoose;
 
@@ -122,27 +122,21 @@ router.get(
 );
 
 //GET all the todos of a given user
-router.get(
-  "/",
-  tokenAuth,
-  async (req, res) => {
-    
-    try {
+router.get("/", tokenAuth, async (req, res) => {
+  try {
+    const todos = await ToDo.find({ user: req.user.id });
 
-      const todos = await ToDo.find({user: req.user.id});
-
-      if (!todos) {
-        res.status(404).send("NO Todos Found");
-      }
-
-      res.status(200).json(todos);
-    } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Internal Server Error", error: error.message });
+    if (!todos) {
+      res.status(404).send("NO Todos Found");
     }
+
+    res.status(200).json(todos);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
-);
+});
 
 //Route for deleting a toDo ROUTE: DELETE /todo/:id
 
@@ -195,7 +189,7 @@ router.delete(
         /**The HyperText Transfer Protocol (HTTP) 422 Unprocessable Content response status code
          * indicates that the server understands the content type of the request entity,
          * and the syntax of the request entity is correct, but it was unable to process
-         * the contained instructions. */
+         * the contained instructions.-MDN */
         return res.status(422).json({
           message: "Unprocessable Content",
           error:
@@ -219,7 +213,6 @@ router.delete(
 );
 
 //Route for updating a toDo ROUTE: PUT /todo/:id
-
 router.put(
   "/:id",
   [param("id").exists().withMessage("Missing id parameter")],
@@ -234,9 +227,9 @@ router.put(
     }
 
     const todoId = req.params.id;
-    const { title, note, dueAt, isCompleted, markedImp,inMyDay } = req.body;
+    const { title, note, dueAt, isCompleted, markedImp, inMyDay } = req.body;
 
-    if (!title && !note && !dueAt && !isCompleted && !markedImp &&!inMyDay) {
+    if (!title && !note && !dueAt && !isCompleted && !markedImp && !inMyDay) {
       return res.status(400).json({ message: "No Things to Update" });
     }
 
@@ -278,35 +271,33 @@ router.put(
         return res.status(403).json({ message: "Forbidden" });
       }
 
-      if(dueAt==="REMOVEDATE"){
-
+      if (dueAt === "REMOVEDATE") {
         const updatedTodo = await ToDo.findByIdAndUpdate(
           todoId,
           { $unset: { dueAt: true } },
-          { new: true}
-        )
+          { new: true }
+        );
         if (!updatedTodo) {
           return res.status(404).json({ error: "Todo not found" });
         }
-        
-        return res.status(200).json({ message: "Removed Date Successfully.", updatedTodo });
-      
 
+        return res
+          .status(200)
+          .json({ message: "Removed Date Successfully.", updatedTodo });
       }
-      if(note==="REMOVENOTE"){
-
+      if (note === "REMOVENOTE") {
         const updatedTodo = await ToDo.findByIdAndUpdate(
           todoId,
           { $unset: { note: true } },
-          { new: true}
-        )
+          { new: true }
+        );
         if (!updatedTodo) {
           return res.status(404).json({ error: "Todo not found" });
         }
-        
-        return res.status(200).json({ message: "Note Cleared Successfully.", updatedTodo });
-      
 
+        return res
+          .status(200)
+          .json({ message: "Note Cleared Successfully.", updatedTodo });
       }
 
       const updatedTodo = await ToDo.findByIdAndUpdate(
@@ -327,7 +318,6 @@ router.put(
 
 //Route to add a Step to a Todo provided id of the Todo as a parameter
 //POST /todo/:id/step
-
 router.post(
   "/:id/step",
   [
@@ -388,7 +378,6 @@ router.get("/:id/step", tokenAuth, async (req, res) => {
 });
 
 //PUT request. To update a Step
-
 router.put(
   "/:todoId/step/:stepId",
   [
@@ -440,7 +429,12 @@ router.put(
 
       await todo.save();
 
-      res.status(200).json({ message: "Updated the Step Successfully.",updatedTodoStep:newTodoStep });
+      res
+        .status(200)
+        .json({
+          message: "Updated the Step Successfully.",
+          updatedTodoStep: newTodoStep,
+        });
     } catch (error) {
       res
         .status(500)

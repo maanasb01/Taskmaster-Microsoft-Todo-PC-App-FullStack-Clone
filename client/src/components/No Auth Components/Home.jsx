@@ -3,6 +3,7 @@ import calenderImg from "../../assets/Landing page assets/calender.svg";
 import mobileListImg from "../../assets/Landing page assets/mobileNoteList.svg";
 import addTaskImg from "../../assets/Landing page assets/add-task.svg";
 import myDayImg from "../../assets/Landing page assets/myDayImg.svg";
+import responsiveImg from "../../assets/Landing page assets/responsiveImg.svg";
 import { Link } from "react-router-dom";
 
 export default function Home() {
@@ -63,7 +64,7 @@ export default function Home() {
               <h1 className="text-3xl text-[#B095D2] lg:text-5xl xl:text-6xl">
                 Task Lists
               </h1>
-              <p className="text-[#8898E8] tracking-tighter mt-3 lg:text-xl xl:text-2xl">
+              <p className="text-gray-200 tracking-tighter mt-3 lg:text-xl xl:text-2xl">
                 Create multiple task lists, which can be customized and
                 organized to suit your needs. Create separate lists for work,
                 personal things, shopping, and more. <br /> Or add your tasks in
@@ -95,7 +96,7 @@ export default function Home() {
               <h1 className="text-3xl text-[#B095D2] lg:text-5xl xl:text-6xl">
                 Create Advanced Tasks
               </h1>
-              <div className="text-[#8898E8] tracking-tighter mt-3 lg:text-xl xl:text-2xl">
+              <div className="text-gray-200 tracking-tighter mt-3 lg:text-xl xl:text-2xl">
                 <p className="mb-3 font-semibold">
                   Streamline your task management with intuitive Tasks features.
                 </p>
@@ -124,7 +125,7 @@ export default function Home() {
               <h1 className="text-3xl text-[#B095D2] lg:text-5xl xl:text-6xl">
                 Specialized Lists
               </h1>
-              <div className="text-[#8898E8] tracking-tighter mt-3 lg:text-xl xl:text-2xl">
+              <div className="text-gray-200 tracking-tighter mt-3 lg:text-xl xl:text-2xl">
                 <p className="mb-3 font-semibold">
                   Experience efficiency like never before with our specialized
                   lists.
@@ -132,18 +133,18 @@ export default function Home() {
 
                 <ul className="list-disc space-y-2">
                   <li>
-                    <span className="font-bold">'My Day'</span> empowers you to
-                    focus on the tasks that matter today. Easily view and add
+                    <span className="font-semibold">'My Day'</span> empowers you
+                    to focus on the tasks that matter today. Easily view and add
                     tasks to your daily agenda.
                   </li>
                   <li>
-                    <span className="font-bold">'Important'</span> keeps your
-                    key priorities in one place, effortlessly displaying all
-                    important tasks while automatically categorizing new
+                    <span className="font-semibold">'Important'</span> keeps
+                    your key priorities in one place, effortlessly displaying
+                    all important tasks while automatically categorizing new
                     entries.
                   </li>
                   <li>
-                    Meanwhile, <span className="font-bold">'Planned'</span>{" "}
+                    Meanwhile, <span className="font-semibold">'Planned'</span>{" "}
                     ensures you never miss a deadline by conveniently showing
                     all tasks with due dates.
                   </li>
@@ -179,7 +180,7 @@ export default function Home() {
               <h1 className="text-3xl text-[#B095D2] lg:text-5xl xl:text-6xl">
                 Effortless Daily Task Planning
               </h1>
-              <div className="text-[#8898E8] tracking-tighter mt-3 lg:text-xl xl:text-2xl">
+              <div className="text-gray-200 tracking-tighter mt-3 lg:text-xl xl:text-2xl">
                 <p className="font-semibold mb-3">
                   Seamless task management with the 'My Day' feature.
                 </p>
@@ -195,6 +196,34 @@ export default function Home() {
                   accomplishment.
                 </p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="font-popins w-full my-14 bg-[#6063B1]">
+          <div className="w-5/6 pb-5 xl:w-5/6 2xl:w-3/6 mx-auto flex flex-col lg:flex-row lg:space-x-7 rounded-xl bg-[#4F5295] lg:bg-[#6063B1]">
+            <div className=" w-5/6 md:bg-[#4F5295] rounded-xl py-5 px-3 lg:px-10 text-center lg:text-left mx-auto  lg:py-20  flex flex-col sm:space-y-4 ">
+              <h1 className="text-3xl text-[#B095D2] lg:text-5xl xl:text-6xl">
+                Seamless <br />
+                Cross-Device Accessibility
+              </h1>
+              <div className="text-gray-200 tracking-tighter mt-3 lg:text-xl xl:text-2xl">
+                <p>
+                  Enjoy a consistent user experience on any device or screen
+                  size with our fully responsive app. Whether you're on a
+                  desktop, tablet, or smartphone, your task management remains
+                  smooth and intuitive. Stay organized and productive, no matter
+                  where you are.
+                </p>
+              </div>
+            </div>
+            <div className="w-full md:w-1/2 md:bg-[#4F5295] mx-auto rounded-xl lg:py-20 flex items-center">
+              <img
+                src={responsiveImg}
+                alt=""
+                srcSet=""
+                className="object-cover object-center rounded "
+              />
             </div>
           </div>
         </section>

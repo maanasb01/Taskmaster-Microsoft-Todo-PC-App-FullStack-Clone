@@ -1,4 +1,3 @@
-import { Input,Button } from "@material-tailwind/react";
 import { useState } from "react";
 import {ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
@@ -6,6 +5,8 @@ import textFieldTheme from "./textFieldTheme";
 import { Link, Navigate, redirect, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useLoading } from "../../contexts/LoadingContext";
+import { HOST } from "../../config/config";
+
 
 
 export default function Login() {
@@ -57,7 +58,7 @@ export default function Login() {
 
     try {
       // Send a POST request to your authentication API
-      const response = await fetch("http://localhost:3000/auth/login", {
+      const response = await fetch(`${HOST}/auth/login`, {
         method: "POST",
         credentials: 'include',
         headers: {

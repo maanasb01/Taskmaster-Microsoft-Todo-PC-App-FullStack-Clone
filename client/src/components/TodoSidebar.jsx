@@ -1,15 +1,10 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useListContext } from "../contexts/ListContext";
-import TodoStep, {AddStep} from "./TodoStep";
-
-import addStepIcon from "../assets/addStep_icon.svg";
+import TodoStep, { AddStep } from "./TodoStep";
 import checkedCircleIcon from "../assets/checked_circle.svg";
-import dotsOption from "../assets/dotsOption_icon.svg";
 import hoverCheckIcon from "../assets/hover_check_circle.svg";
 import cirlceIcon from "../assets/circle_icon.svg";
 import deleteIcon from "../assets/delete_icon.svg";
-import deleteRedIcon from "../assets/deleteRed_icon.svg";
-import plusIcon from "../assets/plus_icon.svg";
 import sunIcon from "../assets/sun_icon.svg";
 import sunSelectedIcon from "../assets/sunSelected_icon.svg";
 import dueDateIcon from "../assets/dueDate_icon.svg";
@@ -18,14 +13,9 @@ import crossIcon from "../assets/cross_icon.svg";
 import dueDateSetRedIcon from "../assets/dueDateSetRed_icon.svg";
 import todoStarIcon from "../assets/todoStar_icon.svg";
 import todoStarMarkedIcon from "../assets/todoStarMarked_icon.svg";
-import { AUTH_TKN } from "../authToken";
 import { useTodoContext } from "../contexts/TodoContext";
 import Calender from "./Calender";
 import dayjs from "dayjs";
-
-const host = "http://localhost:3000";
-
-
 
 function SidebarFooter() {
   const { selectedTodo, deleteTodo } = useTodoContext();
@@ -86,18 +76,17 @@ function SidebarFooter() {
 }
 
 export default function TodoSidebar() {
-  const { selectedList, defaultList, setDefaultList } = useListContext();
+  const { defaultList } = useListContext();
   const {
     todos,
     setTodos,
     editTodo,
-    addTodo,
     selectTodo,
     selectedTodo,
     setSelectedTodo,
     completedTodoStyle,
     handleOnCheck,
-    handleToggleMarkedImp
+    handleToggleMarkedImp,
   } = useTodoContext();
   const [isHovered, setIsHovered] = useState(false);
   const [steps, setSteps] = useState([]);
@@ -111,22 +100,26 @@ export default function TodoSidebar() {
 
   const todoNoteRef = useRef(null);
   const todoTitleRef = useRef(null);
-  
-  useEffect(()=>{
-    if(selectedTodo){
+
+  useEffect(() => {
+    if (selectedTodo) {
       setTodoTitle(selectedTodo.title);
     }
-
-  },[selectedTodo])
-
+  }, [selectedTodo]);
 
   //Setting up the Styles of the Due Date div based on the due Date the todo has
   useEffect(() => {
-    if (selectedTodo ) {
-      if (selectedTodo.dueAt && dayjs(selectedTodo.dueAt) >= dayjs().startOf('day')) {
+    if (selectedTodo) {
+      if (
+        selectedTodo.dueAt &&
+        dayjs(selectedTodo.dueAt) >= dayjs().startOf("day")
+      ) {
         setDueDateStyle({ spanCSS: "text-[#005fb8]", icon: dueDateSetIcon });
         //cssObj.spanCss = "text-[#005fb8]"
-      } else if (selectedTodo.dueAt && dayjs(selectedTodo.dueAt) < dayjs().startOf('day')) {
+      } else if (
+        selectedTodo.dueAt &&
+        dayjs(selectedTodo.dueAt) < dayjs().startOf("day")
+      ) {
         //cssObj.spanCss = "text-red-700"
         setDueDateStyle({ spanCSS: "text-red-700", icon: dueDateSetRedIcon });
       } else {
@@ -139,82 +132,66 @@ export default function TodoSidebar() {
   //Setting Todo note's value and title height
   useEffect(() => {
     if (selectedTodo) {
-     
       setInitialTitleValue(selectedTodo.title);
       setTimeout(() => {
-        
-        const dummyTextArea = document.createElement('textarea');
-        dummyTextArea.style.height = 'auto';
+        const dummyTextArea = document.createElement("textarea");
+        dummyTextArea.style.height = "auto";
 
         dummyTextArea.value = selectedTodo.title;
-        dummyTextArea.className = ' text-xl   bg-inherit  ';
-        document.body.appendChild(dummyTextArea); 
+        dummyTextArea.className = " text-xl   bg-inherit  ";
+        document.body.appendChild(dummyTextArea);
         const scrollHeight = dummyTextArea.scrollHeight;
-        document.body.removeChild(dummyTextArea); 
+        document.body.removeChild(dummyTextArea);
         if (todoTitleRef.current) {
-          todoTitleRef.current.style.height = 'auto';
+          todoTitleRef.current.style.height = "auto";
           todoTitleRef.current.style.height = `${scrollHeight}px`;
         }
       }, 0);
-  
+
       if (selectedTodo.note) {
         setNoteValue(selectedTodo.note);
         setInitialNoteValue(selectedTodo.note);
         setTimeout(() => {
-          
-          const dummyTextArea =document.createElement('textarea');
-          dummyTextArea.style.height='auto';
-        
-          dummyTextArea.className = 'text-xs p-2 bg-inherit  ';
+          const dummyTextArea = document.createElement("textarea");
+          dummyTextArea.style.height = "auto";
+
+          dummyTextArea.className = "text-xs p-2 bg-inherit  ";
           dummyTextArea.value = selectedTodo.note;
           document.body.appendChild(dummyTextArea);
           const scrollHeight = dummyTextArea.scrollHeight;
           document.body.removeChild(dummyTextArea);
-          
+
           if (todoNoteRef.current) {
-          todoNoteRef.current.style.height = 'auto';
-          todoNoteRef.current.style.height = `${scrollHeight}px`;
-          
-        }
-         
+            todoNoteRef.current.style.height = "auto";
+            todoNoteRef.current.style.height = `${scrollHeight}px`;
+          }
         }, 0);
       } else {
-        setNoteValue('');
-        todoNoteRef.current.style.height = 'auto';
+        setNoteValue("");
+        todoNoteRef.current.style.height = "auto";
       }
     }
   }, [selectedTodo]);
-  
-  
 
   //Setting Todos Steps
   useEffect(() => {
     if (selectedTodo) {
-   
-      if(selectedTodo.steps){
-
+      if (selectedTodo.steps) {
         setSteps(selectedTodo.steps);
       }
-  
     }
-    // setTimeout(() => {
-
-    // }, 0);
   }, [selectedTodo]);
 
   //Adding Due Date to the Todo
   async function handleAddDueDate() {
     try {
       let updatedTodo;
-      if(dayjs(dateValue).isSame(dayjs(), 'day')){
-
+      if (dayjs(dateValue).isSame(dayjs(), "day")) {
         updatedTodo = await editTodo(
-          { dueAt: dateValue.toISOString(),inMyDay:"true" },
+          { dueAt: dateValue.toISOString(), inMyDay: "true" },
           selectedTodo._id
         );
-
-      }else{
-        
+      } else {
         updatedTodo = await editTodo(
           { dueAt: dateValue.toISOString() },
           selectedTodo._id
@@ -241,7 +218,6 @@ export default function TodoSidebar() {
 
   async function handleRemoveDate(e) {
     e.stopPropagation();
-
 
     try {
       const updatedTodo = await editTodo(
@@ -301,7 +277,6 @@ export default function TodoSidebar() {
         });
       });
       selectTodo(selectedTodo._id);
-
     } catch (error) {
       console.error("Error updating todo's note:", error);
     }
@@ -309,34 +284,32 @@ export default function TodoSidebar() {
 
   //Handle exit from Title Changing, the moment enter or esc pressed.
 
-  function handleTitleChangeExitEvent(e){
-
+  function handleTitleChangeExitEvent(e) {
     if (e.key === "Escape" || e.key === "Enter") {
       todoTitleRef.current.blur(); // Blur the input when "Esc" is pressed
-      
     }
-
   }
 
   //Title Change of Todo when the input gets blur
 
-  async function handleTodoTitleChange(){
-
+  async function handleTodoTitleChange() {
     try {
-      if (todoTitleRef.current.value === initialTitleValue || todoTitleRef.current.value.trim() === "") {
+      if (
+        todoTitleRef.current.value === initialTitleValue ||
+        todoTitleRef.current.value.trim() === ""
+      ) {
         setTodoTitle(initialTitleValue);
         setTimeout(() => {
           setSelectedTodo(selectedTodo);
         }, 10);
-        
+
         return;
       }
 
       const updatedTodo = await editTodo(
-          { title: todoTitleRef.current.value },
-          selectedTodo._id
-        );
-  
+        { title: todoTitleRef.current.value },
+        selectedTodo._id
+      );
 
       // Only update the todos state if the updatedTodo is available
       setTodos((prevTodos) => {
@@ -348,16 +321,15 @@ export default function TodoSidebar() {
         });
       });
       selectTodo(selectedTodo._id);
-    
     } catch (error) {
       console.error("Error updating todo's title:", error);
     }
-
   }
 
   function todoTitleChange() {
     todoTitleRef.current.style.height = "auto";
-    todoTitleRef.current.style.height = todoTitleRef.current.scrollHeight + "px";
+    todoTitleRef.current.style.height =
+      todoTitleRef.current.scrollHeight + "px";
     setTodoTitle(todoTitleRef.current.value);
   }
 
@@ -367,14 +339,14 @@ export default function TodoSidebar() {
 
     try {
       const updatedTodo = await editTodo(
-        { inMyDay: 'false' },
+        { inMyDay: "false" },
         selectedTodo._id
       );
 
-      if(!updatedTodo.inMyDay && defaultList==="MyDay"){
-        setTodos(todos.filter(todo=>todo._id !== updatedTodo._id));
+      if (!updatedTodo.inMyDay && defaultList === "MyDay") {
+        setTodos(todos.filter((todo) => todo._id !== updatedTodo._id));
         setSelectedTodo(null);
-        return
+        return;
       }
 
       // Only update the todos state if the updatedTodo is available
@@ -394,16 +366,12 @@ export default function TodoSidebar() {
   }
   //Add to My Day
   async function handleAddToMyDay() {
-    
-    if(selectedTodo.inMyDay){
-      return
+    if (selectedTodo.inMyDay) {
+      return;
     }
 
     try {
-      const updatedTodo = await editTodo(
-        { inMyDay: 'true' },
-        selectedTodo._id
-      );
+      const updatedTodo = await editTodo({ inMyDay: "true" }, selectedTodo._id);
 
       // Only update the todos state if the updatedTodo is available
       setTodos((prevTodos) => {
@@ -421,32 +389,25 @@ export default function TodoSidebar() {
     }
   }
 
-    //Handle exit from Title Changing, the moment enter or esc pressed.
+  //Handle exit from Title Changing, the moment enter or esc pressed.
 
-    function handleTitleChangeExitEventNote(e){
-
-      if (e.key === "Escape") {
-        todoNoteRef.current.blur(); // Blur the input when "Esc" is pressed
-        
-      }
-  
+  function handleTitleChangeExitEventNote(e) {
+    if (e.key === "Escape") {
+      todoNoteRef.current.blur(); // Blur the input when "Esc" is pressed
     }
+  }
 
   return (
     selectedTodo && (
-
       <div
         id="sidebar"
         className={`bg-[#fafafa] h-full w-full relative flex flex-col pb-4 pt-9`}
       >
-      {/* <div
-        id="sidebar"
-        className={`bg-[#fafafa] h-full w-full md:w-[75%] xl:w-[52%] relative flex flex-col pb-4 pt-9 `}
-      > */}
-
-
         {/* Close the Sidebar */}
-        <div className="h-8 w-8 hover:bg-gray-100 flex items-center justify-center absolute right-6 top-1 cursor-pointer" onClick={()=>setSelectedTodo(null)}>
+        <div
+          className="h-8 w-8 hover:bg-gray-100 flex items-center justify-center absolute right-6 top-1 cursor-pointer"
+          onClick={() => setSelectedTodo(null)}
+        >
           <img src={crossIcon} alt="" className="h-5" />
         </div>
 
@@ -456,7 +417,10 @@ export default function TodoSidebar() {
         >
           <div id="title-steps" className="border p-3 w-full">
             <div className="flex  h-fit  w-full">
-              <div onClick={() => handleOnCheck(selectedTodo)} className="h-fit">
+              <div
+                onClick={() => handleOnCheck(selectedTodo)}
+                className="h-fit"
+              >
                 {!selectedTodo.isCompleted ? (
                   <img
                     src={isHovered ? hoverCheckIcon : cirlceIcon}
@@ -473,26 +437,38 @@ export default function TodoSidebar() {
                   />
                 )}
               </div>
-                {/* Todo Title  */}
+              {/* Todo Title  */}
               <div className="pb-1 w-full">
                 <textarea
-                typeof="text"
-                ref={todoTitleRef}
-                onKeyDown={(e)=>handleTitleChangeExitEvent(e)}
-                onChange={todoTitleChange}
-                onBlur={handleTodoTitleChange}
-                value={todoTitle??''}
-                className={`text-xl  w-full  bg-inherit outline-none resize-none  ${selectedTodo.isCompleted ? completedTodoStyle : "font-semibold"}`}
-                >
-                </textarea>
-  
+                  typeof="text"
+                  ref={todoTitleRef}
+                  onKeyDown={(e) => handleTitleChangeExitEvent(e)}
+                  onChange={todoTitleChange}
+                  onBlur={handleTodoTitleChange}
+                  value={todoTitle ?? ""}
+                  className={`text-xl  w-full  bg-inherit outline-none resize-none  ${
+                    selectedTodo.isCompleted
+                      ? completedTodoStyle
+                      : "font-semibold"
+                  }`}
+                ></textarea>
               </div>
               {/* Star Icon */}
 
-              <div className="cursor-pointer h-fit ml-auto pl-3 pt-1" onClick={()=>handleToggleMarkedImp(selectedTodo)}>
-                {(selectedTodo && selectedTodo.markedImp)?<img src={todoStarMarkedIcon} alt="" className="h-5 ml-1" />:<img src={todoStarIcon} alt="star todo"  className="h-5 ml-1" />}
+              <div
+                className="cursor-pointer h-fit ml-auto pl-3 pt-1"
+                onClick={() => handleToggleMarkedImp(selectedTodo)}
+              >
+                {selectedTodo && selectedTodo.markedImp ? (
+                  <img src={todoStarMarkedIcon} alt="" className="h-5 ml-1" />
+                ) : (
+                  <img
+                    src={todoStarIcon}
+                    alt="star todo"
+                    className="h-5 ml-1"
+                  />
+                )}
               </div>
-
             </div>
             {selectedTodo &&
               steps &&
@@ -517,11 +493,17 @@ export default function TodoSidebar() {
             className={`p-3 flex items-center cursor-pointer border`}
             onClick={() => handleAddToMyDay()}
           >
-            <img src={selectedTodo.inMyDay?sunSelectedIcon :sunIcon} alt="" className="h-5 mr-5" />
-            <span className={`text-sm ${selectedTodo.inMyDay?"text-[#005fb8]" :"font-light"}`}>
-              {selectedTodo.inMyDay
-                ? "Added to My Day"
-                : "Add to My Day"}
+            <img
+              src={selectedTodo.inMyDay ? sunSelectedIcon : sunIcon}
+              alt=""
+              className="h-5 mr-5"
+            />
+            <span
+              className={`text-sm ${
+                selectedTodo.inMyDay ? "text-[#005fb8]" : "font-light"
+              }`}
+            >
+              {selectedTodo.inMyDay ? "Added to My Day" : "Add to My Day"}
             </span>
             {selectedTodo.inMyDay && (
               <div
@@ -567,7 +549,7 @@ export default function TodoSidebar() {
             <textarea
               ref={todoNoteRef}
               value={noteValue}
-              onKeyDown={(e)=>handleTitleChangeExitEventNote(e)}
+              onKeyDown={(e) => handleTitleChangeExitEventNote(e)}
               onBlur={handleSaveNoteChanges}
               onChange={(e) => textAreaAdjust(e)}
               type="text"
@@ -575,7 +557,6 @@ export default function TodoSidebar() {
               placeholder="Add a Note"
             />
           </div>
-
 
           {isCalenderActive && (
             <Calender

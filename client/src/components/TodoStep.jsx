@@ -1,5 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useListContext } from "../contexts/ListContext";
+import React, { useEffect, useRef, useState } from "react";
 import addStepIcon from "../assets/addStep_icon.svg";
 import checkedCircleIcon from "../assets/checked_circle.svg";
 import dotsOption from "../assets/dotsOption_icon.svg";
@@ -7,20 +6,18 @@ import hoverCheckIcon from "../assets/hover_check_circle.svg";
 import cirlceIcon from "../assets/circle_icon.svg";
 import deleteRedIcon from "../assets/deleteRed_icon.svg";
 import plusIcon from "../assets/plus_icon.svg";
-import { AUTH_TKN } from "../authToken";
 import { useTodoContext } from "../contexts/TodoContext";
 import { useLoading } from "../contexts/LoadingContext";
-
-const host = "http://localhost:3000";
+import { HOST } from "../config/config";
 
 //The AddStep Component to add a new Step
 export function AddStep(props) {
-  const { setSteps, steps } = props;
+  const { setSteps} = props;
 
   const [isAddingStep, setIsAddingStep] = useState(false);
   const stepInputRef = useRef(null);
   const { selectedTodo, selectTodo } = useTodoContext();
-  const {fetchWithLoader} = useLoading();
+  const { fetchWithLoader } = useLoading();
 
   const handleEscKeyPress = (event) => {
     if (event.key === "Escape" && stepInputRef.current) {
@@ -52,15 +49,17 @@ export function AddStep(props) {
     e.preventDefault();
 
     try {
-      const res = await fetchWithLoader(`${host}/todo/${selectedTodo._id}/step`, {
-        method: "POST",
-        credentials: 'include',
-        headers: {
-          "Content-Type": "application/json",
-          authorization: AUTH_TKN,
-        },
-        body: JSON.stringify({ stepTitle: stepInputRef.current.value }),
-      });
+      const res = await fetchWithLoader(
+        `${HOST}/todo/${selectedTodo._id}/step`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ stepTitle: stepInputRef.current.value }),
+        }
+      );
 
       const data = await res.json();
 
@@ -119,7 +118,7 @@ function StepsMenu(props) {
   const { thisStep, steps, setSteps, setIsMenuOpen, menuButtonRef } = props;
   const menuRef = useRef(null);
   const { selectedTodo, selectTodo, addTodo } = useTodoContext();
-  const {fetchWithLoader} = useLoading();
+  const { fetchWithLoader } = useLoading();
 
   useEffect(() => {
     const handler = (e) => {
@@ -150,13 +149,10 @@ function StepsMenu(props) {
   async function handleDeleteStep() {
     try {
       const res = await fetchWithLoader(
-        `${host}/todo/${selectedTodo._id}/step/${thisStep._id}`,
+        `${HOST}/todo/${selectedTodo._id}/step/${thisStep._id}`,
         {
           method: "DELETE",
-          credentials: 'include',
-          headers: {
-            authorization: AUTH_TKN,
-          },
+          credentials: "include",
         }
       );
 
@@ -271,7 +267,7 @@ export default function TodoStep(props) {
     }
   }
 
-//Step title edit
+  //Step title edit
   async function handleStepTitleChange(e) {
     e.preventDefault();
 
@@ -296,7 +292,6 @@ export default function TodoStep(props) {
     } catch (error) {
       console.error("Error updating todo Step:", error);
     }
-
   }
 
   return (
@@ -318,7 +313,7 @@ export default function TodoStep(props) {
 
         <div className="w-full">
           {isEditing ? (
-            <form onSubmit={(e)=>handleStepTitleChange(e)}>
+            <form onSubmit={(e) => handleStepTitleChange(e)}>
               <input
                 type="text"
                 ref={editInputref}
