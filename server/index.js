@@ -51,6 +51,8 @@ cron.schedule("0 0 * * *", async () => {
   } catch (error) {
     console.error('Error updating "My Day" section:', error);
   }
+}, {
+  timezone: "Asia/Kolkata"
 });
 
 // Schedule a task to run daily just before midnight to clear "My Day"
@@ -65,6 +67,8 @@ cron.schedule("59 23 * * *", async () => {
   } catch (error) {
     console.error('Error clearing "My Day" section:', error);
   }
+}, {
+  timezone: "Asia/Kolkata"
 });
 
 app.listen(port, () => {
