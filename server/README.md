@@ -1,6 +1,6 @@
-# TaskMaster Server
+# Taskmaster Server
 
-TaskMaster Server is an Express.js backend server for the Taskmaster.
+Taskmaster Server is an Express.js backend server for the Taskmaster.
 
 The Taskmaster backend leverages `MongoDB with Mongoose for the database`, `Express with the Express-Validator library for the server`, and implements `bcryptJS for secure password storage` and `json-web-token for authentication`. To enhance security, `httpOnly cookies are utilized for authentication`. Regular data updates are managed through the `node-cron library`.
 
@@ -34,7 +34,7 @@ To run this project, you need to have the following dependencies installed:
     cd server
     ```
 
-3. Install the project dependencies using Yarn:
+3. Install the project dependencies using Yarn(Recommended):
 
     ```bash
     yarn install
