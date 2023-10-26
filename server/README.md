@@ -1,6 +1,8 @@
 # TaskMaster Server
 
-TaskMaster Server is an Express.js backend server for your project.
+TaskMaster Server is an Express.js backend server for the Taskmaster.
+
+The Taskmaster backend leverages `MongoDB with Mongoose for the database`, `Express with the Express-Validator library for the server`, and implements `bcryptJS for secure password storage` and `json-web-token for authentication`. To enhance security, `httpOnly cookies are utilized for authentication`. Regular data updates are managed through the `node-cron library`.
 
 ## Table of Contents
 
