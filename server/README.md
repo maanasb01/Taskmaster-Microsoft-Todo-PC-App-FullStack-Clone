@@ -9,11 +9,11 @@ The Taskmaster backend leverages `MongoDB with Mongoose for the database`, `Expr
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
+- [Environment Variables](#environment-variables)
 - [Usage](#usage)
   - [Development](#development)
   - [Production](#production)
 - [Dependencies](#dependencies)
-- [License](#license)
 
 ## Getting Started
 
