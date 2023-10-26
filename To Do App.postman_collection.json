@@ -1,0 +1,733 @@
+{
+	"info": {
+		"_postman_id": "5442e3fa-29d6-498f-92c0-06c66f69bca1",
+		"name": "To Do App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28044278"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Create a New User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\":\"User to Delete\",\n  \"email\":\"deleteuser@gmail.com\",\n  \"password\":\"abc@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/createuser",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"createuser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "log in",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"email\":\"deleteuser@gmail.com\",\n  \"password\":\"abc@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get User Data",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NDE3MzMzNywiZXhwIjoxNjk0MjI3MzM3fQ.m0wemLPdfJ8FYNn3TomKY1CAESFuhdSeS1dPwlBacJE"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Edit Properties",
+			"item": [
+				{
+					"name": "Edit Name",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"newName\":\"user102 updated\",\r\n  \"password\": \"abc@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/edit/name",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"edit",
+								"name"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Email",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"newEmail\":\"user102updated@gmail.com\",\r\n  \"password\": \"abc@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/edit/email",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"edit",
+								"email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Password",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"newPassword\":\"updatedpassword@123\",\r\n  \"password\": \"abc@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/edit/password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"edit",
+								"password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ToDo List",
+			"item": [
+				{
+					"name": "Get All Lists of a User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjUyNmQ3MTQ1ZGZhM2NlZGQ0YjU2OGJkIn0sImlhdCI6MTY5NzA0NDI0NCwiZXhwIjoxNjk3MDk4MjQ0fQ.YxsTJgF92tf_WXz4FzAv8Rr9IAcdiUzQhlUCC8zp3Qo"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/todolist/lists",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"todolist",
+								"lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NDU4NzcwMiwiZXhwIjoxNjk0NjQxNzAyfQ.zFWQ7WXDjNcpdOEZuyfAA-z_eS_VGbdT567gWLKpwig"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"List to delete\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/todolist/new",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"todolist",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Todo LIst",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "todolist",
+								"value": "64fed3f61700198e1098963c",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NDQ1NTc4MCwiZXhwIjoxNjk0NTA5NzgwfQ.vfWHkalyuLyJHsOwNFgcTB4YH_UrZo7RbMWTL80WO_I"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/todolist/delete/64fc2b08f1a25d7b0b00bf10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"todolist",
+								"delete",
+								"64fc2b08f1a25d7b0b00bf10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update the List's Title",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NTM5NjE4MiwiZXhwIjoxNjk1NDUwMTgyfQ.-AaVzWUHdKUAcTpGEnw6k2P_zUc-oCJR5CbALACm2G8"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Title of list with timestamps \"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/todolist/updatetitle/650d6178a06541ef4fb232bc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"todolist",
+								"updatetitle",
+								"650d6178a06541ef4fb232bc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a Todo List given id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NDUwMjExMCwiZXhwIjoxNjk0NTU2MTEwfQ.knSPZy8sZx0AOJIZZDm1qaVYHUjWRbrotjyt0RR8d2g"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/todolist/65000d1585c884b3184d541f",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"todolist",
+								"65000d1585c884b3184d541f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get the Default Tasks List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjUyNmQ3MTQ1ZGZhM2NlZGQ0YjU2OGJkIn0sImlhdCI6MTY5NzA0NDI0NCwiZXhwIjoxNjk3MDk4MjQ0fQ.YxsTJgF92tf_WXz4FzAv8Rr9IAcdiUzQhlUCC8zp3Qo",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/todolist/tasks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"todolist",
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ToDo ",
+			"item": [
+				{
+					"name": "steps",
+					"item": [
+						{
+							"name": "Add a Step",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NTgxMTUxNywiZXhwIjoxNjk1ODY1NTE3fQ.bk_nliekX0XmZtEv54pc1Zz-BtF3G7LLVRgfg1oIYKU"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"stepTitle\":\"Step 1\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/todo/6514488e9b0f38c170807828/step",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"todo",
+										"6514488e9b0f38c170807828",
+										"step"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete a step",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NDU4NzcwMiwiZXhwIjoxNjk0NjQxNzAyfQ.zFWQ7WXDjNcpdOEZuyfAA-z_eS_VGbdT567gWLKpwig"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/todo/65000d5485c884b3184d5425/step/650162ab3cc08dd9647ff5ba",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"todo",
+										"65000d5485c884b3184d5425",
+										"step",
+										"650162ab3cc08dd9647ff5ba"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get all steps of a Todo",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NDU4NzcwMiwiZXhwIjoxNjk0NjQxNzAyfQ.zFWQ7WXDjNcpdOEZuyfAA-z_eS_VGbdT567gWLKpwig"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/todo/65000d5485c884b3184d5425/step",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"todo",
+										"65000d5485c884b3184d5425",
+										"step"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update a Step",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NDU4NzcwMiwiZXhwIjoxNjk0NjQxNzAyfQ.zFWQ7WXDjNcpdOEZuyfAA-z_eS_VGbdT567gWLKpwig"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"stepTitle\":\"Step 1\",\n  \"isCompleted\":true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/todo/65000d5485c884b3184d5425/step/650167893fa584162f8341ca",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"todo",
+										"65000d5485c884b3184d5425",
+										"step",
+										"650167893fa584162f8341ca"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create a ToDo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NTYzMTYyNSwiZXhwIjoxNjk1Njg1NjI1fQ.XYBO26sgdaXexgTjKBogAa0Q0NJw7xNTzYBA0nCQs98",
+								"disabled": true
+							},
+							{
+								"key": "todoList",
+								"value": "65351d4a3097687646558ce7"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\":\"Todo to delete 3 \"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/todo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"todo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a ToDo",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NDUwMjExMCwiZXhwIjoxNjk0NTU2MTEwfQ.knSPZy8sZx0AOJIZZDm1qaVYHUjWRbrotjyt0RR8d2g"
+							},
+							{
+								"key": "todolist",
+								"value": "64ff603f072f18c6e651db3a"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/todo/65000d5885c884b3184d5428",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"todo",
+								"65000d5885c884b3184d5428"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get ALL Todos of a Given User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5Njk0NTgyOCwiZXhwIjoxNjk2OTk5ODI4fQ.nwy4iAM6Jo_5zJ03kD-a0gelnuyHVYGaqV8nzVFFxvo",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/todo/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"todo",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Todos given the list id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5Njk0NTgyOCwiZXhwIjoxNjk2OTk5ODI4fQ.nwy4iAM6Jo_5zJ03kD-a0gelnuyHVYGaqV8nzVFFxvo"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/todo/65000d1585c884b3184d541f",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"todo",
+								"65000d1585c884b3184d541f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a Todo",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NTk2ODIzOCwiZXhwIjoxNjk2MDIyMjM4fQ.f_ZDhX8tTQ4tjYAUk9HM54Ynnu-480FqdX44O1Ur_is"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"isCompleted\":\"false\",\n  \"note\": \"test Note 1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/todo/6516eb9571b7faa88ce7f3cc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"todo",
+								"6516eb9571b7faa88ce7f3cc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a Todo Information",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRmYjAwOTQxNmE1OWZiYjljZjhjZjUzIn0sImlhdCI6MTY5NTczOTMwOCwiZXhwIjoxNjk1NzkzMzA4fQ.Vu9KUvr1GzR2yHtHbsEqWoErJiB9_wX828HT6iBdhSE"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/todo/info/65114cd53b24f41c637963a9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"todo",
+								"info",
+								"65114cd53b24f41c637963a9"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delete User Account",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/deleteuser",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"deleteuser"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
