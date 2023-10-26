@@ -9,7 +9,7 @@ const connectToMongo = require("./db");
 
 connectToMongo();
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3500;
 
 app.use(
   cors({
