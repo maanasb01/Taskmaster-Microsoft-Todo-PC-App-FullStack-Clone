@@ -115,7 +115,6 @@ export default function Signup() {
       if (response.ok) {
         const data = await response.json();
         if (data.success) {
-          console.log("signup successful")
           setSuccess("Registration successful!");
           setError("");
           setUser(data.user); 
