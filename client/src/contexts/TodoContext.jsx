@@ -39,7 +39,7 @@ export const TodoProvider = ({ children }) => {
   const getTodosData = async (listId) => {
     try {
       const res = await fetchWithLoader(
-        `http://localhost:3000/todo/${listId}`,
+        `${HOST}/todo/${listId}`,
         {
           credentials: "include",
         }
@@ -63,7 +63,7 @@ export const TodoProvider = ({ children }) => {
 
   const getAllTodos = async () => {
     try {
-      const res = await fetchWithLoader(`http://localhost:3000/todo/`, {
+      const res = await fetchWithLoader(`${HOST}/todo/`, {
         credentials: "include",
       });
 
@@ -177,7 +177,7 @@ export const TodoProvider = ({ children }) => {
 
     try {
       const res = await fetchWithLoader(
-        `http://localhost:3000/todo/${todoId}`,
+        `${HOST}/todo/${todoId}`,
         {
           method: "DELETE",
           credentials: "include",

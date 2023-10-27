@@ -5,7 +5,6 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { ToDoList } = require("../models/ToDoList");
-const { ToDo } = require("../models/ToDo");
 const tokenAuth = require("../middlewares/tokenAuth");
 
 //function to assign auth token when user is provided. Returns authToken. Used in Login and Signup Routes.
