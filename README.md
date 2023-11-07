@@ -59,9 +59,9 @@ The setup for the Client and Server has been explained in their separate README 
 ![Taskmaster-10_Signup](https://github.com/maanasb01/Taskmaster-Microsoft-Todo-PC-App-FullStack-Clone/assets/94924895/ff067067-911f-49a6-b921-eac7fc4f1f7f)
 
 ## In Phone
-<img src="https://github.com/maanasb01/Taskmaster-Microsoft-Todo-PC-App-FullStack-Clone/assets/94924895/ccdb4130-8a20-43bf-bf25-5807f222c00f" alt="drawing" style="width:200px;"/>
-<img src="https://github.com/maanasb01/Taskmaster-Microsoft-Todo-PC-App-FullStack-Clone/assets/94924895/b4bc3c25-c83b-458b-a666-570612ef642a" alt="drawing" style="width:200px;"/>
-<img src="https://github.com/maanasb01/Taskmaster-Microsoft-Todo-PC-App-FullStack-Clone/assets/94924895/7555aa27-5f15-4e45-9b6a-d295dae5ee82" alt="drawing" style="width:200px;"/>
+<img src="https://github.com/maanasb01/Taskmaster-Microsoft-Todo-PC-App-FullStack-Clone/assets/94924895/ccdb4130-8a20-43bf-bf25-5807f222c00f" alt="drawing" style="width:250px;"/>
+<img src="https://github.com/maanasb01/Taskmaster-Microsoft-Todo-PC-App-FullStack-Clone/assets/94924895/b4bc3c25-c83b-458b-a666-570612ef642a" alt="drawing" style="width:250px;"/>
+<img src="https://github.com/maanasb01/Taskmaster-Microsoft-Todo-PC-App-FullStack-Clone/assets/94924895/7555aa27-5f15-4e45-9b6a-d295dae5ee82" alt="drawing" style="width:250px;"/>
 
 ## In Medium Sized Screens (Tablets)
 <img src="https://github.com/maanasb01/Taskmaster-Microsoft-Todo-PC-App-FullStack-Clone/assets/94924895/657c9db5-80e9-4c77-ae4b-49ecfcdb4190" alt="drawing" style="width:400px;"/>
