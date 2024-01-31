@@ -33,6 +33,10 @@ The primary focus during development was to meticulously replicate the UI of the
 
 The setup for the Client and Server has been explained in their separate README files.
 
+## Demo Video
+
+https://github.com/maanasb01/Taskmaster-Microsoft-Todo-PC-App-FullStack-Clone/assets/94924895/aa67c135-651d-4b78-b132-8ffa071cc8b4
+
 ## Application Screenshots
 
 #### Home
